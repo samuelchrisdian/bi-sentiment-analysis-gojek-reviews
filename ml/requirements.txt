@@ -1,0 +1,25 @@
+# Dikunci eksak untuk reprodusibilitas (Fase 0, T-0.3)
+# Terverifikasi pada Python 3.12.3 — wheel cp312 tersedia untuk gensim & numpy
+#
+# PENTING: pasang dengan berkas ini sekaligus sebagai constraints, agar resolver
+# pip tidak menjelajahi kandidat numpy 2.x (gensim menuntut numpy<2):
+#     pip install -c ml/requirements.txt -r ml/requirements.txt
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.1
+scipy==1.13.1
+Sastrawi==1.0.1
+pyyaml==6.0.2
+joblib==1.4.2
+pyarrow==17.0.0
+matplotlib==3.9.2
+seaborn==0.13.2
+gensim==4.3.3
+psycopg2-binary==2.9.9
+SQLAlchemy==2.0.32
+tqdm==4.66.5
+# Perkakas notebook — komponen fungsional saja, bukan metapaket `jupyter`,
+# agar instalasi ringan dan setiap versi benar-benar terkunci
+nbformat==5.11.1
+nbconvert==7.17.1
+ipykernel==7.3.0

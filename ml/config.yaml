@@ -1,0 +1,73 @@
+# Sumber kebenaran tunggal seluruh parameter proyek (Fase 0, T-0.4)
+# Tidak ada script yang boleh meng-hardcode nilai yang ada di sini.
+seed: 42
+
+paths:
+  raw_csv: data/raw/ulasan_com.gojek.app.csv   # nama file memakai TITIK
+  processed_dir: data/processed
+  clean_parquet: data/processed/reviews_clean.parquet
+  artifacts_dir: ml/artifacts
+
+schema:
+  expected_columns: ["Nama User", "Ulasan", "Rating", "Tanggal", "Likes", "Versi App"]
+  expected_rows: 100000
+  date_format: null
+  valid_date_range: ["2024-05-21", "2025-12-31"]
+
+labeling:
+  scheme: binary             # dikonfirmasi H-3
+  negative_ratings: [1, 2]
+  neutral_ratings: [3]
+  positive_ratings: [4, 5]
+  drop_neutral_in_binary: true
+
+preprocessing:
+  lowercase: true
+  remove_url: true
+  remove_emoji: true
+  remove_digits: true
+  remove_punctuation: true
+  normalize_slang: true
+  remove_stopwords: true
+  stemming: true
+  stem_cache: true
+  dedup_training_text: true
+
+features:
+  tfidf:
+    ngram_range: [1, 2]
+    min_df: 3
+    max_features: 30000
+    sublinear_tf: true
+
+split:
+  test_size: 0.2
+  stratify: true
+
+evaluation:
+  informative_min_words: 5
+  primary_metric: f1_macro
+  majority_baseline: 0.723
+  eval_sets: ["full", "informative_ge5w"]
+
+topics:
+  lda_n_topics_range: [5, 12]
+  top_n_terms: 20
+  categories:
+    - Pembayaran
+    - Mitra Driver
+    - Performa Aplikasi
+    - Tarif & Promo
+    - Layanan Pelanggan
+    - Akurasi Lokasi
+
+versions:
+  min_reviews_per_version: 100
+  aggregate_to_minor: true
+
+temporal:
+  exclude_partial_first_month: true
+  partial_month: "2024-05"
+
+database:
+  dsn_env: DATABASE_URL

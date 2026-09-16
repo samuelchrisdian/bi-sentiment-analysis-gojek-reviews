@@ -1,0 +1,22 @@
+# Data & artefak
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+ml/artifacts/*
+!ml/artifacts/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+web/dist/
+
+# Env & OS
+.env
+.DS_Store

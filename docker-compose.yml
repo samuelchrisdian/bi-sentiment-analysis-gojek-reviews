@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: gojek_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gojek}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gojek}
+      POSTGRES_DB: ${POSTGRES_DB:-gojek_sentiment}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./ml/sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gojek}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
