@@ -65,4 +65,25 @@ STEM_OVERRIDE: dict[str, str] = {
     "pembuat": "pembuat",         # pelaku, bukan aksi `buat`
     "kebijakan": "kebijakan",     # `bijak` menghilangkan makna kebijakan
     "kesejahteraan": "sejahtera",
+
+    # --- Tambahan gerbang H-6 putaran 3 ---
+    # Yang MEMBALIK atau melemahkan sentimen bila di-stem
+    "seenaknya": "seenaknya",       # -> `enak`: keluhan menjadi terdengar positif
+    "menyusahkan": "menyusahkan",   # -> `susah`: "jangan menyusahkan" != "jangan susah"
+    "perbanyak": "perbanyak",       # -> `banyak`: permintaan menjadi pernyataan
+    "banyakin": "perbanyak",
+    "memperbanyak": "perbanyak",
+
+    # Konsep domain yang hilang bila di-stem
+    "pembaruan": "pembaruan",       # -> `baru`: konsep update lenyap
+    "terbaru": "terbaru",
+    "diperbarui": "pembaruan",
+    "disetujui": "disetujui",       # -> `tuju`: makna persetujuan hilang
+    "menyetujui": "disetujui",
+    "keselamatan": "keselamatan",   # -> `selamat`
+    "diberlakukan": "berlaku",      # -> `laku`
+    "berlaku": "berlaku",
+    "tujuannya": "tujuan",
+    "dibenahi": "dibenahi",         # pasif dipertahankan
+    "sebagainya": "sebagainya",     # -> `bagai`: frasa "dan sebagainya" rusak
 }

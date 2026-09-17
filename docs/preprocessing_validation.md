@@ -67,7 +67,68 @@ Target 5 menit terpenuhi untuk setiap run setelah yang pertama. Karena artefak
 ini dibangun sekali dan cache ikut tersimpan, biaya 10,9 menit hanya dibayar
 satu kali per mesin.
 
-## 5. Status Gerbang
+## 5. Gerbang H-6 — Tiga Putaran Pemeriksaan
+
+| Putaran | Sampel | Masalah sistemik ditemukan | Dampak terukur |
+|---------|--------|---------------------------|----------------|
+| 1 | 100 | Stemming merusak entitas domain · emoji hilang | 15% korpus · 1.237 dok |
+| 2 | 97 | Struktur negasi hancur · negasi palsu dari stemming | ~10.000 dok · 213 dok |
+| 3 | 78 | **Nol** — seluruhnya token individual | — |
+
+Pola konvergensinya jelas: dua putaran pertama menemukan cacat yang mengubah
+makna pada puluhan ribu dokumen; putaran ketiga hanya menemukan typo satuan.
+
+### Rekapitulasi perbaikan
+
+| Aspek | Akhir |
+|-------|-------|
+| `SLANG_DICT` | 572 entri (45 multi-kata) |
+| `STEM_OVERRIDE` | 45 pengecualian |
+| `NEGATION_KEEP` | 24 kata (dari 11 semula) |
+| Normalisasi frasa | 13 pola |
+| Pemetaan emoji | 45 emoji, hanya pada ulasan ≤3 kata |
+| Teks kosong | 1.308 → **237** (1,3% → 0,2%) |
+
+### Struktur negasi — sebelum dan sesudah
+
+| Frasa | Ada | Bertahan (awal) | Bertahan (akhir) |
+|-------|-----|-----------------|------------------|
+| `tidak bisa` | 4.849 | 3 | **4.849** |
+| `tidak ada` | 4.017 | 9 | **4.017** |
+| `tidak dapat` | 1.168 | 69 | **1.168** |
+
+## 6. Residu yang Diketahui dan Alasan Tidak Dikejar Lebih Jauh
+
+Putaran 3 menyisakan sejumlah typo satuan yang tidak dipetakan. Keputusan untuk
+menghentikan iterasi didasarkan pada bukti, bukan kelelahan:
+
+**70% token unik (14.857 dari 21.302) memiliki document frequency di bawah 3**,
+sehingga `TfidfVectorizer(min_df=3)` membuangnya sebelum model melihatnya.
+Diperiksa satu per satu, mayoritas typo sisa memang tidak akan pernah mencapai
+model: `jahatt` (df=0), `diskonanya` (df=0), `mantapz` (df=0), `nyiapin` (df=0),
+`padahan` (df=0), `isrewel` (df=1).
+
+Yang masih lolos ke model dan layak dipertimbangkan di iterasi berikutnya:
+`onlinenya` (df=51), `mna` (df=47), `turunin` (df=45), `gomartnya` (df=12),
+`utamain` (df=5), `kbm` (df=4).
+
+Tiga keterbatasan struktural yang tidak diselesaikan dan dinyatakan apa adanya:
+
+1. **Angka dibuang secara global.** Aturan sempit ditambahkan untuk
+   `bintang 1..5` dan `tiba2`, tetapi nominal harga, jam, dan kuantitas lain
+   tetap hilang. Mengaktifkan angka secara global akan memasukkan ribuan nominal
+   sebagai fitur.
+2. **Normalisasi frasa bersifat kuratif, bukan umum.** 13 pola ditangani
+   eksplisit; penggabungan token terpisah lain (`di batalkan`, `ke lamaan`)
+   tidak tertangani.
+3. **Umpatan tersamar** hanya ditangani untuk satu pola (`b#ngasd`).
+
+**Umpan balik yang dijadwalkan:** Fase 4 (T-4.5) mengekstrak 20 fitur berbobot
+tertinggi per kelas dan mewajibkan pertanyaan "apakah ini istilah domain atau
+artefak preprocessing?" dijawab tertulis. Bila artefak muncul di daftar itu,
+iterasi kembali ke fase ini dengan bukti kuantitatif, bukan dugaan.
+
+## 7. Status Gerbang
 
 - **H-5 (kamus slang)** — ✅ lolos. 500/500 token diputuskan manusia.
-- **H-6 (verifikasi 100 sampel)** — ⛔ menunggu pemeriksaan manusia.
+- **H-6 (verifikasi sampel)** — ✅ lolos setelah 3 putaran, 275 sampel diperiksa.

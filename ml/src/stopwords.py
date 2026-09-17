@@ -31,6 +31,10 @@ NEGATION_KEEP: frozenset[str] = frozenset({
     "mungkin", "sempat", "harus",
     # Penanda derajat & frekuensi yang membawa sentimen
     "kurang", "susah", "sulit", "sering", "selalu", "pernah",
+    # Penghubung yang membawa relasi antar klausa keluhan
+    "atau",
+    # Pembentuk frasa evaluatif negatif ("tidak guna", "tidak becus")
+    "guna",
 })
 
 

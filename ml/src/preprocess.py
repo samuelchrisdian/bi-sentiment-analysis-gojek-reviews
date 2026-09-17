@@ -42,6 +42,26 @@ RE_DIGIT = re.compile(r"\d+")
 RE_PUNCT = re.compile(r"[^a-z\s]")               # sisakan huruf & spasi
 RE_REPEAT = re.compile(r"(.)\1{2,}")             # 3+ huruf identik -> 1
 RE_SPACE = re.compile(r"\s+")
+RE_EKOR = re.compile(r"(\w)\1+\b")            # huruf ganda di akhir kata
+
+# Normalisasi tingkat FRASA — dijalankan sebelum angka & tanda baca dibuang,
+# karena sebagiannya justru bergantung pada angka atau tanda hubung.
+# Seluruh pemetaan berasal dari putusan pemeriksa pada gerbang H-6.
+FRASA: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\bgo[\s\-]?jek\b"), "gojek"),
+    (re.compile(r"\bkasi[h]?\s+tau\b"), "kasih tahu"),
+    (re.compile(r"\bsebagai\s+nya\b"), "sebagainya"),
+    (re.compile(r"\bjadi\s+nya\b"), "jadinya"),
+    (re.compile(r"\bpada\s+hal\b"), "padahal"),
+    (re.compile(r"\btiba2\b"), "tiba tiba"),
+    (re.compile(r"\bga+\s*ada\s+kenapa\s+napa\b"), "tidak ada masalah"),
+    (re.compile(r"\bbintang\s*1\b"), "bintang satu"),
+    (re.compile(r"\bbintang\s*2\b"), "bintang dua"),
+    (re.compile(r"\bbintang\s*3\b"), "bintang tiga"),
+    (re.compile(r"\bbintang\s*4\b"), "bintang empat"),
+    (re.compile(r"\bbintang\s*5\b"), "bintang lima"),
+    (re.compile(r"\bb[#@*$]ng[a-z]{1,4}\b"), "bangsat"),   # umpatan tersamar: b#ngasd, b@ngsat
+]
 
 STOPWORDS = build_stopwords()
 
@@ -53,6 +73,8 @@ def bersihkan(teks: str, petakan_emoji: bool = False) -> str:
     `petakan_emoji` sengaja default False. Lihat `bersihkan_adaptif`.
     """
     t = teks.lower() if P["lowercase"] else teks
+    for pola, ganti in FRASA:          # sebelum angka & tanda baca dibuang
+        t = pola.sub(ganti, t)
     if petakan_emoji:
         for emo, kata in EMOJI_MAP.items():       # sebelum non-ASCII dibuang
             if emo in t:
@@ -67,24 +89,32 @@ def bersihkan(teks: str, petakan_emoji: bool = False) -> str:
     if P["remove_punctuation"]:
         t = RE_PUNCT.sub(" ", t)          # tanda baca -> SPASI, bukan dihapus
     t = RE_REPEAT.sub(r"\1", t)
+    t = RE_EKOR.sub(r"\1", t)         # `jahatt` -> `jahat`, `mudahh` -> `mudah`
     return RE_SPACE.sub(" ", t).strip()
 
 
+# Ambang kata untuk pemetaan emoji. Lihat bersihkan_adaptif().
+MAKS_KATA_EMOJI = 3
+
+
 def bersihkan_adaptif(teks: str) -> str:
-    """Emoji hanya dipetakan bila teks akan kosong tanpanya.
+    """Emoji dipetakan hanya pada ulasan pendek.
 
     Alasannya ditemukan pada gerbang H-6 putaran 2. Ulasan
     "jangan mengemis ke konsumen 🤣🤣🤣" berating 1: emoji tertawa di situ
     sarkastik, dan memetakannya menjadi token positif menyuntik sinyal yang
     berlawanan dengan isi ulasannya.
 
-    Aturannya menjadi: bila ulasan memuat kata, kata itulah yang membawa
-    sentimen dan emoji diabaikan. Emoji baru dipakai bila ia satu-satunya isi
-    ulasan — di situ membuangnya berarti membuang seluruh sinyal, dan tidak ada
-    teks yang bisa berkontradiksi dengannya.
+    Tetapi putaran 3 menunjukkan sisi sebaliknya: "Go-jek memang 👍💯" kehilangan
+    seluruh sentimennya bila emoji diabaikan, menyisakan "go jek memang".
+
+    Kompromi yang dipakai: emoji dipetakan bila teks tersisa paling banyak
+    MAKS_KATA_EMOJI kata. Pada ulasan pendek, emoji memang pembawa sentimen
+    utamanya dan ruang untuk sarkasme kecil. Pada ulasan panjang, kata-katanya
+    sudah membawa sentimen sendiri dan risiko sarkasme jauh lebih besar.
     """
     t = bersihkan(teks, petakan_emoji=False)
-    if t:
+    if len(t.split()) > MAKS_KATA_EMOJI:
         return t
     return bersihkan(teks, petakan_emoji=True)
 

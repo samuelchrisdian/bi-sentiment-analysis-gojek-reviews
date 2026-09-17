@@ -20,6 +20,7 @@ EMOJI_MAP: dict[str, str] = {
     "😊": "senang", "😁": "senang", "😀": "senang", "😃": "senang", "🙂": "senang",
     "😎": "keren", "🔥": "keren", "💯": "sempurna", "⭐": "bintang", "🌟": "bintang",
     "👏": "apresiasi", "🙌": "apresiasi", "✅": "baik", "😘": "suka",
+    "👌": "oke", "✊": "semangat", "🤝": "apresiasi", "🥇": "terbaik", "😇": "baik",
 
     # Negatif
     "👎": "jelek", "😡": "marah", "🤬": "marah", "😠": "marah",
