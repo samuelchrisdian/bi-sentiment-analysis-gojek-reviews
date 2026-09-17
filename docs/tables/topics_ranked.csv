@@ -1,0 +1,10 @@
+kategori,jumlah_ulasan,total_likes,persen_ulasan_negatif,rata_likes,peringkat_frekuensi,peringkat_likes,selisih_peringkat
+Ketersediaan & Respons Mitra Driver,9663,25913,36.15,2.682,1,2,-1
+Pesanan GoFood & Pembatalan,9155,27805,34.25,3.037,2,1,1
+"Tarif, Ongkir & Promo",6939,17754,25.96,2.559,3,4,-1
+Layanan Pelanggan & Penanganan Keluhan,6916,20941,25.87,3.028,4,3,1
+Transaksi & Saldo GoPay,4874,11869,18.23,2.435,5,8,-3
+"GoPayLater, GoPinjam & Penagihan",4786,12657,17.9,2.645,6,6,0
+Performa & Gangguan Aplikasi,4479,15321,16.76,3.421,7,5,2
+Akurasi Lokasi & Rute,3138,12086,11.74,3.851,8,7,1
+"Akun, Login & Verifikasi",3048,8037,11.4,2.637,9,9,0

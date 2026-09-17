@@ -179,3 +179,192 @@ cloud tidak — sehingga substansi yang diminta tetap terpenuhi, bahkan lebih
 dapat dipertanggungjawabkan. Bila *word cloud* tetap dikehendaki untuk laporan,
 pemasangan `wordcloud` adalah perubahan satu baris di `requirements.txt` dan
 merupakan keputusan pemilik proyek.
+
+---
+
+# BAGIAN II — PENETAPAN TOPIK & PERINGKAT (T-5.5 s/d T-5.8)
+
+Sumber: `ml/src/topic_assign.py`. Kategori berasal dari gerbang H-8 — lihat
+`docs/topic_labeling_rules.md`, termasuk **catatan provenans pelabelan** di §5
+yang harus dinyatakan di bab metodologi.
+
+## 6. Pemilihan Kata Kunci per Kategori
+
+Kata kunci tidak diketik manual. Ia diturunkan dari model dengan tiga saringan
+berurutan, sehingga dapat direproduksi dan diaudit.
+
+**(a) Relevance** (Sievert & Shirley, 2014 — ukuran yang sama dipakai pyLDAvis),
+λ = 0,6:
+
+> relevance(w,t) = λ·log p(w|t) + (1−λ)·log( p(w|t) / p(w) )
+
+Suku kedua menghukum kata yang sering di seluruh korpus. Tanpa itu setiap
+kategori memperoleh kata kunci `gojek`, `aplikasi`, `nya`, `ada` — benar secara
+probabilitas, tidak membedakan apa pun.
+
+**(b) `MAX_DF_KORPUS = 0,15`.** Kata yang muncul di >15% korpus negatif dibuang.
+Tanpa ini `bisa` (22% dokumen) menjadi kata kunci "Akun, Login & Verifikasi"
+dan mencocoki seperlima korpus.
+
+**(c) `MIN_LIFT = 2,0`.** Kata harus ≥2× lebih terkonsentrasi pada dokumen
+dominan topiknya dibanding pangsa topik itu. Ambang **rasio**, bukan mutlak,
+karena ambang mutlak berat sebelah terhadap topik besar — topik 2 sendiri
+menguasai 28,85% dokumen.
+
+Bigram ditetapkan dengan prinsip yang sama: sebuah bigram masuk kategori tempat
+≥35% kemunculannya terkonsentrasi. Dibatasi 15 teratas per kategori — tanpa
+batas itu topik terbesar menarik 63 bigram sementara dua topik lain tidak
+memperoleh satu pun.
+
+**Hasil: 146 kata kunci (89 unigram + 57 bigram), 10–25 per kategori.**
+DoD menuntut ≥5 per kategori — terpenuhi seluruhnya.
+Berkas: `docs/tables/topic_keywords.csv` (memuat kolom `lift` dan `df_korpus`,
+sehingga kata kunci lemah terlihat, bukan tersembunyi).
+
+### 6.1 Satu tabrakan, diselesaikan berbasis data
+
+`gopay` muncul sebagai kata khas pada **dua** kategori pembayaran sekaligus
+("Transaksi & Saldo GoPay" lift 5,74; "GoPayLater, GoPinjam & Penagihan" lift
+4,08). Membiarkannya membuat setiap ulasan bergopay masuk keduanya dan
+peringkat frekuensi menghitung ganda.
+
+Diselesaikan dengan aturan yang sudah dipakai menyaring — **lift tertinggi
+menang** — bukan penilaian baru. `gopay` menjadi milik "Transaksi & Saldo
+GoPay". Tabrakan ini satu-satunya dari 146 kata kunci.
+
+## 7. Penetapan Topik per Ulasan (T-5.5)
+
+### 7.1 Pendekatan A — berbasis kata kunci (RESMI)
+
+Dijalankan pada **seluruh 26.732 ulasan negatif**, bukan hanya korpus LDA:
+pencocokan kata kunci tidak menuntut panjang minimum, dan DoD meminta proporsi
+ulasan negatif yang memperoleh ≥1 topik.
+
+Pencocokan unigram dilakukan pada level **token**, bukan substring. Ini penting:
+`bayar` sebagai substring juga cocok dengan `pembayaran` dan `membayarkan`,
+yang membuat cakupan tampak lebih tinggi daripada sebenarnya.
+
+| Metrik | Nilai |
+|--------|-------|
+| Ulasan dengan ≥1 kategori | **23.422 / 26.732 = 87,62%** (DoD: ≥60%) |
+| Tanpa kategori | 3.310 (12,38%) |
+| Rata-rata kategori per ulasan | 2,26 |
+| Baris `review_topics` | 52.998 |
+
+**Kategori tidak saling eksklusif.** Satu ulasan boleh masuk lebih dari satu
+kategori — diizinkan eksplisit oleh T-5.5, dan wajar karena satu keluhan sering
+menyinggung beberapa hal sekaligus. Konsekuensinya jumlah seluruh kategori
+(52.998) melebihi jumlah ulasan (26.732), dan itu **bukan kesalahan
+penghitungan**. Keterangan ini wajib menyertai setiap tabel peringkat.
+
+### 7.2 Pendekatan B — berbasis LDA (pembanding)
+
+Topik dominan dengan ambang probabilitas ≥ 0,3; di bawah ambang tidak diberi
+topik. Hanya terdefinisi pada korpus LDA (23.232 ulasan).
+
+| Metrik | Nilai |
+|--------|-------|
+| Memperoleh topik (prob ≥ 0,3) | 21.783 / 23.232 = 93,76% |
+| **Kesesuaian dengan A** | **79,02%** |
+
+Empat dari lima ulasan memperoleh kategori yang sama dari dua metode yang
+sepenuhnya berbeda — satu berbasis kata kunci eksplisit, satu berbasis model
+probabilistik. Kesesuaian sebesar itu **bukan bukti kebenaran kategori**, tetapi
+bukti bahwa kata kunci yang dipilih benar-benar mewakili klaster yang
+dihasilkan LDA, bukan daftar kata yang kebetulan terdengar masuk akal.
+
+A dipakai sebagai penetapan resmi sesuai rencana: alasannya dapat dijelaskan ke
+pemangku kepentingan dan dapat diaudit sampai ke kata pemicunya.
+
+### 7.3 Satu baris per (ulasan, kategori) — bukan per kata kunci
+
+`review_topics` merujuk baris `topics`, yaitu pasangan (kategori, keyword). Bila
+satu ulasan ditautkan ke tiga baris keyword dari kategori yang sama, maka
+`COUNT(*) GROUP BY kategori` pada T-5.6 menghitungnya **tiga kali** dan
+peringkatnya salah.
+
+Karena itu setiap (ulasan, kategori) hanya menyimpan **satu kata kunci pemicu**
+— yang berlift tertinggi di antara yang cocok. Hitungan tetap benar, dan
+penetapan tetap dapat diaudit: terlihat kata mana yang memicunya.
+
+## 8. Peringkat Topik (T-5.6) — Gambar 9
+
+Dua kolom **terpisah**, tidak digabung menjadi skor komposit. Bab 1 membatasi
+prioritas hanya berbasis frekuensi; Likes hadir sebagai lensa tambahan.
+Menggabung keduanya menyelundupkan pembobotan yang tidak diizinkan batasan itu.
+
+| # | Kategori | Ulasan | % negatif | Total Likes | Rata Likes | #Frek | #Likes |
+|---|----------|--------|-----------|-------------|------------|-------|--------|
+| 1 | Ketersediaan & Respons Mitra Driver | 9.663 | 36,15% | 25.913 | 2,68 | 1 | 2 |
+| 2 | Pesanan GoFood & Pembatalan | 9.155 | 34,25% | **27.805** | 3,04 | 2 | **1** |
+| 3 | Tarif, Ongkir & Promo | 6.939 | 25,96% | 17.754 | 2,56 | 3 | 4 |
+| 4 | Layanan Pelanggan & Penanganan Keluhan | 6.916 | 25,87% | 20.941 | 3,03 | 4 | 3 |
+| 5 | Transaksi & Saldo GoPay | 4.874 | 18,23% | 11.869 | 2,44 | 5 | **8** |
+| 6 | GoPayLater, GoPinjam & Penagihan | 4.786 | 17,90% | 12.657 | 2,65 | 6 | 6 |
+| 7 | Performa & Gangguan Aplikasi | 4.479 | 16,76% | 15.321 | 3,42 | 7 | **5** |
+| 8 | Akurasi Lokasi & Rute | 3.138 | 11,74% | 12.086 | **3,85** | 8 | 7 |
+| 9 | Akun, Login & Verifikasi | 3.048 | 11,40% | 8.037 | 2,64 | 9 | 9 |
+
+*Persentase dihitung terhadap 26.732 ulasan negatif. Kategori tidak saling
+eksklusif sehingga totalnya melebihi 100%.*
+
+### 8.1 Jawaban RM2
+
+**Tema keluhan dominan adalah ketersediaan dan respons mitra driver
+(36,15% ulasan negatif), disusul pesanan GoFood dan pembatalannya (34,25%).**
+Keduanya terpaut tipis dan bersama-sama menguasai dua pertiga korpus keluhan.
+
+Ini konsisten dengan analisis n-gram yang dikerjakan sebelum LDA: `pengemudi`
+muncul di 38% ulasan negatif, dan bigram `dapat pengemudi` di 8,8% dokumen.
+Dua metode yang berbeda menunjuk ke tempat yang sama.
+
+### 8.2 Peringkat frekuensi ≠ peringkat resonansi
+
+Rencana menyebut: "bila peringkatnya berbeda antara dua kolom, itu sendiri
+temuan menarik." Perbedaannya memang ada, dan pada satu kategori cukup tajam:
+
+- **Transaksi & Saldo GoPay turun 3 peringkat** — #5 menurut frekuensi, #9
+  menurut rata-rata Likes (2,44, terendah). Masalah saldo banyak dilaporkan
+  tetapi **paling sedikit diamini pengguna lain**. Penjelasan yang masuk akal:
+  kegagalan transaksi bersifat personal — pembaca lain tidak mengalaminya,
+  sehingga tidak menekan tombol *like*.
+- **Akurasi Lokasi & Rute punya rata-rata Likes tertinggi (3,85)** meski
+  frekuensinya peringkat 8. Kebalikannya: keluhan titik jemput yang salah
+  adalah pengalaman yang segera dikenali banyak orang.
+- **Performa & Gangguan Aplikasi naik 2 peringkat** (#7 → #5) dengan rata-rata
+  Likes 3,42 — gangguan aplikasi dialami serentak oleh banyak pengguna.
+
+Implikasi praktisnya: **frekuensi mengukur berapa banyak yang mengeluh,
+rata-rata Likes mengukur berapa banyak yang merasakan hal yang sama.** Keduanya
+sah, dan justru karena berbeda maka tidak boleh digabung menjadi satu angka.
+
+## 9. Tren Bulanan (T-5.8)
+
+`docs/tables/topic_trend_monthly.csv` — 180 baris, 20 bulan, 9 kategori.
+
+Mei 2024 **tidak dibuang** melainkan ditandai kolom `periode_parsial = true`
+(Temuan 6): datanya mulai 21 Mei, sehingga volumenya rendah karena cakupan
+waktu, bukan karena keluhan berkurang. Membuangnya akan menghapus data yang
+sah; membiarkannya tanpa tanda akan menghasilkan pembacaan tren yang salah.
+
+Puncak keluhan terjadi **Desember 2024** (Ketersediaan Driver 801,
+GoFood 760) dan **April 2025** (GoFood 833 — puncak tertinggi kategori itu).
+Sepanjang 2025 kategori "Tarif, Ongkir & Promo" menurun konsisten
+(572 → 259 dari Des 2024 ke Des 2025) sementara dua kategori teratas kembali
+naik pada kuartal akhir. Menghubungkan lonjakan ini dengan rilis versi aplikasi
+adalah bahan Fase 6.
+
+## 10. Tabel 3 Storytelling
+
+`docs/tables/tabel3_storytelling_topik.csv` — kategori, jumlah, persen, total
+Likes, kedua peringkat, dan **3 contoh ulasan nyata (teks asli, bukan hasil
+preprocessing)** per kategori. Seluruh 27 kutipan unik.
+
+Contoh dipilih dengan dua kriteria berurutan:
+
+1. **Eksklusif** — hanya masuk satu kategori. Tanpa syarat ini, satu ulasan
+   ber-likes tinggi yang menyinggung ongkir, pembatalan, dan layanan pelanggan
+   akan muncul sebagai contoh ketiganya sekaligus, dan tidak mengilustrasikan
+   satu pun dengan baik.
+2. **Likes tertinggi** di antara yang eksklusif, panjang 40–300 karakter agar
+   dapat dikutip utuh.

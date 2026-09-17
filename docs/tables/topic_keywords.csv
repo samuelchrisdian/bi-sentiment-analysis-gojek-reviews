@@ -1,0 +1,147 @@
+topic_id,kategori,keyword,rank,bobot,relevance,df_korpus,lift,n_gram,n_dokumen
+8,"Akun, Login & Verifikasi",nomor,1,0.023959,-1.1691,0.0223,6.98,1,
+8,"Akun, Login & Verifikasi",akun,2,0.030068,-1.182,0.0408,5.57,1,
+8,"Akun, Login & Verifikasi",login,3,0.017296,-1.3221,0.015,10.86,1,
+8,"Akun, Login & Verifikasi",daftar,4,0.014352,-1.4487,0.0126,9.66,1,
+8,"Akun, Login & Verifikasi",hapus,5,0.014354,-1.5639,0.0195,3.89,1,
+8,"Akun, Login & Verifikasi",ribet,6,0.012897,-1.5776,0.0155,6.4,1,
+8,"Akun, Login & Verifikasi",ponsel,7,0.014206,-1.5947,0.0192,6.17,1,
+8,"Akun, Login & Verifikasi",email,8,0.010944,-1.6531,0.01,9.22,1,
+8,"Akun, Login & Verifikasi",lupa,9,0.009592,-1.6569,0.0083,5.72,1,
+8,"Akun, Login & Verifikasi",verifikasi,10,0.010775,-1.6993,0.0117,12.67,1,
+8,"Akun, Login & Verifikasi",verifikasi wajah,1,0.915033,,,,2,153.0
+6,Akurasi Lokasi & Rute,titik,1,0.016386,-1.5124,0.02,6.79,1,
+6,Akurasi Lokasi & Rute,jalan,2,0.018324,-1.5822,0.0335,4.58,1,
+6,Akurasi Lokasi & Rute,alamat,3,0.013189,-1.6269,0.0135,7.6,1,
+6,Akurasi Lokasi & Rute,sesuai,4,0.014605,-1.7085,0.0288,4.68,1,
+6,Akurasi Lokasi & Rute,motor,5,0.010123,-1.7745,0.0123,6.64,1,
+6,Akurasi Lokasi & Rute,tuju,6,0.009978,-1.8165,0.0138,5.58,1,
+6,Akurasi Lokasi & Rute,rumah,7,0.010646,-1.8282,0.0161,4.28,1,
+6,Akurasi Lokasi & Rute,barang,8,0.009456,-1.9099,0.0134,4.11,1,
+6,Akurasi Lokasi & Rute,nyaman,9,0.007748,-1.9554,0.0108,4.95,1,
+6,Akurasi Lokasi & Rute,bawa,10,0.007394,-1.9572,0.009,6.17,1,
+7,"GoPayLater, GoPinjam & Penagihan",bayar,1,0.040676,-1.1619,0.0819,4.17,1,
+7,"GoPayLater, GoPinjam & Penagihan",blokir,2,0.015926,-1.5481,0.0217,7.62,1,
+7,"GoPayLater, GoPinjam & Penagihan",pinjam,3,0.016882,-1.5876,0.024,8.24,1,
+7,"GoPayLater, GoPinjam & Penagihan",gopaylater,5,0.012066,-1.6563,0.0143,8.29,1,
+7,"GoPayLater, GoPinjam & Penagihan",hari,6,0.018925,-1.6737,0.047,3.64,1,
+7,"GoPayLater, GoPinjam & Penagihan",denda,7,0.010386,-1.7732,0.0114,8.52,1,
+7,"GoPayLater, GoPinjam & Penagihan",telat,8,0.014805,-1.8581,0.0427,4.56,1,
+7,"GoPayLater, GoPinjam & Penagihan",tagih,9,0.009786,-1.8657,0.0144,8.13,1,
+7,"GoPayLater, GoPinjam & Penagihan",later,10,0.009156,-1.8668,0.0122,8.86,1,
+7,"GoPayLater, GoPinjam & Penagihan",pernah telat,1,0.960452,,,,2,177.0
+7,"GoPayLater, GoPinjam & Penagihan",gopay later,2,0.933036,,,,2,224.0
+7,"GoPayLater, GoPinjam & Penagihan",telat bayar,3,0.932927,,,,2,164.0
+7,"GoPayLater, GoPinjam & Penagihan",gopay pinjam,4,0.899023,,,,2,307.0
+7,"GoPayLater, GoPinjam & Penagihan",padahal bayar,5,0.526627,,,,2,169.0
+7,"GoPayLater, GoPinjam & Penagihan",pakai gopay,6,0.44186,,,,2,258.0
+7,"GoPayLater, GoPinjam & Penagihan",bisa guna,7,0.439024,,,,2,164.0
+7,"GoPayLater, GoPinjam & Penagihan",tidak pernah,8,0.428341,,,,2,621.0
+7,"GoPayLater, GoPinjam & Penagihan",bisa pakai,9,0.358974,,,,2,351.0
+0,Ketersediaan & Respons Mitra Driver,jauh,1,0.028747,-1.3476,0.0566,3.58,1,
+0,Ketersediaan & Respons Mitra Driver,susah,2,0.0271,-1.4664,0.0767,2.91,1,
+0,Ketersediaan & Respons Mitra Driver,ambil,3,0.024105,-1.476,0.0532,3.17,1,
+0,Ketersediaan & Respons Mitra Driver,banyak,4,0.02782,-1.5381,0.0926,2.31,1,
+0,Ketersediaan & Respons Mitra Driver,order,5,0.028659,-1.6122,0.1037,2.02,1,
+0,Ketersediaan & Respons Mitra Driver,gocar,6,0.019271,-1.6751,0.0473,2.8,1,
+0,Ketersediaan & Respons Mitra Driver,cari,7,0.01871,-1.7822,0.065,2.6,1,
+0,Ketersediaan & Respons Mitra Driver,dekat,8,0.013384,-1.8294,0.032,3.37,1,
+0,Ketersediaan & Respons Mitra Driver,hujan,9,0.012577,-1.9466,0.0325,3.87,1,
+0,Ketersediaan & Respons Mitra Driver,jemput,10,0.009725,-2.12,0.0272,3.1,1,
+0,Ketersediaan & Respons Mitra Driver,pengemudi jauh,1,0.772727,,,,2,264.0
+0,Ketersediaan & Respons Mitra Driver,kalau hujan,2,0.742991,,,,2,214.0
+0,Ketersediaan & Respons Mitra Driver,pengemudi gocar,3,0.679426,,,,2,209.0
+0,Ketersediaan & Respons Mitra Driver,mau ambil,4,0.676471,,,,2,510.0
+0,Ketersediaan & Respons Mitra Driver,susah cari,5,0.676136,,,,2,176.0
+0,Ketersediaan & Respons Mitra Driver,ambil order,6,0.660777,,,,2,283.0
+0,Ketersediaan & Respons Mitra Driver,banyak pengemudi,7,0.654795,,,,2,365.0
+0,Ketersediaan & Respons Mitra Driver,pengemudi banyak,8,0.651961,,,,2,204.0
+0,Ketersediaan & Respons Mitra Driver,pengemudi susah,9,0.642384,,,,2,151.0
+0,Ketersediaan & Respons Mitra Driver,susah dapat,10,0.603774,,,,2,371.0
+0,Ketersediaan & Respons Mitra Driver,ada mau,11,0.599398,,,,2,332.0
+0,Ketersediaan & Respons Mitra Driver,minta batal,12,0.557471,,,,2,174.0
+0,Ketersediaan & Respons Mitra Driver,susah banget,13,0.541985,,,,2,262.0
+0,Ketersediaan & Respons Mitra Driver,tidak mau,14,0.490291,,,,2,824.0
+0,Ketersediaan & Respons Mitra Driver,kasihan pengemudi,15,0.466368,,,,2,223.0
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan,1,0.072905,-0.6359,0.0957,4.43,1,
+1,Layanan Pelanggan & Penanganan Keluhan,layan,2,0.069614,-0.6532,0.0915,4.39,1,
+1,Layanan Pelanggan & Penanganan Keluhan,buruk,3,0.020155,-1.3917,0.0291,3.87,1,
+1,Layanan Pelanggan & Penanganan Keluhan,bintang,4,0.018489,-1.4234,0.0241,4.32,1,
+1,Layanan Pelanggan & Penanganan Keluhan,kasih,5,0.022458,-1.6133,0.0649,2.37,1,
+1,Layanan Pelanggan & Penanganan Keluhan,jelek,6,0.016917,-1.6183,0.0317,2.63,1,
+1,Layanan Pelanggan & Penanganan Keluhan,bantu,7,0.016327,-1.6241,0.0296,3.94,1,
+1,Layanan Pelanggan & Penanganan Keluhan,beri,8,0.014768,-1.7163,0.0296,3.55,1,
+1,Layanan Pelanggan & Penanganan Keluhan,satu,9,0.014162,-1.7333,0.0292,2.88,1,
+1,Layanan Pelanggan & Penanganan Keluhan,rating,10,0.008533,-1.8968,0.0092,7.14,1,
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan layan,1,0.463415,,,,2,164.0
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan nya,2,0.395,,,,2,200.0
+5,Performa & Gangguan Aplikasi,tiba,1,0.052433,-0.8451,0.0486,3.04,1,
+5,Performa & Gangguan Aplikasi,buka,2,0.016679,-1.4566,0.0207,5.21,1,
+5,Performa & Gangguan Aplikasi,pembaruan,3,0.014975,-1.5466,0.0192,5.14,1,
+5,Performa & Gangguan Aplikasi,muncul,4,0.013196,-1.5496,0.0143,4.87,1,
+5,Performa & Gangguan Aplikasi,error,5,0.015033,-1.5518,0.0211,5.76,1,
+5,Performa & Gangguan Aplikasi,bagus,6,0.017623,-1.6896,0.0435,2.13,1,
+5,Performa & Gangguan Aplikasi,pin,7,0.009459,-1.725,0.008,2.79,1,
+5,Performa & Gangguan Aplikasi,kode,8,0.007741,-1.8149,0.0062,3.23,1,
+5,Performa & Gangguan Aplikasi,pencet,9,0.008813,-1.8434,0.0114,3.81,1,
+5,Performa & Gangguan Aplikasi,ganggu,10,0.009195,-1.8625,0.0137,5.51,1,
+2,Pesanan GoFood & Pembatalan,tunggu,1,0.034259,-1.5143,0.1327,2.83,1,
+2,Pesanan GoFood & Pembatalan,jam,2,0.029673,-1.6144,0.1154,2.93,1,
+2,Pesanan GoFood & Pembatalan,makan,3,0.025446,-1.709,0.104,2.41,1,
+2,Pesanan GoFood & Pembatalan,gofood,4,0.021385,-1.8484,0.1075,2.18,1,
+2,Pesanan GoFood & Pembatalan,sen,5,0.016812,-1.9171,0.0663,2.37,1,
+2,Pesanan GoFood & Pembatalan,menit,6,0.012622,-2.0747,0.0439,2.58,1,
+2,Pesanan GoFood & Pembatalan,restoran,7,0.012569,-2.0971,0.0408,2.71,1,
+2,Pesanan GoFood & Pembatalan,waktu,8,0.009205,-2.3607,0.0458,2.22,1,
+2,Pesanan GoFood & Pembatalan,food,9,0.005617,-2.6314,0.027,2.33,1,
+2,Pesanan GoFood & Pembatalan,datang,10,0.0056,-2.6477,0.0257,2.37,1,
+2,Pesanan GoFood & Pembatalan,jam lebih,1,0.955882,,,,2,408.0
+2,Pesanan GoFood & Pembatalan,tunggu makan,2,0.955696,,,,2,158.0
+2,Pesanan GoFood & Pembatalan,tunggu jam,3,0.933333,,,,2,720.0
+2,Pesanan GoFood & Pembatalan,hampir jam,4,0.909524,,,,2,210.0
+2,Pesanan GoFood & Pembatalan,jam jam,5,0.888889,,,,2,162.0
+2,Pesanan GoFood & Pembatalan,jam tunggu,6,0.87931,,,,2,174.0
+2,Pesanan GoFood & Pembatalan,batal pesan,7,0.871859,,,,2,398.0
+2,Pesanan GoFood & Pembatalan,tunggu lama,8,0.862121,,,,2,660.0
+2,Pesanan GoFood & Pembatalan,bisa batal,9,0.852029,,,,2,838.0
+2,Pesanan GoFood & Pembatalan,sen makan,10,0.85034,,,,2,294.0
+2,Pesanan GoFood & Pembatalan,malah batal,11,0.845528,,,,2,246.0
+2,Pesanan GoFood & Pembatalan,jam tidak,12,0.833766,,,,2,385.0
+2,Pesanan GoFood & Pembatalan,sen gofood,13,0.833333,,,,2,294.0
+2,Pesanan GoFood & Pembatalan,tunggu pengemudi,14,0.825137,,,,2,183.0
+2,Pesanan GoFood & Pembatalan,lama tunggu,15,0.817778,,,,2,225.0
+4,"Tarif, Ongkir & Promo",makin,1,0.055567,-0.8512,0.0649,3.35,1,
+4,"Tarif, Ongkir & Promo",kirim,2,0.037752,-1.1395,0.0654,4.05,1,
+4,"Tarif, Ongkir & Promo",promo,3,0.030554,-1.146,0.0378,3.92,1,
+4,"Tarif, Ongkir & Promo",ongkos,4,0.033398,-1.1737,0.0515,5.46,1,
+4,"Tarif, Ongkir & Promo",mahal,5,0.034781,-1.1768,0.0652,5.29,1,
+4,"Tarif, Ongkir & Promo",iklan,6,0.022742,-1.2446,0.0212,3.5,1,
+4,"Tarif, Ongkir & Promo",harga,7,0.026264,-1.3502,0.0446,4.16,1,
+4,"Tarif, Ongkir & Promo",diskon,8,0.016659,-1.5102,0.02,5.18,1,
+4,"Tarif, Ongkir & Promo",ribu,9,0.022337,-1.5409,0.039,3.73,1,
+4,"Tarif, Ongkir & Promo",biaya,10,0.017092,-1.5534,0.024,4.72,1,
+4,"Tarif, Ongkir & Promo",makin mahal,1,0.83691,,,,2,233.0
+4,"Tarif, Ongkir & Promo",ongkos kirim,2,0.745763,,,,2,885.0
+4,"Tarif, Ongkir & Promo",gojek plus,3,0.692982,,,,2,228.0
+4,"Tarif, Ongkir & Promo",lebih mahal,4,0.637255,,,,2,204.0
+4,"Tarif, Ongkir & Promo",masuk akal,5,0.610759,,,,2,316.0
+4,"Tarif, Ongkir & Promo",ada promo,6,0.60452,,,,2,177.0
+4,"Tarif, Ongkir & Promo",kesini makin,7,0.526316,,,,2,190.0
+4,"Tarif, Ongkir & Promo",makin kesini,8,0.493421,,,,2,304.0
+4,"Tarif, Ongkir & Promo",lama makin,9,0.435754,,,,2,179.0
+4,"Tarif, Ongkir & Promo",makin tidak,10,0.421875,,,,2,256.0
+4,"Tarif, Ongkir & Promo",makin lama,11,0.414179,,,,2,268.0
+3,Transaksi & Saldo GoPay,saldo,1,0.070581,-0.3623,0.0428,11.65,1,
+3,Transaksi & Saldo GoPay,gopay,2,0.070908,-0.5945,0.078,5.74,1,
+3,Transaksi & Saldo GoPay,up,3,0.039514,-0.7493,0.0298,10.76,1,
+3,Transaksi & Saldo GoPay,masuk,4,0.05138,-0.8365,0.0707,5.96,1,
+3,Transaksi & Saldo GoPay,uang,5,0.031838,-0.9393,0.0266,5.35,1,
+3,Transaksi & Saldo GoPay,kembali,6,0.022161,-1.0658,0.0148,6.81,1,
+3,Transaksi & Saldo GoPay,isi,7,0.020668,-1.124,0.0156,10.12,1,
+3,Transaksi & Saldo GoPay,transfer,8,0.01637,-1.19,0.01,11.16,1,
+3,Transaksi & Saldo GoPay,potong,9,0.024004,-1.2427,0.0292,6.07,1,
+3,Transaksi & Saldo GoPay,dana,10,0.013979,-1.3696,0.0102,8.53,1,
+3,Transaksi & Saldo GoPay,bagus up,1,0.538278,,,,2,418.0
+3,Transaksi & Saldo GoPay,saldo gopay,2,0.510309,,,,2,194.0
+3,Transaksi & Saldo GoPay,gopay tidak,3,0.410811,,,,2,185.0
+3,Transaksi & Saldo GoPay,tidak masuk,4,0.375839,,,,2,596.0
