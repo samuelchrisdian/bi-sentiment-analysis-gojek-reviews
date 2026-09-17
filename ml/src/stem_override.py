@@ -43,4 +43,26 @@ STEM_OVERRIDE: dict[str, str] = {
     "sebelah": "sebelah",          # `belah` merusak frasa `aplikasi sebelah`
     "memesan": "pesan",            # `mes` tidak bermakna
     "pemesanan": "pesan",
+
+    # --- Tambahan gerbang H-6 putaran 2 ---
+    # KRITIS: `sebelumnya` -> `belum` mengubah penanda waktu menjadi NEGASI.
+    # 213 dokumen berisiko disuntik negasi yang tidak pernah ditulis penggunanya.
+    "sebelumnya": "sebelumnya",
+    "sebelum": "sebelum",
+
+    # Verba aksi yang menjadi kata sifat / bentuk tak bermakna
+    "perbaiki": "perbaiki",
+    "memperbaiki": "perbaiki",
+    "diperbaiki": "perbaiki",
+    "dibenahi": "benahi",
+    "benahin": "benahi",
+    "ditingkatkan": "tingkatkan",
+    "meningkatkan": "tingkatkan",
+    "mengemis": "mengemis",       # `emis` bukan bentuk yang sah
+    "tertera": "tertera",         # `tera` bermakna lain
+    "mempermudah": "permudah",
+    "menyediakan": "sedia",
+    "pembuat": "pembuat",         # pelaku, bukan aksi `buat`
+    "kebijakan": "kebijakan",     # `bijak` menghilangkan makna kebijakan
+    "kesejahteraan": "sejahtera",
 }

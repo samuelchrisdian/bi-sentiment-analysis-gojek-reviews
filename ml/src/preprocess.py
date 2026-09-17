@@ -47,12 +47,16 @@ STOPWORDS = build_stopwords()
 
 
 # --------------------------------------------------------------- tahap 1 ---
-def bersihkan(teks: str) -> str:
-    """Case folding sampai kolaps huruf berulang. Belum ditokenisasi."""
+def bersihkan(teks: str, petakan_emoji: bool = False) -> str:
+    """Case folding sampai kolaps huruf berulang. Belum ditokenisasi.
+
+    `petakan_emoji` sengaja default False. Lihat `bersihkan_adaptif`.
+    """
     t = teks.lower() if P["lowercase"] else teks
-    for emo, kata in EMOJI_MAP.items():          # sebelum non-ASCII dibuang
-        if emo in t:
-            t = t.replace(emo, f" {kata} ")
+    if petakan_emoji:
+        for emo, kata in EMOJI_MAP.items():       # sebelum non-ASCII dibuang
+            if emo in t:
+                t = t.replace(emo, f" {kata} ")
     if P["remove_url"]:
         t = RE_URL.sub(" ", t)
     t = RE_MENTION.sub(" ", t)
@@ -64,6 +68,25 @@ def bersihkan(teks: str) -> str:
         t = RE_PUNCT.sub(" ", t)          # tanda baca -> SPASI, bukan dihapus
     t = RE_REPEAT.sub(r"\1", t)
     return RE_SPACE.sub(" ", t).strip()
+
+
+def bersihkan_adaptif(teks: str) -> str:
+    """Emoji hanya dipetakan bila teks akan kosong tanpanya.
+
+    Alasannya ditemukan pada gerbang H-6 putaran 2. Ulasan
+    "jangan mengemis ke konsumen 🤣🤣🤣" berating 1: emoji tertawa di situ
+    sarkastik, dan memetakannya menjadi token positif menyuntik sinyal yang
+    berlawanan dengan isi ulasannya.
+
+    Aturannya menjadi: bila ulasan memuat kata, kata itulah yang membawa
+    sentimen dan emoji diabaikan. Emoji baru dipakai bila ia satu-satunya isi
+    ulasan — di situ membuangnya berarti membuang seluruh sinyal, dan tidak ada
+    teks yang bisa berkontradiksi dengannya.
+    """
+    t = bersihkan(teks, petakan_emoji=False)
+    if t:
+        return t
+    return bersihkan(teks, petakan_emoji=True)
 
 
 # --------------------------------------------------------------- tahap 2 ---
@@ -165,7 +188,7 @@ def jalankan() -> pd.DataFrame:
     df.insert(0, "id", range(1, len(df) + 1))
 
     print(f"  [2/6] membersihkan {len(df):,} teks...", flush=True)
-    bersih = df["Ulasan"].astype(str).map(bersihkan)
+    bersih = df["Ulasan"].astype(str).map(bersihkan_adaptif)
     print("  [3/6] normalisasi slang...", flush=True)
     tokens = bersih.str.split().map(normalisasi_token)
     df["ulasan_normalized"] = tokens.str.join(" ")

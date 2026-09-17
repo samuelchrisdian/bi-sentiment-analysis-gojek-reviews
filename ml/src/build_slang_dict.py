@@ -38,8 +38,14 @@ def main() -> None:
     d["buang"] = d.buang.astype(str).str.strip()
 
     buang = sorted(d.loc[(d.buang != "") & (d.buang.str.lower() != "nan"), "token_asli"])
+
+    # Pemetaan yang DITOLAK pemeriksa pada gerbang H-6 putaran 2.
+    # `it` -> `itu` mengubah singkatan teknologi/tim IT menjadi kata tunjuk;
+    # `jek` -> `gojek` membuat "Go-Jek" menjadi "go gojek" (token ganda).
+    DITOLAK = {"it", "jek"}
     peta = {r.token_asli: r.bentuk_baku.split()
-            for r in d.itertuples() if r.bentuk_baku and r.token_asli not in buang}
+            for r in d.itertuples()
+            if r.bentuk_baku and r.token_asli not in buang and r.token_asli not in DITOLAK}
 
     # Tambahan hasil gerbang H-6: token yang diusulkan pemeriksa saat verifikasi
     # 100 sampel. Sama seperti H-5, seluruh pemetaan berasal dari manusia.
@@ -49,7 +55,7 @@ def main() -> None:
         t = pd.read_csv(tambahan, keep_default_na=False, encoding="utf-8-sig")
         for r in t.itertuples():
             tok, baku = str(r.token_asli).strip().lower(), str(r.bentuk_baku).strip().lower()
-            if tok and baku and tok not in buang:
+            if tok and baku and tok not in buang and tok not in DITOLAK:
                 peta[tok] = baku.split()
                 n_tambahan += 1
         print(f"  tambahan H-6: {n_tambahan} pemetaan")
