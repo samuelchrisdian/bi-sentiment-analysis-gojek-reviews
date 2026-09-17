@@ -39,11 +39,21 @@ def _panel(ax, cm, judul, normalize: bool) -> None:
     return im
 
 
-def gambar_06(nama_model: str = "linear_svc_tuned") -> dict:
-    stem = nama_model.replace("_tuned", "")
-    pipe = joblib.load(ROOT / "ml" / "artifacts" / f"tuned_{stem}.joblib")
+def _prediksi(nama_model: str, d: dict):
+    """`*_final` dibaca dari artefak produksi; `*_tuned` dari pipeline hasil grid."""
+    art = ROOT / "ml" / "artifacts"
+    if nama_model.endswith("_final"):
+        vec = joblib.load(art / "vectorizer.joblib")
+        clf = joblib.load(art / "model_final.joblib")
+        return clf.predict(vec.transform(d["X_te"]))
+    pipe = joblib.load(art / f"tuned_{nama_model.replace('_tuned', '')}.joblib")
+    return pipe.predict(d["X_te"])
+
+
+def gambar_06(nama_model: str = "logistic_regression_final",
+              stem_berkas: str = "gambar-06-confusion-matrix") -> dict:
     d = siapkan_teks(dedup=CFG["preprocessing"]["dedup_training_text"])
-    pred = pipe.predict(d["X_te"])
+    pred = _prediksi(nama_model, d)
 
     sets = (("full", np.ones(len(d["y_te"]), bool)),
             ("informative_ge5w (≥5 kata)", d["mask_informatif"]))
@@ -55,23 +65,33 @@ def gambar_06(nama_model: str = "linear_svc_tuned") -> dict:
         _panel(axes[r, 0], cm, f"{nama_set} — hitungan absolut", False)
         _panel(axes[r, 1], cm, f"{nama_set} — ternormalisasi per baris (= recall)", True)
 
-    fig.suptitle(f"Gambar 6 — Confusion matrix {nama_model} pada dua set evaluasi",
+    judul = "Gambar 6" if stem_berkas.startswith("gambar-06-") else "Lampiran"
+    fig.suptitle(f"{judul} — Confusion matrix {nama_model} pada dua set evaluasi",
                  fontsize=11.5, y=0.98)
     fig.tight_layout(rect=[0, 0, 1, 0.96])
     for dpi, suf in ((150, ""), (300, "@300")):
-        fig.savefig(FIG / f"gambar-06-confusion-matrix{suf}.png", dpi=dpi,
-                    bbox_inches="tight")
+        fig.savefig(FIG / f"{stem_berkas}{suf}.png", dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return hasil
 
 
+# Gambar 6 = model produksi (keputusan H-10). Lampiran = model dengan macro-F1
+# tertinggi, yang juga menjadi sumber analisis kesalahan T-4.4.
+VARIAN = [("logistic_regression_final", "gambar-06-confusion-matrix"),
+          ("linear_svc_tuned", "gambar-06b-confusion-matrix-linear-svc")]
+
+
+def semua() -> dict:
+    return {nama: gambar_06(nama, stem) for nama, stem in VARIAN}
+
+
 if __name__ == "__main__":
-    for nama_set, cm in gambar_06().items():
+    for nama, stem in VARIAN:
+      print(f"\n{'='*58}\n{nama}  ->  docs/figures/{stem}.png")
+      for nama_set, cm in gambar_06(nama, stem).items():
         fn, fp = cm[0, 1], cm[1, 0]
-        print(f"\n{nama_set}")
-        print(f"  {cm.tolist()}")
-        print(f"  negatif lolos triase (FN kelas negatif) : {fn:,} dari {cm[0].sum():,}"
+        print(f"  {nama_set}")
+        print(f"    keluhan lolos triase (FN) : {fn:,} dari {cm[0].sum():,}"
               f"  -> recall neg = {cm[0,0]/cm[0].sum():.4f}")
-        print(f"  positif salah ditandai negatif           : {fp:,} dari {cm[1].sum():,}"
+        print(f"    alarm palsu (FP)          : {fp:,} dari {cm[1].sum():,}"
               f"  -> recall pos = {cm[1,1]/cm[1].sum():.4f}")
-    print(f"\nDisimpan: docs/figures/gambar-06-confusion-matrix.png")

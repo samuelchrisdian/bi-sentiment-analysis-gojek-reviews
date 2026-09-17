@@ -2,12 +2,11 @@
 
 **Fase 4, T-4.8** · Kerangka: Bagian 2.5 `tech-architecture-development-plan.md`
 
-> ## ⛔ STATUS: GERBANG H-10 TERBUKA — MENUNGGU KEPUTUSAN MANUSIA
+> ## ✅ GERBANG H-10 DILEWATI — 17 September 2026
 >
-> Bagian 5 dokumen ini **sengaja kosong**. Bagian 1–4 berisi seluruh angka yang
-> mendasari keputusan, plus rekomendasi agent sebagai bahan pertimbangan —
-> bukan sebagai keputusan. `model_final.joblib` belum ditetapkan dan
-> `ml/src/finalize.py` belum dijalankan terhadap `ml/artifacts/`.
+> Model produksi: **LogisticRegression** (`C=1.0, class_weight="balanced"`),
+> dinyatakan pemilik proyek. Artefak sudah ditetapkan di `ml/artifacts/`.
+> Keputusan lengkap beserta konsekuensinya ada di Bagian 5.
 
 ---
 
@@ -46,6 +45,7 @@ berbeda. Confusion matrix pada set `full` (19.294 baris; 5.347 negatif):
 | LogisticRegression | **392** | **647** | 1.039 |
 | MultinomialNB | 306 | 814 | 1.120 |
 | ComplementNB | **239** | **1.135** | 1.374 |
+| *LogisticRegression `C=1.0` (model final, §5.2)* | *366* | *678* | *1.044* |
 
 LinearSVC dan LogisticRegression menghasilkan jumlah kesalahan yang praktis
 identik (1.040 vs 1.039) tetapi **komposisi yang berbeda**: LogisticRegression
@@ -181,24 +181,114 @@ berapa biaya satu keluhan pelanggan yang terlewat dibanding satu menit waktu
 peninjau. Itu pertimbangan operasional, bukan statistik — dan karena itu bukan
 keputusan agent.
 
-## 5. Keputusan — ⛔ MENUNGGU H-10
+## 5. Keputusan (H-10)
 
-**Model produksi terpilih:** *(diisi manusia)*
+**Model produksi terpilih:** **LogisticRegression**
 
-**Parameter:** *(diisi manusia)*
+**Parameter:** `C=1.0, class_weight="balanced"`, TF-IDF unigram+bigram
+(`min_df=3`, `max_features=30000`, `sublinear_tf=True`), `solver="liblinear"`,
+`random_state=42`.
 
-**Alasan keputusan:** *(diisi manusia — termasuk bila berbeda dari rekomendasi
-Bagian 4, dan terutama bila berbeda)*
+**Diputuskan oleh / tanggal:** pemilik proyek, 17 September 2026.
 
-**Diputuskan oleh / tanggal:** *(diisi manusia)*
+### 5.1 Alasan keputusan
 
-Setelah bagian ini terisi, jalankan:
+Sesuai cabang (b) kerangka Bagian 2.5 — syarat "LinearSVC unggul ≥2 poin" tidak
+terpenuhi (unggul 0,03 poin pada `full`, kalah 0,05 poin pada
+`informative_ge5w`), sehingga yang berlaku adalah "pilih model yang lebih
+sederhana dan lebih mudah dijelaskan".
 
-```bash
-python -m ml.src.finalize <nama_model>     # linear_svc | logistic_regression | complement_nb | multinomial_nb
-```
+Empat alasan, berurutan:
 
-Script itu menulis `vectorizer.joblib`, `model_final.joblib`,
-`label_encoder.joblib`, `MANIFEST.json` (+ `model_calibrated.joblib` bila model
-terpilih adalah LinearSVC) ke `ml/artifacts/`, lalu memverifikasi muat ulang di
-proses baru pada 10 sampel uji. Jalur ini sudah diuji lewat `--dry-run`.
+1. **`predict_proba` bawaan.** Tidak ada `CalibratedClassifierCV`, tidak ada
+   `model_calibrated.joblib`, tidak ada pelatihan ulang 5×. Model yang
+   metriknya dilaporkan di tabel adalah objek yang persis sama dengan yang
+   melayani `/api/predict` — tanpa lapisan perantara yang perlu dijelaskan
+   terpisah di bab metodologi.
+2. **Unggul pada set evaluasi yang lebih sulit.** macro-F1 0,9078 pada
+   `informative_ge5w`, tertinggi di antara keempat model, dan di situlah 77%
+   kesalahan sebenarnya berada.
+3. **Presisi negatif tertinggi** (0,8802 pada `full`) → beban alarm palsu
+   paling ringan.
+4. **Koefisien = log-odds per kata**, dapat ditampilkan langsung tanpa perkakas
+   tambahan.
+
+**Biaya yang diterima secara sadar:** recall negatif 0,9315 pada `full` — yang
+terendah di antara keempat kandidat. Dibanding ComplementNB (0,9553),
+**127 keluhan lebih banyak lolos triase** (FN 239 → 366) dari 5.347 ulasan
+negatif di test set, ditukar dengan **457 alarm palsu lebih sedikit**
+(FP 1.135 → 678). Setelah koreksi H-7 (Bagian 2.2), pertukaran sebenarnya
+≈111 keluhan sungguhan versus ≈161 alarm palsu sungguhan, yaitu **1 : 1,5**.
+Konsekuensi ini diterima, bukan diabaikan.
+
+### 5.2 Parameter: mengapa `C=1.0` dan bukan `C=5.0` pemenang GridSearch
+
+`GridSearchCV` memilih `C=5.0` (CV macro-F1 0,908486). Parameter produksi
+justru `C=1.0` (CV 0,908341) berdasarkan **aturan satu simpangan baku**
+(*one-standard-error rule*, Breiman et al., 1984): dipilih model paling
+sederhana — pada model linear berarti regularisasi terkuat — yang skornya masih
+berada dalam satu simpangan baku dari yang terbaik.
+
+| Besaran | `C=5.0` (pemenang grid) | `C=1.0` (1-SE) |
+|---------|-------------------------|----------------|
+| CV macro-F1 | 0,908486 | 0,908341 |
+| Simpangan baku CV | 0,003017 | 0,001703 |
+| **Selisih train−test** | **0,0499** | **0,0221** |
+| macro-F1 test `full` | 0,9338 | 0,9336 |
+| macro-F1 test `informative_ge5w` | 0,9071 | **0,9078** |
+| recall neg `full` | 0,9267 | **0,9315** |
+
+Keunggulan `C=5.0` di CV adalah **0,00015** — dua puluh kali lebih kecil dari
+simpangan bakunya sendiri, yaitu derau. Sebagai gantinya ia menanggung selisih
+train−test lebih dari dua kali lipat. Pada test set, `C=1.0` justru lebih baik
+pada tiga dari empat angka utama.
+
+Implementasi: `ml/src/tune.py::pilih_1se()`, hasilnya tersimpan di
+`ml/artifacts/best_params.json` pada kunci `seleksi_1se`, dan dipakai
+`ml/src/finalize.py` secara default (`--seleksi 1se`).
+
+**Catatan yang layak masuk laporan:** `C=1.0, class_weight="balanced"` adalah
+**persis konfigurasi default yang dipakai di Fase 3**. Untuk LogisticRegression,
+seluruh proses tuning berakhir kembali di titik awalnya. Ini bukan tuning yang
+gagal — ini bukti kuantitatif bahwa pada TF-IDF dengan data sebesar ini,
+*hyperparameter* bukan faktor penentu kinerja. Baris `logistic_regression`
+(Fase 3) dan `logistic_regression_final` (Fase 4) di `model_metrics.csv`
+karenanya identik, dan keduanya sengaja dipertahankan sebagai bukti.
+
+### 5.3 Konsekuensi untuk rumusan masalah
+
+Keputusan menyertakan perubahan framing: **LogisticRegression naik dari
+"pembanding" menjadi model penuh dalam RM1**, sehingga perbandingannya menjadi
+**tiga keluarga algoritma** — Naive Bayes, SVM, dan Logistic Regression —
+dengan **empat varian** terlatih (ComplementNB, MultinomialNB, LinearSVC,
+LogisticRegression).
+
+Dasarnya sudah disiapkan dokumen arsitektur sendiri di §2.1(c): *"Perbandingan
+tiga model juga lebih kuat secara akademik daripada dua."* Seluruh bahannya
+sudah tersedia — keempat varian menjalani `GridSearchCV`, evaluasi ganda,
+confusion matrix, dan ekstraksi fitur dengan protokol identik.
+
+Penyebutan di laporan harus presisi: **"tiga keluarga algoritma dengan empat
+varian"**, bukan "tiga model" — karena tabel hasil memuat empat baris.
+
+Temuan yang menjadi inti jawaban RM1: **rentang macro-F1 keempat varian hanya
+1,88 poin (0,9153–0,9341)**. Model paling sederhana setara dengan yang paling
+kompleks. Sesuai ketentuan Fase 10, itu ditulis sebagai temuan yang sah, bukan
+sebagai kegagalan eksperimen.
+
+### 5.4 Artefak yang dihasilkan
+
+Dijalankan `python -m ml.src.finalize logistic_regression` (seleksi 1-SE):
+
+| Artefak | Ukuran | Catatan |
+|---------|--------|---------|
+| `ml/artifacts/vectorizer.joblib` | 1,2 MB | TF-IDF ter-fit pada 45.614 baris train |
+| `ml/artifacts/model_final.joblib` | 235 KB | LogisticRegression `C=1.0` |
+| `ml/artifacts/label_encoder.joblib` | 383 B | 0=negatif, 1=positif |
+| `ml/artifacts/MANIFEST.json` | 3,8 KB | hash data, snapshot config, versi pustaka, seluruh metrik, `random_state` |
+
+**`model_calibrated.joblib` tidak dibuat** — tidak diperlukan, karena inilah
+keuntungan utama yang mendasari pilihan ini.
+
+Uji muat ulang di proses terpisah pada 10 sampel: **LOLOS** (prediksi identik).
+Probabilitas terverifikasi berfungsi tanpa lapisan kalibrasi.

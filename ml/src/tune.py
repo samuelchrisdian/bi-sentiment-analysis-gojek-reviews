@@ -163,3 +163,42 @@ def simpan(cv: pd.DataFrame, met: pd.DataFrame, terbaik: dict) -> None:
 
 if __name__ == "__main__":
     simpan(*jalankan())
+
+
+def pilih_1se(cv: pd.DataFrame, nama: str) -> dict:
+    """Aturan satu simpangan baku (Breiman et al., 1984).
+
+    `GridSearchCV` memilih skor CV tertinggi tanpa memperhitungkan bahwa skor
+    itu sendiri punya ragam. Aturan 1-SE memilih model PALING SEDERHANA yang
+    skornya masih berada dalam satu simpangan baku dari yang terbaik — pada
+    model linear, "paling sederhana" berarti regularisasi terkuat (C terkecil).
+
+    Ini relevan di sini karena LogisticRegression C=5,0 hanya unggul 0,00015
+    dari C=1,0, sementara simpangan bakunya 0,0030 — dua puluh kali lebih besar
+    dari selisihnya, dan C=5,0 punya selisih train-test dua kali lipat.
+    """
+    g = cv[cv.model_name == nama].copy()
+    terbaik = g.loc[g.mean_test_score.idxmax()]
+    ambang = terbaik.mean_test_score - terbaik.std_test_score
+    kandidat = g[g.mean_test_score >= ambang].copy()
+
+    # "Paling sederhana" = regularisasi terkuat: C terkecil, atau alpha terbesar.
+    kandidat["params_dict"] = kandidat.params.apply(
+        lambda s: eval(s) if isinstance(s, str) else s)
+    def kesederhanaan(p):
+        if "clf__C" in p:
+            return p["clf__C"]
+        return -p["clf__alpha"]          # alpha besar = smoothing kuat = sederhana
+    kandidat["_urut"] = kandidat.params_dict.apply(kesederhanaan)
+    pilih = kandidat.sort_values(["_urut", "mean_test_score"],
+                                 ascending=[True, False]).iloc[0]
+    p = pilih.params_dict
+    return {
+        "best_params": {k.replace("clf__", ""): v for k, v in p.items()},
+        "cv_f1_macro": float(pilih.mean_test_score),
+        "cv_f1_macro_std": float(pilih.std_test_score),
+        "overfit_gap": float(pilih.overfit_gap),
+        "ambang_1se": float(ambang),
+        "n_kandidat_dalam_1se": int(len(kandidat)),
+        "sama_dengan_gridsearch": bool(pilih.mean_test_score == terbaik.mean_test_score),
+    }

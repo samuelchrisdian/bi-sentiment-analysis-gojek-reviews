@@ -16,9 +16,13 @@ Kesalahan yang dianalisis berasal dari **`linear_svc_tuned`** (`C=0.1`,
 `class_weight="balanced"`) — peraih macro-F1 tertinggi setelah tuning (0,9341
 pada set `full`).
 
-Keputusan model produksi belum diambil (gerbang H-10). Bagian 4 menunjukkan
-bahwa pemilihan model di H-10 tidak akan membatalkan hasil pemeriksaan manual
-ini, karena kesalahan keempat model sebagian besar bertumpuk pada baris yang sama.
+Model produksi yang kemudian dipilih di H-10 adalah **LogisticRegression**
+(`C=1.0`), bukan model yang diperiksa di sini. Bagian 4 menunjukkan mengapa itu
+tidak membatalkan hasil pemeriksaan manual: kesalahan kedua model linear
+beririsan 0,783 (Jaccard) — yang berbeda bukan *jenis* kasus yang sulit,
+melainkan *berapa banyak* yang terjaring. Confusion matrix model produksi ada di
+Gambar 6; versi `linear_svc_tuned` yang menjadi sumber sampel ini ada di
+`docs/figures/gambar-06b-confusion-matrix-linear-svc.png`.
 
 ## 2. Profil Kesalahan — Statistik Mekanis
 
@@ -55,9 +59,10 @@ ambang ke arah kelas negatif.
 terjadi pada ulasan ≥5 kata, padahal subset itu hanya 45% dari test set. Ulasan
 sangat pendek ("bagus", "oke") justru hampir selalu benar. Temuan ini melengkapi
 temuan Fase 3: set `informative_ge5w` memang lebih sulit, dan di situlah
-kesalahan sebenarnya berada. Terlihat pula di Gambar 6 — recall kelas positif
-turun dari 0,950 (`full`) ke 0,851 (`informative_ge5w`), sedangkan recall kelas
-negatif justru naik dari 0,937 ke 0,957.
+kesalahan sebenarnya berada. Terlihat pula di Gambar 6 — pada model produksi, recall
+kelas positif turun dari 0,951 (`full`) ke 0,857 (`informative_ge5w`), sedangkan
+recall kelas negatif justru naik dari 0,932 ke 0,954. Polanya sama pada
+`linear_svc_tuned` (0,950 → 0,851 dan 0,937 → 0,957).
 
 **(c) 67% kesalahan terjadi di dekat batas keputusan** (jarak < 0,5). Model tidak
 "yakin dan salah"; ia ragu. Sepertiga sisanya — kesalahan berkeyakinan tinggi —

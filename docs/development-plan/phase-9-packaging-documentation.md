@@ -127,7 +127,7 @@ Checklist koreksi yang wajib masuk daftar:
 | **Jumlah kelas** (Temuan 3) | 3 kelas (negatif/netral/positif) | **Biner sebagai model utama**; 3 kelas sebagai eksperimen pembanding yang kegagalannya dilaporkan |
 | **Jumlah data** | "100k+" | 100.000 baris, periode 21 Mei 2024 – 31 Des 2025 |
 | **Sumber data** | Sitasi Kaggle | Sesuai hasil klarifikasi provenans (Fase 1) — nyatakan apa adanya |
-| **Algoritma** | Naive Bayes & SVM | ComplementNB & LinearSVC + LogisticRegression sebagai pembanding, dengan alasan teknisnya |
+| **Algoritma** | Naive Bayes & SVM | **Tiga keluarga, empat varian** (H-10): ComplementNB, MultinomialNB, LinearSVC, LogisticRegression — LogisticRegression menjadi model produksi, dengan alasan teknisnya |
 | **Metrik** | Akurasi | Recall negatif & macro-F1 sebagai utama; akurasi pelengkap dengan baseline 72,3% |
 | **Tabel variabel** | Berdasarkan asumsi | Berdasarkan `data_contract.md` Fase 1 |
 

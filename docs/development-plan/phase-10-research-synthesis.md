@@ -106,7 +106,7 @@ menarik bahan dari fase tertentu — tidak ada bagian yang ditulis dari nol.
 |--------|--------------|-----------|
 | Abstrak | ringkasan seluruh temuan (tulis terakhir) | — |
 | 1. Pendahuluan | latar belakang + rumusan masalah dari naskah Bab 1 | H-4 |
-| 2. Tinjauan Pustaka | rujukan NB/SVM, preprocessing bahasa Indonesia | manual |
+| 2. Tinjauan Pustaka | rujukan NB/SVM/LogReg, preprocessing bahasa Indonesia | manual |
 | 3. Metodologi | | |
 | 3.1 Dataset & provenans | `data_contract.md`, `data_provenance_notes.md` | 1, H-1 |
 | 3.2 Preprocessing | `preprocessing_validation.md`, `slang_dict.csv` | 2 |
@@ -168,8 +168,19 @@ argumennya; confusion matrix adalah buktinya.
 
 **7. Kesimpulan.** Jawab RM1 dan RM2 dengan kalimat yang berdiri sendiri —
 satu paragraf per rumusan masalah, memuat angka, tanpa hedging. Bila hasilnya
-"kedua model setara", tulis begitu: temuan yang menunjukkan model sederhana
+"ketiga model setara", tulis begitu: temuan yang menunjukkan model sederhana
 setara dengan yang kompleks adalah hasil yang sah.
+
+> **Pemutakhiran H-10 (17 September 2026).** RM1 membandingkan **tiga keluarga
+> algoritma dengan empat varian terlatih** — Naive Bayes (ComplementNB,
+> MultinomialNB), SVM (LinearSVC), dan Logistic Regression. Tulis "tiga keluarga
+> algoritma dengan empat varian", **bukan** "tiga model": tabel hasil memuat
+> empat baris dan penguji akan menanyakan selisihnya.
+>
+> Angka inti jawaban RM1 sudah tersedia: **rentang macro-F1 keempat varian hanya
+> 1,88 poin (0,9153–0,9341)** pada set `full`, dan model produksi yang terpilih
+> justru bukan yang paling kompleks. Sumber: `docs/model_decision.md`,
+> `docs/tuning_results.md`.
 
 ### T-10.4 — Artikel populer
 

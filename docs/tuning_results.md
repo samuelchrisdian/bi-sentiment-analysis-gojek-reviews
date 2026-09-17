@@ -57,10 +57,50 @@ mempelajari pola yang berlaku umum.
 **Catatan kejujuran pada LogisticRegression:** parameter terpilih `C=5.0`
 (CV 0,90849) hanya unggul **0,00015** dari `C=1.0` (CV 0,90834) — jauh di dalam
 satu simpangan baku (0,0030). Pemilihan itu praktis hasil derau, sementara
-`C=1.0` memiliki selisih train−test setengahnya (0,022 vs 0,050). Bila
-LogisticRegression dipilih sebagai model produksi di H-10, `C=1.0` adalah
-pilihan yang lebih dapat dipertahankan meski bukan peringkat 1 versi
-`GridSearchCV`. Angka ini dilaporkan, bukan dibulatkan menjadi "tuning berhasil".
+`C=1.0` memiliki selisih train−test setengahnya (0,022 vs 0,050). Angka ini
+dilaporkan, bukan dibulatkan menjadi "tuning berhasil"; Bagian 3.1 menangani
+konsekuensinya secara formal.
+
+### 3.1 Aturan Satu Simpangan Baku (*one-standard-error rule*)
+
+`GridSearchCV` memilih skor CV tertinggi tanpa memperhitungkan bahwa skor itu
+sendiri punya ragam. Aturan 1-SE (Breiman et al., 1984) memilih model **paling
+sederhana** — pada model linear berarti regularisasi terkuat, pada Naive Bayes
+berarti *smoothing* terkuat — yang skornya masih berada dalam satu simpangan
+baku dari yang terbaik.
+
+Diterapkan pada keempat model (`ml/src/tune.py::pilih_1se()`, hasil tersimpan di
+`ml/artifacts/best_params.json` kunci `seleksi_1se`):
+
+| Model | Pemenang grid | Pilihan 1-SE | Kandidat dalam ambang | Selisih train−test |
+|-------|---------------|--------------|-----------------------|--------------------|
+| LinearSVC | `C=0.1, balanced` | `C=0.1, balanced` *(sama)* | 3 | 0,0226 → 0,0226 |
+| **LogisticRegression** | `C=5.0, balanced` | **`C=1.0, balanced`** | 4 | **0,0499 → 0,0221** |
+| ComplementNB | `alpha=0.5` | `alpha=1.0` | 3 | 0,0204 → 0,0178 |
+| MultinomialNB | `alpha=0.5` | `alpha=2.0` | 4 | 0,0205 → 0,0146 |
+
+Aturan ini menurunkan selisih train−test pada tiga dari empat model tanpa
+kehilangan kinerja yang berarti, dan **mengonfirmasi** pilihan grid untuk
+LinearSVC — yang berarti ia bukan mekanisme yang selalu menggeser hasil.
+
+Pada LogisticRegression, dampaknya diverifikasi di test set dan ternyata bukan
+sekadar netral:
+
+| Metrik | `C=5.0` (grid) | `C=1.0` (1-SE) |
+|--------|----------------|----------------|
+| macro-F1 `full` | 0,9338 | 0,9336 |
+| macro-F1 `informative_ge5w` | 0,9071 | **0,9078** |
+| recall neg `full` | 0,9267 | **0,9315** |
+| recall neg `informative_ge5w` | 0,9452 | **0,9536** |
+
+Regularisasi yang lebih kuat menang pada tiga dari empat angka utama. `C=1.0`
+menjadi parameter model produksi (lihat `docs/model_decision.md` §5.2).
+
+**Konsekuensi yang paling layak dilaporkan:** `C=1.0, class_weight="balanced"`
+adalah **persis konfigurasi default Fase 3**. Untuk LogisticRegression, seluruh
+proses tuning berakhir kembali di titik awalnya — bukan karena tuning gagal
+dijalankan, melainkan karena pada TF-IDF dengan data sebesar ini
+*hyperparameter* memang bukan faktor penentu. Itu temuan, bukan kekosongan.
 
 ## 4. Default vs Tuned pada Test Set
 

@@ -163,7 +163,7 @@ Endpoint inferensi *live* tetap disediakan, tetapi perannya adalah **demo kapabi
 │            ├──────────────┬────────────────┐                   │
 │            ▼              ▼                ▼                   │
 │   [ train.py ]     [ topics.py ]    [ aggregate.py ]           │
-│   NB vs SVM        n-gram/LDA       metrik harian/versi        │
+│  NB·SVM·LogReg     n-gram/LDA       metrik harian/versi        │
 │            │              │                │                   │
 │            ▼              ▼                ▼                   │
 │   artifacts/*.joblib   topics.parquet   ─────┐                 │
@@ -273,7 +273,7 @@ Tabel `agg_monthly` dan `agg_version` dibuat sebagai **materialized view** — d
 | GET | `/api/versions` | `min_reviews` (default 100) | Proporsi sentimen per versi |
 | GET | `/api/topics` | `limit`, `from`, `to` | Peringkat topik keluhan + frekuensi |
 | GET | `/api/topics/{id}/reviews` | `sort_by=likes`, `page` | Ulasan mentah per topik (*drill-down*) |
-| GET | `/api/model/metrics` | — | Perbandingan NB vs SVM dari `model_metrics` |
+| GET | `/api/model/metrics` | — | Perbandingan NB, SVM & LogReg dari `model_metrics` |
 | POST | `/api/predict` | body: `{"text": "..."}` | Prediksi sentimen + probabilitas *(demo)* |
 
 ## 1.7 Struktur Repositori
@@ -304,7 +304,7 @@ gojek-sentiment/
 
 ---
 
-# BAGIAN 2 — KOMPARASI NAIVE BAYES vs SVM
+# BAGIAN 2 — KOMPARASI NAIVE BAYES, SVM & LOGISTIC REGRESSION
 
 ## 2.1 Koreksi Varian Algoritma
 
@@ -317,11 +317,18 @@ ComplementNB dirancang khusus untuk data tidak seimbang. Dengan rasio 27:72 pada
 Ini bukan preferensi, melainkan batas komputasi. `SVC` berkompleksitas antara O(n²) dan O(n³); pada 100.000 baris, pelatihannya bisa berjam-jam hingga gagal. `LinearSVC` menggunakan *solver* liblinear yang skalabel dan justru unggul pada data teks berdimensi tinggi — kernel non-linear jarang memberi manfaat pada ruang TF-IDF yang sudah hampir terpisah secara linear.
 
 **c) Tambahkan `LogisticRegression` sebagai model ketiga.**
+
+> **Pemutakhiran (H-10, 17 September 2026):** LogisticRegression naik dari
+> pembanding menjadi model penuh dalam RM1, dan ditetapkan sebagai model
+> produksi. Perbandingannya menjadi **tiga keluarga algoritma dengan empat
+> varian terlatih** (ComplementNB, MultinomialNB, LinearSVC,
+> LogisticRegression). Dasar dan konsekuensinya: `docs/model_decision.md` §5.3.
+
 Biayanya hampir nol, dan ia menyediakan dua hal yang tidak dimiliki LinearSVC: probabilitas terkalibrasi (untuk indikator keyakinan di dashboard) dan koefisien yang langsung dapat ditafsirkan. Perbandingan tiga model juga lebih kuat secara akademik daripada dua.
 
 ## 2.2 Tabel Perbandingan
 
-| Kriteria | ComplementNB | LinearSVC | LogisticRegression *(pembanding)* |
+| Kriteria | ComplementNB | LinearSVC | LogisticRegression |
 |----------|--------------|-----------|-----------------------------------|
 | **Prinsip** | Probabilistik, asumsi independensi fitur | Margin maksimum, diskriminatif | Probabilistik diskriminatif |
 | **Ekspektasi akurasi pada data ini** | Baik pada teks pendek; asumsi independensi terlanggar oleh bigram | Umumnya terbaik pada TF-IDF berdimensi tinggi | Mendekati LinearSVC |
