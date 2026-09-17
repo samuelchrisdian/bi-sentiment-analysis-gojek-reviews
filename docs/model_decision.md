@@ -52,6 +52,41 @@ identik (1.040 vs 1.039) tetapi **komposisi yang berbeda**: LogisticRegression
 meloloskan 55 keluhan lebih banyak dan menghasilkan 56 alarm palsu lebih sedikit.
 Inilah perbedaan sebenarnya antara keduanya — bukan 0,03 poin macro-F1.
 
+### 2.2 Koreksi dari H-7: dua pertiga "alarm palsu" ternyata prediksi yang benar
+
+Tabel 2.1 memperlakukan setiap FP sebagai biaya dan setiap FN sebagai kerugian.
+Pemeriksaan manual H-7 menunjukkan asumsi itu salah, dan salahnya tidak simetris
+(`docs/error_analysis.md` §3.1–3.2, sampel 50 kesalahan `linear_svc_tuned`):
+
+| Arah kesalahan | n sampel | di antaranya label keliru pengguna | artinya |
+|----------------|----------|-----------------------------------|---------|
+| Alarm palsu (FP) | 34 | **22 (64,7%)** | prediksi model **benar**; bintang 4–5★ yang keliru |
+| Keluhan lolos (FN) | 16 | 2 (12,5%) | hampir seluruhnya kesalahan model yang sebenarnya |
+
+**Dua pertiga "alarm palsu" adalah ulasan berisi keluhan yang diberi bintang
+4–5★ oleh penulisnya.** Untuk triase keluhan, baris-baris itu justru temuan yang
+diinginkan — bukan gangguan. Sebaliknya, keluhan yang lolos hampir seluruhnya
+kesalahan model sungguhan.
+
+Konsekuensinya, pertukaran ComplementNB vs LogisticRegression di Bagian 4 perlu
+dihitung ulang dengan proporsi ini:
+
+| Besaran | Hitungan naif | Setelah koreksi H-7 |
+|---------|---------------|---------------------|
+| Keluhan tambahan tertangkap | 153 | ≈134 *(88% dari 153 adalah keluhan sungguhan)* |
+| Alarm palsu tambahan | 488 | **≈172** *(hanya 35% dari 488 benar-benar palsu)* |
+| **Rasio pertukaran** | 1 : 3,2 | **≈1 : 1,3** |
+
+**Peringatan atas angka ini.** Proporsi 64,7% dan 12,5% diukur pada sampel 50
+kesalahan **`linear_svc_tuned`**, lalu diterapkan ke selisih ComplementNB —
+model yang kesalahannya hanya beririsan 0,524 (Jaccard) dengan LinearSVC.
+Selang kepercayaannya juga lebar (FP: 47,9%–78,5%; FN: 3,5%–36,0%), sehingga
+rasio 1:1,3 sebenarnya sebuah rentang kira-kira **0,7–2,6**. Yang dapat
+dinyatakan dengan aman bukan angka pastinya, melainkan **arahnya**: biaya
+sebenarnya dari recall negatif yang tinggi jauh lebih rendah daripada yang
+tampak pada confusion matrix mentah.
+
+
 ## 3. Tiga Kandidat Nyata dan Biayanya
 
 Perbedaan macro-F1 antara LinearSVC dan LogisticRegression (0,03 poin = 6 baris
@@ -108,6 +143,9 @@ hal-hal di luar satu angka itu.
 **LogisticRegression dengan `C=1.0, class_weight="balanced"`** — dengan syarat
 prioritas recall negatif diterima apa adanya pada 0,9267.
 
+*(Rekomendasi ini tetap setelah H-7, tetapi marginnya menyempit — lihat
+kualifikasi di akhir bagian.)*
+
 Alasannya, berurutan:
 
 1. Cabang (b) kerangka 2.5 berlaku, dan cabang itu secara eksplisit meminta
@@ -125,6 +163,18 @@ argumennya kuat. Dibanding LogisticRegression, ia menangkap **153 keluhan lebih
 banyak** (FN 392 → 239) dengan biaya **488 alarm palsu tambahan** (FP 647 →
 1.135) — rasio pertukaran **1 keluhan terselamatkan per 3,2 alarm palsu
 tambahan**.
+
+Setelah koreksi H-7 (Bagian 2.2), rasio itu turun menjadi **≈1 keluhan per 1,3
+alarm palsu sungguhan** — jauh lebih murah daripada yang tampak semula, karena
+dua pertiga "alarm palsu" ternyata keluhan asli yang diberi bintang 4–5★.
+
+**Kualifikasi jujur atas rekomendasi Bagian 4:** bukti H-7 memperkuat posisi
+ComplementNB dan memperkecil jarak antara kedua pilihan. Yang masih memihak
+LogisticRegression adalah macro-F1 1,9 poin lebih tinggi — metrik utama yang
+akan menjadi angka judul di laporan — serta keunggulannya pada set evaluasi yang
+lebih sulit. Yang memihak ComplementNB adalah tujuan operasional sistem ini:
+menemukan keluhan. Ini kini **keputusan yang sungguh-sungguh berimbang**, bukan
+pilihan dengan satu jawaban yang jelas lebih baik.
 
 Apakah pertukaran itu layak bergantung pada angka yang tidak ada di data ini:
 berapa biaya satu keluhan pelanggan yang terlewat dibanding satu menit waktu

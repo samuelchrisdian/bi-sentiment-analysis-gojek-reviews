@@ -2,12 +2,11 @@
 
 **Fase 4, T-4.4 & T-4.5**
 
-> ## ⛔ STATUS: GERBANG H-7 TERBUKA — MENUNGGU PEMERIKSAAN MANUSIA
+> ## ✅ GERBANG H-7 DILEWATI
 >
-> Bagian 5 dokumen ini (distribusi kategori penyebab) **sengaja kosong**.
-> Berkas kerja `docs/tables/error_analysis_50.csv` sudah dihasilkan dengan kolom
-> `kategori_penyebab` kosong dan menunggu diisi manusia. Bagian 1–4 dan 6 sudah
-> lengkap karena seluruhnya dapat dihitung secara mekanis.
+> 50 kesalahan diperiksa manusia; kolom `kategori_penyebab` diisi seluruhnya
+> pada `docs/tables/error_analysis_50_reviewed.csv`. Distribusi di Bagian 3
+> dihitung dari berkas yang dikembalikan itu, bukan dari tebakan agent.
 
 ---
 
@@ -65,35 +64,153 @@ negatif justru naik dari 0,937 ke 0,957.
 adalah kandidat paling mungkin untuk kategori "label keliru dari pengguna", dan
 itulah yang akan diuji pemeriksaan manual di Bagian 5.
 
-## 3. Distribusi Kategori Penyebab — ⛔ MENUNGGU H-7
+## 3. Distribusi Kategori Penyebab (H-7 — diisi manusia)
 
-*(Bagian ini diisi setelah `docs/tables/error_analysis_50.csv` dikembalikan
-dengan kolom `kategori_penyebab` terisi manusia. Agent tidak mengisinya sendiri:
-menilai sarkasme dan menilai apakah bintang yang diberikan bertentangan dengan
-isi tulisan adalah penilaian bahasa dan konteks, bukan sesuatu yang dapat
-disimpulkan agent dari teks.)*
+Sumber: `docs/tables/error_analysis_50_reviewed.csv`, 50 baris, seluruh kolom
+`kategori_penyebab` terisi dan sah menurut taksonomi.
 
-Taksonomi yang tersedia (nilai sah untuk kolom tersebut):
+| Kategori | n | % |
+|----------|---|---|
+| **Label keliru dari pengguna** | **24** | **48,0%** |
+| Negasi kompleks | 10 | 20,0% |
+| Kegagalan preprocessing | 8 | 16,0% |
+| Terlalu pendek / ambigu | 3 | 6,0% |
+| Sarkasme / ironi | 2 | 4,0% |
+| Topik netral / off-topic | 2 | 4,0% |
+| Campur kode | 1 | 2,0% |
 
-| Nilai kolom | Kategori | Contoh |
-|-------------|----------|--------|
-| `sarkasme_ironi` | Sarkasme / ironi | "mantap banget, 2 jam nggak dapet driver" |
-| `negasi_kompleks` | Negasi kompleks | "bukan berarti tidak bagus, tapi..." |
-| `campur_kode` | Campur kode | "app nya so bad, please fix lah" |
-| `label_keliru_pengguna` | Label keliru dari pengguna | Rating 5 tapi isinya keluhan |
-| `terlalu_pendek_ambigu` | Terlalu pendek / ambigu | "ok" pada rating 1 |
-| `topik_netral_offtopic` | Topik netral / off-topic | "test", "belum coba" |
-| `kegagalan_preprocessing` | Kegagalan preprocessing | kata kunci hilang karena stemming/stopword |
+### 3.1 Temuan utama: hampir separuh "kesalahan" bukan kesalahan model
 
-Dua hal yang harus dijawab begitu distribusinya tersedia:
+**48% kesalahan adalah label yang keliru dari pengguna** — bintang yang
+diberikan bertentangan dengan isi tulisannya. Arahnya sangat timpang:
 
-1. **Bila `label_keliru_pengguna` dominan** → batas atas kinerja yang realistis
-   pada dataset ini lebih rendah dari 100%, dan angka itu harus dinyatakan di
-   pembahasan. macro-F1 0,93 kemudian perlu dibaca relatif terhadap batas itu,
-   bukan relatif terhadap kesempurnaan.
-2. **Bila `kegagalan_preprocessing` signifikan** → kategori ini *actionable*:
-   kembali ke Fase 2, perbaiki, jalankan ulang Fase 3–4. Ini umpan balik yang
-   sah dan sudah dianggarkan satu iterasi dalam rencana.
+| Bentuk salah-label | n | Contoh dari sampel |
+|--------------------|---|--------------------|
+| Rating 4–5★, isi berupa keluhan | 22 | 5★ "aplikasinya sering lemot"; 5★ "saya udah tf ke gopay teman saldo berkurang tapi uang ke teman saya gak masuk"; 4★ "Kok setiap verifikasi wajah gagal terus ya?" |
+| Rating 1★, isi positif/netral | 2 | 1★ "Tarifnya murah murah sekali siip terima kasih gojek.. semangat" |
+
+Dua puluh dua dari 24 kasus adalah pengguna yang memberi bintang tinggi sambil
+menulis keluhan. Pola ini punya penjelasan perilaku yang masuk akal: bintang
+diberikan untuk layanan secara keseluruhan atau sebagai niat baik, sementara
+kolom teks dipakai untuk menyampaikan satu keluhan spesifik. Konsekuensinya
+untuk penelitian ini langsung: **rating bintang bukan label sentimen teks yang
+sempurna, ia hanya proksi.**
+
+### 3.2 Bukti silang: model paling yakin justru ketika labelnya yang salah
+
+Persilangan kategori dengan jarak ke batas keputusan menghasilkan konfirmasi
+yang tidak dirancang sebelumnya:
+
+| Kategori | model ragu (<0,5) | model yakin (≥0,5) |
+|----------|-------------------|--------------------|
+| **Label keliru dari pengguna** | 8 | **16** |
+| Negasi kompleks | 9 | 1 |
+| Kegagalan preprocessing | 7 | 1 |
+| Terlalu pendek / ambigu | 0 | 3 |
+| Sarkasme / ironi | 2 | 0 |
+| Topik netral / off-topic | 1 | 1 |
+| Campur kode | 1 | 0 |
+| **Total** | **28** | **22** |
+
+**Dari 22 kesalahan berkeyakinan tinggi, 16 (72,7%) adalah label keliru.**
+Ketika model yakin dan "salah", umumnya modelnya yang benar dan bintangnya yang
+keliru. Sebaliknya, kesalahan yang benar-benar sulit — negasi kompleks (9 dari
+10) dan kegagalan preprocessing (7 dari 8) — hampir seluruhnya terjadi di dekat
+batas keputusan, yaitu model memang ragu.
+
+Ini pola yang tidak dapat dilihat dari metrik agregat mana pun, dan hanya muncul
+karena keyakinan model dicatat bersama kategori penyebab.
+
+### 3.3 Batas atas kinerja yang realistis pada dataset ini
+
+Bila 48% dari 1.040 kesalahan adalah label keliru, maka sekitar **499 baris
+(2,59%) dari 19.294 baris test membawa bintang yang bertentangan dengan
+teksnya.** Angka itu menggeser tolok ukurnya:
+
+| Besaran | Nilai |
+|---------|-------|
+| Akurasi `linear_svc_tuned` (`full`) | 0,9461 |
+| Estimasi derau label pada test set | 2,59% (95% CI Wilson: 1,88%–3,31%) |
+| **Plafon akurasi realistis** | **≈0,9741** (CI 0,9669–0,9812) |
+| Porsi plafon yang tercapai | **97,1%** |
+| Kesalahan yang benar-benar milik model | ≈541 baris (2,80% dari test) |
+
+**Angka 0,9461 karena itu harus dibaca relatif terhadap ≈0,974, bukan terhadap
+1,000.** Selisih yang tersisa untuk diperbaiki bukan 5,4 poin melainkan sekitar
+2,8 poin — dan sebagian darinya terdiri atas negasi kompleks dan sarkasme yang
+tidak terjangkau model *bag-of-words* mana pun.
+
+**Tiga kualifikasi yang harus menyertai angka ini, bukan disembunyikan:**
+
+1. Estimasi berasal dari sampel 50 baris. Selang kepercayaannya lebar
+   (34,8%–61,5% untuk proporsi salah-label), sehingga plafonnya pun sebuah
+   rentang, bukan satu angka.
+2. Sampel diambil **hanya dari baris yang salah diklasifikasikan**. Baris yang
+   salah label tetapi kebetulan diprediksi sesuai labelnya tidak terwakili,
+   sehingga 2,59% adalah **batas bawah** derau label pada test set.
+3. Penilaian "label keliru" adalah penilaian manusia atas teks, dan pada
+   beberapa kasus berbatasan dengan kategori "negasi kompleks" (ulasan
+   berpolaritas campuran seperti "Overall baik, saran hapus saja sistem order
+   gabungan"). Batas antar keduanya tidak tajam.
+
+### 3.4 Kegagalan preprocessing (16%) — kategori *actionable*, tetapi tidak menghasilkan iterasi
+
+Delapan kasus, dan rencana Fase 4 menetapkan kategori ini memicu kembali ke
+Fase 2 "bila jumlahnya signifikan". 16% terdengar signifikan, sehingga
+klaimnya diuji sebelum diputuskan.
+
+Token yang gagal dinormalisasi pada kedelapan kasus, beserta frekuensinya di
+seluruh 100.000 ulasan:
+
+| Token gagal | Seharusnya | Frekuensi korpus |
+|-------------|-----------|------------------|
+| `jngn` | jangan | 42 |
+| `gda` | tidak ada | 34 |
+| `mslh` | masalah | 16 |
+| `nggu` | tunggu | 15 |
+| `cba` | coba | 10 |
+| `agr` | agar | 4 |
+| `dzholim` | zalim | 1 |
+| `jaur` | jalur | 1 |
+| `yangBermamfaat` | yang bermanfaat | 1 |
+
+**Seluruhnya berjumlah ±124 kemunculan, yaitu 0,12% korpus.** Tidak ada satu
+pun pola bersama: setiap kasus adalah singkatan atau salah ketik idiosinkratik
+yang berbeda. Memperbaikinya berarti memperluas kamus slang satu entri per
+kasus, tanpa batas yang jelas kapan berhenti.
+
+Dua pemeriksaan tambahan menguatkan kesimpulan yang sama:
+
+- **`min_df=3` sudah menyaringnya lebih dulu.** Dari 21.302 token unik pada
+  `ulasan_clean`, **14.624 (68,7%) muncul di bawah 3 dokumen** dan karena itu
+  tidak pernah menjadi fitur. Sebagian besar salah ketik ini tidak pernah masuk
+  matriks TF-IDF sejak awal — pengaruhnya terhadap model sudah nol sebelum
+  diperbaiki.
+- **Pola `camelCase` tergabung bukan masalah sistematis.** Hanya 109 ulasan
+  (0,11%) mengandung pola itu, dan hampir seluruhnya berupa kapitalisasi acak
+  (`setiAp`, `keadaAn`, `mAhaL`) yang sudah tertangani *case-folding*. Kasus
+  kata benar-benar tergabung seperti `yangBermamfaat` langka.
+
+**Keputusan: tidak ada iterasi Fase 2 → Fase 4.** Kriteria "signifikan" tidak
+terpenuhi ketika diukur di tingkat korpus, dan bukan hanya di tingkat sampel
+50 baris. Yang dicatat sebagai keterbatasan: normalisasi slang menangani variasi
+**yang umum**, bukan ekor panjang salah ketik perorangan — dan satu kasus di
+antaranya (`jngn` → `jangan`) menghilangkan token negasi, sehingga jenis
+kegagalan ini dapat membalik polaritas, bukan sekadar melemahkannya.
+
+### 3.5 Yang diperkirakan besar tetapi ternyata kecil: sarkasme
+
+Taksonomi menempatkan sarkasme di urutan pertama, dan literatur analisis
+sentimen umumnya memperlakukannya sebagai penyebab utama. Pada sampel ini
+**sarkasme hanya 2 dari 50 (4%)** — "Anda semua adalah sapi perah kami" dan
+"Senang banget kasih driver jauh2". Campur kode bahkan lebih kecil lagi, 1 kasus.
+
+Yang justru dominan adalah dua hal yang jarang dibahas: derau label dari
+pengguna (48%) dan polaritas campuran dalam satu ulasan (20%). Pada ulasan
+aplikasi berbahasa Indonesia, **"bagus tapi..." jauh lebih sering menjadi
+sumber kesalahan daripada ironi.** Ini layak dinyatakan di pembahasan sebagai
+temuan tersendiri, karena ia bertentangan dengan dugaan awal yang membentuk
+taksonominya.
 
 ## 4. Apakah Taksonomi Ini Berlaku Lintas Model?
 
@@ -210,9 +327,10 @@ pipeline, tetapi menyembunyikannya juga tidak benar.
 pemicunya — "yang muncul artefak (nama orang, tanda baca, stopword yang lolos)"
 — tidak terpenuhi. Pipeline Fase 2 lulus uji interpretabilitas ini.
 
-*Satu-satunya jalur yang masih dapat memicu perbaikan Fase 2 adalah kategori
-`kegagalan_preprocessing` pada pemeriksaan manual H-7 (Bagian 3).* Pemeriksaan
-top-feature hanya melihat kata yang **bertahan** melewati pipeline; ia secara
-struktural tidak dapat memperlihatkan kata kunci yang **hilang** karena stemming
-atau stopword. Hanya pembacaan manual atas ulasan asli yang dapat menemukan itu,
-dan itulah salah satu alasan gerbang H-7 ada.
+Pemeriksaan top-feature hanya melihat kata yang **bertahan** melewati pipeline;
+ia secara struktural tidak dapat memperlihatkan kata kunci yang **hilang**
+karena stemming atau salah ketik. Jalur kedua itu ditutup oleh pemeriksaan
+manual H-7, dan hasilnya sejalan: kegagalan preprocessing memang ada (16% dari
+kesalahan) tetapi berupa ekor panjang salah ketik perorangan dengan jangkauan
+korpus 0,12%, bukan cacat sistematis — lihat Bagian 3.4. Kedua jalur pemeriksaan
+menyimpulkan hal yang sama, dan keduanya diperlukan untuk sampai ke sana.
