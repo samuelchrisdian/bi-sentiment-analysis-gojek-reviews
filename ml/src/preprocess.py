@@ -26,7 +26,9 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 from .config import load_config, resolve
 from .ingest import derive_versi_minor, load_raw
+from .emoji_map import EMOJI_MAP
 from .slang_dict import NOISE_TOKENS, SLANG_DICT
+from .stem_override import STEM_OVERRIDE
 from .stopwords import build_stopwords
 
 CFG = load_config()
@@ -48,6 +50,9 @@ STOPWORDS = build_stopwords()
 def bersihkan(teks: str) -> str:
     """Case folding sampai kolaps huruf berulang. Belum ditokenisasi."""
     t = teks.lower() if P["lowercase"] else teks
+    for emo, kata in EMOJI_MAP.items():          # sebelum non-ASCII dibuang
+        if emo in t:
+            t = t.replace(emo, f" {kata} ")
     if P["remove_url"]:
         t = RE_URL.sub(" ", t)
     t = RE_MENTION.sub(" ", t)
@@ -106,8 +111,18 @@ def _bangun_cache_stem(tokens_unik: set[str]) -> dict[str, str]:
     if P["stem_cache"] and cache_path.exists():
         cache = json.loads(cache_path.read_text(encoding="utf-8"))
 
+    # Override diterapkan TANPA memandang cache: entri lama yang terlanjur
+    # memuat hasil stem yang salah harus ditimpa, bukan dilewati.
+    ditimpa = sum(1 for w, v in STEM_OVERRIDE.items()
+                  if w in tokens_unik and cache.get(w) != v)
+    for w in tokens_unik & STEM_OVERRIDE.keys():
+        cache[w] = STEM_OVERRIDE[w]
+    if ditimpa:
+        print(f"        {ditimpa} entri cache ditimpa oleh STEM_OVERRIDE", flush=True)
+
     baru = tokens_unik - cache.keys()
     if not baru:
+        cache_path.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
         return cache
 
     kamus = set(StemmerFactory().get_words())

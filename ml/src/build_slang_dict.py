@@ -41,8 +41,25 @@ def main() -> None:
     peta = {r.token_asli: r.bentuk_baku.split()
             for r in d.itertuples() if r.bentuk_baku and r.token_asli not in buang}
 
+    # Tambahan hasil gerbang H-6: token yang diusulkan pemeriksa saat verifikasi
+    # 100 sampel. Sama seperti H-5, seluruh pemetaan berasal dari manusia.
+    tambahan = ROOT / "docs" / "tables" / "token_normalisasi_tambahan.csv"
+    n_tambahan = 0
+    if tambahan.exists():
+        t = pd.read_csv(tambahan, keep_default_na=False, encoding="utf-8-sig")
+        for r in t.itertuples():
+            tok, baku = str(r.token_asli).strip().lower(), str(r.bentuk_baku).strip().lower()
+            if tok and baku and tok not in buang:
+                peta[tok] = baku.split()
+                n_tambahan += 1
+        print(f"  tambahan H-6: {n_tambahan} pemetaan")
+
     lines = [HEADER, "SLANG_DICT: dict[str, list[str]] = {\n"]
-    for tok in sorted(peta, key=lambda t: (-int(d.loc[d.token_asli == t, "frekuensi"].iloc[0]), t)):
+    def _freq(t: str) -> int:
+        hit = d.loc[d.token_asli == t, "frekuensi"]
+        return int(hit.iloc[0]) if len(hit) else 0
+
+    for tok in sorted(peta, key=lambda t: (-_freq(t), t)):
         lines.append(f"    {tok!r}: {peta[tok]!r},\n")
     lines.append("}\n\nNOISE_TOKENS: frozenset[str] = frozenset({\n")
     for tok in buang:
