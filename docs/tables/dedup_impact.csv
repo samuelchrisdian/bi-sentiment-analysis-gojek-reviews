@@ -1,0 +1,6 @@
+model_name,tanpa_dedup,dengan_dedup,selisih
+complement_nb,0.906,0.9154,0.0094
+linear_svc,0.9291,0.9301,0.0009
+logistic_regression,0.9283,0.9336,0.0053
+majority_baseline,0.4196,0.4196,0.0
+multinomial_nb,0.9281,0.9279,-0.0002
