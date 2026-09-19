@@ -20,5 +20,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
+# `localhost` di alpine menempuh ::1 lebih dulu, sementara nginx hanya listen
+# di 0.0.0.0:80 — healthcheck lewat nama host selalu gagal meski situs normal.
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget -qO- http://localhost/ >/dev/null || exit 1
+  CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
