@@ -121,9 +121,18 @@ salah satu dari dua jalur di bawah. Setelah itu buka **http://localhost:5173**
 
 **Jalur cepat — restore dump (untuk demo):**
 
+`docs/db_dump.sql.gz` **tidak ikut di-commit** — isinya seluruh korpus, jadi
+diperlakukan sama dengan `data/raw/`. Minta berkasnya dari pemilik proyek, atau
+buat sendiri dari database yang sudah terisi (`docs/repro_test.md` §5). Setelah
+berkas ada di `docs/`:
+
 ```bash
 gunzip -c docs/db_dump.sql.gz | docker exec -i gojek_db psql -U gojek -d gojek_sentiment
 ```
+
+Dump ini memulihkan 100.000 ulasan, 500.000 baris skor, 52.998 penugasan topik,
+dan kedelapan materialized view dalam keadaan terisi — cukup untuk menjalankan
+seluruh dashboard tanpa menyentuh pipeline ML. 
 
 **Jalur lengkap — jalankan pipeline ML dari awal:** lihat bagian berikutnya.
 

@@ -17,6 +17,11 @@ venv/
 node_modules/
 web/dist/
 
+# Dump database: berisi seluruh korpus Kaggle, jadi diperlakukan sama dengan
+# data/raw/ — ada di disk untuk demo, tidak masuk riwayat git.
+# Cara membuat ulang: docs/repro_test.md §5
+docs/db_dump.sql.gz
+
 # Env & OS
 .env
 .DS_Store
