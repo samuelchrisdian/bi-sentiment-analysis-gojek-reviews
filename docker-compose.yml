@@ -17,5 +17,29 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build:
+      # Konteks = akar repo, bukan ./api: image perlu ml/src (pipeline
+      # preprocessing yang diimpor /predict) dan ml/config.yaml.
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: gojek_api
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      # Di dalam jaringan compose, db dihubungi lewat port INTERNAL 5432 —
+      # 5433 di atas hanya pemetaan ke host.
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-gojek}:${POSTGRES_PASSWORD:-gojek}@db:5432/${POSTGRES_DB:-gojek_sentiment}
+      ARTIFACTS_DIR: /app/ml/artifacts
+    volumes:
+      # Read-only: artefak dibuat oleh pipeline Fase 2–4 di host, API hanya
+      # membacanya. stem_cache.json ikut di-mount agar /predict tidak
+      # menjalankan Sastrawi dari nol untuk kata yang sudah pernah di-stem.
+      - ./ml/artifacts:/app/ml/artifacts:ro
+      - ./data/processed:/app/data/processed:ro
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
 volumes:
   pgdata:

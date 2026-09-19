@@ -1,3 +1,10 @@
+# Fase 7 — dependensi API.
+#
+# Blok kedua DIKUNCI IDENTIK dengan ml/requirements.txt. Artefak .joblib
+# dibuat oleh versi-versi itu; meng-unpickle dengan versi lain dapat gagal
+# keras, atau — lebih berbahaya — berhasil dengan perilaku yang berbeda diam-diam.
+# Perubahan apa pun di ml/requirements.txt harus diikuti di sini.
+
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 SQLAlchemy==2.0.32
@@ -5,5 +12,12 @@ psycopg2-binary==2.9.9
 pydantic==2.9.2
 pydantic-settings==2.5.2
 python-dotenv==1.0.1
+
+# --- identik dengan ml/requirements.txt ---
+scikit-learn==1.5.1
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2        # ml.src.preprocess & ml.src.ingest mengimpornya
 joblib==1.4.2
-scikit-learn==1.5.1   # WAJIB identik dengan ml/requirements.txt
+Sastrawi==1.0.1      # stemming /predict untuk kata di luar cache
+pyyaml==6.0.2        # loader ml/config.yaml

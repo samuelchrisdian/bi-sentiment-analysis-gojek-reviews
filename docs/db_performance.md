@@ -135,3 +135,23 @@ kebijakan proyek (Fase 5, opsi A) untuk melaporkan hasil aktual, bukan
 menyesuaikannya ke angka dokumen lama. `docs/data_contract.md` dan rencana
 Fase 7–8 perlu diperbarui ke **63 versi / 97,1% cakupan** sebelum dipakai
 sebagai acuan DoD.
+
+---
+
+## Adendum Fase 7 — view tambahan
+
+Fase 7 menambahkan lima materialized view lewat `ml/sql/003_api_views.sql`:
+`review_kategori`, `agg_kategori`, `agg_weekly`, `agg_monthly_aktual`, dan
+`agg_meta`. Alasan serta pengukurannya ada di `docs/api_test_log.md` §1 dan
+§7.3.
+
+Prinsip berkas ini tidak berubah: tidak ada endpoint yang mengagregasi
+`reviews`/`review_scores` mentah saat request. Yang bertambah hanyalah
+kewajiban `REFRESH` — kelima view baru ikut basi setiap kali `reviews`,
+`review_scores`, atau `review_topics` berubah, sama seperti `agg_monthly` dan
+`agg_version`.
+
+Satu pengecualian yang disengaja: `/api/topics/{id}/reviews` menyentuh tabel
+`reviews` mentah, karena drill-down memang harus mengambil teks ulasan satu per
+satu. Pengambilannya lewat primary key untuk paling banyak 100 baris per
+halaman — 9,3 ms p50, diukur di container.

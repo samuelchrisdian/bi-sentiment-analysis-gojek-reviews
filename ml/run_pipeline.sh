@@ -30,6 +30,10 @@ python -m ml.src.score
 python -m ml.src.load_scores
 python -m ml.src.load_metrics
 
-psql "$PSQL_DSN" -f ml/sql/002_matviews.sql
+psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -f ml/sql/002_matviews.sql
+# View Fase 7 (kategori, pekanan, metadata cakupan). Dijalankan SETELAH 002:
+# keduanya membaca review_scores yang sama, dan berkas ini mengandaikan
+# review_topics sudah terisi oleh topic_assign di atas.
+psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -f ml/sql/003_api_views.sql
 
 echo "Pipeline selesai."

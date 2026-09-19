@@ -270,6 +270,61 @@ def sampel_verifikasi(df: pd.DataFrame, n: int = 100) -> pd.DataFrame:
     return s
 
 
+# ----------------------------------------------------- inferensi satuan ---
+# Dipakai oleh `api/ml_service.py` (Fase 7, T-7.2). Sengaja ditempatkan di
+# modul yang sama dengan pipeline pelatihan, bukan ditulis ulang di sisi API:
+# pipeline yang berbeda antara pelatihan dan inferensi adalah kelas bug yang
+# tidak memunculkan error, hanya prediksi yang pelan-pelan salah.
+#
+# Satu-satunya perbedaan yang disengaja terhadap `jalankan()` adalah sumber
+# hasil stemming. `jalankan()` membangun cache dari SELURUH kata unik korpus;
+# di sini kata yang belum ada di cache di-stem langsung oleh Sastrawi. Untuk
+# kata yang ada di cache hasilnya identik menurut konstruksi — cache itu memang
+# keluaran stemmer yang sama.
+
+_stemmer_inferensi = None
+_cache_inferensi: dict[str, str] | None = None
+
+
+def _muat_cache_inferensi() -> dict[str, str]:
+    """Cache stem korpus + STEM_OVERRIDE; override menang, seperti di `jalankan()`."""
+    global _cache_inferensi
+    if _cache_inferensi is None:
+        path = resolve(CFG, "paths.processed_dir") / "stem_cache.json"
+        cache = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        cache.update(STEM_OVERRIDE)
+        _cache_inferensi = cache
+    return _cache_inferensi
+
+
+def stem_kata(w: str) -> str:
+    global _stemmer_inferensi
+    cache = _muat_cache_inferensi()
+    if w in cache:
+        return cache[w]
+    if _stemmer_inferensi is None:
+        _stemmer_inferensi = StemmerFactory().create_stemmer()
+    cache[w] = _stemmer_inferensi.stem(w)      # kata baru ikut di-cache in-memory
+    return cache[w]
+
+
+def praproses_satu(teks: str) -> dict[str, str]:
+    """Pipeline Fase 2 untuk SATU teks. Mengembalikan dua kolom yang sama.
+
+    Urutan operasinya mengikuti `jalankan()` tahap demi tahap; lihat docstring
+    modul untuk urutan lengkapnya.
+    """
+    tokens = normalisasi_token(bersihkan_adaptif(str(teks)).split())
+    normalized = " ".join(tokens)
+
+    tanpa_stop = ([t for t in tokens if t not in STOPWORDS]
+                  if P["remove_stopwords"] else tokens)
+    clean = (" ".join(stem_kata(t) for t in tanpa_stop) if P["stemming"]
+             else " ".join(tanpa_stop))
+
+    return {"ulasan_normalized": normalized, "ulasan_clean": clean}
+
+
 def simpan(df: pd.DataFrame) -> None:
     path = resolve(CFG, "paths.clean_parquet")
     path.parent.mkdir(parents=True, exist_ok=True)
