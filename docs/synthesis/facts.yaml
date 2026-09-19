@@ -1,0 +1,609 @@
+meta:
+  dihasilkan_oleh: python -m ml.src.collect_facts
+  fase: fase-10
+  aturan: Seluruh nilai dihitung ulang dari docs/tables/*.csv dan ml/artifacts/reports/*.json. Angka yang
+    tidak ada di berkas ini tidak boleh muncul di naskah.
+  prasyarat: Seksi preprocessing dihitung dari data/processed/reviews_clean.parquet yang tidak ikut di-commit;
+    jalankan ./ml/run_pipeline.sh lebih dulu pada klon bersih.
+dataset:
+  n_baris: 100000
+  n_kolom_csv: 10
+  n_kolom_analisis: 6
+  periode_awal: '2024-05-21'
+  periode_akhir: '2025-12-31'
+  n_bulan: 20
+  sha256: 9b7f8e50737f9f17bce4ab8a44f7d2f8587deea86c6ad175e2579932cc22b524
+  missing_versi_app: 21910
+  pct_missing_versi_app: 21.9
+  n_versi_unik: 291
+  n_versi_min100: 66
+  ulasan_tercakup_min100: 75247
+  pct_cakupan_versi_min100: 96.4
+  duplikat_baris_penuh: 0
+  duplikat_teks: 32101
+  pct_duplikat_teks: 32.1
+  pct_likes_nol: 83.7
+  likes_maks: 2904
+  berkas_sumber: ulasan_com.gojek.app.csv
+  source_table: docs/tables/profil_dataset.csv
+distribusi_rating:
+  bintang_1:
+    n: 23178
+    pct: 23.2
+  bintang_2:
+    n: 3554
+    pct: 3.6
+  bintang_3:
+    n: 3534
+    pct: 3.5
+  bintang_4:
+    n: 5083
+    pct: 5.1
+  bintang_5:
+    n: 64651
+    pct: 64.7
+  pct_ekstrem_1_dan_5: 87.9
+  pct_tengah_2_3_4: 12.2
+  n_negatif_1_2: 26732
+  n_positif_4_5: 69734
+  source_table: docs/tables/distribusi_rating.csv
+asimetri_panjang:
+  rata_kata_per_rating:
+    r1: 20.8
+    r2: 22.4
+    r3: 20.0
+    r4: 10.0
+    r5: 4.4
+  median_kata_per_rating:
+    r1: 15.0
+    r2: 17.0
+    r3: 15.0
+    r4: 4.0
+    r5: 2.0
+  n_ulasan_max_2_kata: 39859
+  pct_ulasan_max_2_kata: 39.9
+  n_ulasan_min_5_kata: 45685
+  pct_ulasan_min_5_kata: 45.7
+  duplikat_teks_negatif: 546
+  pct_duplikat_negatif: 2.0
+  duplikat_teks_positif: 31214
+  pct_duplikat_positif: 44.8
+  pct_le2kata_negatif: 6.0
+  pct_le2kata_positif: 54.4
+  teks_terulang_teratas: Mantap
+  frekuensi_teks_terulang_teratas: 2063
+  source_table: docs/tables/panjang_per_rating.csv
+komposisi_kelas:
+  n_negatif: 26732
+  n_positif: 69734
+  n_netral_dibuang: 3534
+  pct_netral: 3.5
+  n_dipakai_biner: 96466
+  pct_negatif_biner: 27.7
+  pct_positif_biner: 72.3
+  rasio_netral_positif: 19.7
+  source_table: docs/tables/komposisi_kelas.csv
+preprocessing:
+  n_baris: 100000
+  teks_kosong_akhir: 237
+  pct_teks_kosong_akhir: 0.2
+  n_entri_slang: 572
+  n_entri_slang_multikata: 45
+  n_negation_keep: 24
+  n_sampel_verifikasi_manual: 275
+  n_putaran_verifikasi: 3
+  dok_tidak: 19444
+  dok_tidak_bisa: 4849
+  dok_tidak_ada: 4014
+  dok_jangan: 1820
+  source_table: data/processed/reviews_clean.parquet
+model:
+  n_train: 45614
+  n_train_sebelum_dedup: 77172
+  n_test: 19294
+  n_test_informative: 8696
+  baseline:
+    macro_f1_full: 0.4196
+    accuracy_full: 0.7229
+    pct_accuracy_full: 72.3
+    macro_f1_informative: 0.3173
+  varian:
+    complement_nb:
+      default:
+        full:
+          macro_f1: 0.9154
+          recall_neg: 0.9557
+          precision_neg: 0.8181
+          f1_neg: 0.8816
+          accuracy: 0.9288
+          n_eval: 19294
+        informative:
+          macro_f1: 0.8986
+          recall_neg: 0.9716
+          precision_neg: 0.8605
+          f1_neg: 0.9127
+          accuracy: 0.9005
+          n_eval: 8696
+      tuned:
+        full:
+          macro_f1: 0.9153
+          recall_neg: 0.9553
+          precision_neg: 0.8182
+          f1_neg: 0.8814
+          accuracy: 0.9288
+          n_eval: 19294
+        informative:
+          macro_f1: 0.8987
+          recall_neg: 0.9714
+          precision_neg: 0.8608
+          f1_neg: 0.9128
+          accuracy: 0.9006
+          n_eval: 8696
+        train_seconds: 1.19
+    multinomial_nb:
+      default:
+        full:
+          macro_f1: 0.9279
+          recall_neg: 0.94
+          precision_neg: 0.859
+          f1_neg: 0.8977
+          accuracy: 0.9406
+          n_eval: 19294
+        informative:
+          macro_f1: 0.8991
+          recall_neg: 0.9613
+          precision_neg: 0.8676
+          f1_neg: 0.912
+          accuracy: 0.9008
+          n_eval: 8696
+      tuned:
+        full:
+          macro_f1: 0.9296
+          recall_neg: 0.9428
+          precision_neg: 0.861
+          f1_neg: 0.9
+          accuracy: 0.942
+          n_eval: 19294
+        informative:
+          macro_f1: 0.9016
+          recall_neg: 0.9635
+          precision_neg: 0.8697
+          f1_neg: 0.9142
+          accuracy: 0.9032
+          n_eval: 8696
+        train_seconds: 1.22
+    linear_svc:
+      default:
+        full:
+          macro_f1: 0.9301
+          recall_neg: 0.9168
+          precision_neg: 0.8831
+          f1_neg: 0.8996
+          accuracy: 0.9433
+          n_eval: 19294
+        informative:
+          macro_f1: 0.9
+          recall_neg: 0.9332
+          precision_neg: 0.8876
+          f1_neg: 0.9098
+          accuracy: 0.901
+          n_eval: 8696
+      tuned:
+        full:
+          macro_f1: 0.9341
+          recall_neg: 0.937
+          precision_neg: 0.8769
+          f1_neg: 0.906
+          accuracy: 0.9461
+          n_eval: 19294
+        informative:
+          macro_f1: 0.9066
+          recall_neg: 0.957
+          precision_neg: 0.8811
+          f1_neg: 0.9175
+          accuracy: 0.9079
+          n_eval: 8696
+        train_seconds: 1.44
+    logistic_regression:
+      default:
+        full:
+          macro_f1: 0.9336
+          recall_neg: 0.9316
+          precision_neg: 0.8802
+          f1_neg: 0.9051
+          accuracy: 0.9459
+          n_eval: 19294
+        informative:
+          macro_f1: 0.9078
+          recall_neg: 0.9536
+          precision_neg: 0.8851
+          f1_neg: 0.9181
+          accuracy: 0.9089
+          n_eval: 8696
+      tuned:
+        full:
+          macro_f1: 0.9338
+          recall_neg: 0.9267
+          precision_neg: 0.8845
+          f1_neg: 0.9051
+          accuracy: 0.9461
+          n_eval: 19294
+        informative:
+          macro_f1: 0.9071
+          recall_neg: 0.9452
+          precision_neg: 0.8899
+          f1_neg: 0.9167
+          accuracy: 0.9081
+          n_eval: 8696
+        train_seconds: 1.57
+  source_table: docs/tables/model_metrics.csv
+  rentang_macro_f1_tuned:
+    tertinggi: 0.9341
+    tertinggi_model: linear_svc
+    terendah: 0.9153
+    terendah_model: complement_nb
+    rentang_poin: 1.88
+    selisih_dua_teratas_poin: 0.03
+    selisih_dua_teratas_baris: 6
+  produksi:
+    nama: logistic_regression
+    parameter: C=1.0, class_weight=balanced
+    full:
+      macro_f1: 0.9336
+      recall_neg: 0.9315
+      precision_neg: 0.8802
+      f1_neg: 0.9051
+      accuracy: 0.9459
+      n_eval: 19294
+    informative:
+      macro_f1: 0.9078
+      recall_neg: 0.9536
+      precision_neg: 0.8851
+      f1_neg: 0.9181
+      accuracy: 0.9089
+      n_eval: 8696
+    recall_pos_full: 0.9514
+    precision_pos_full: 0.9732
+    selisih_macro_f1_poin: 2.59
+    selisih_accuracy_poin: 3.7
+    selisih_recall_neg_poin: 2.2
+    unggul_baseline_poin: 51.41
+tuning:
+  n_kombinasi: 24
+  n_fit: 120
+  cv_folds: 5
+  linear_svc:
+    cv_macro_f1: 0.9099
+    std: 0.0022
+    overfit_gap: 0.0226
+    train_score_c5: 0.9932
+    cv_score_c5: 0.8879
+    overfit_gap_c5: 0.1052
+  logistic_regression:
+    cv_macro_f1_c5: 0.908486
+    cv_macro_f1_c1: 0.908341
+    std_c5: 0.003017
+    std_c1: 0.001703
+    selisih_cv: 0.00015
+    overfit_gap_c5: 0.0499
+    overfit_gap_c1: 0.0221
+  seleksi_1se:
+    complement_nb:
+      pemenang_grid: '{''alpha'': 0.5}'
+      pilihan_1se: '{''alpha'': 1.0}'
+      n_kandidat: 3
+      overfit_gap_1se: 0.0178
+      sama_dengan_grid: false
+    multinomial_nb:
+      pemenang_grid: '{''alpha'': 0.5}'
+      pilihan_1se: '{''alpha'': 2.0}'
+      n_kandidat: 4
+      overfit_gap_1se: 0.0146
+      sama_dengan_grid: false
+    linear_svc:
+      pemenang_grid: '{''C'': 0.1, ''class_weight'': ''balanced''}'
+      pilihan_1se: '{''C'': 0.1, ''class_weight'': ''balanced''}'
+      n_kandidat: 3
+      overfit_gap_1se: 0.0226
+      sama_dengan_grid: true
+    logistic_regression:
+      pemenang_grid: '{''C'': 5.0, ''class_weight'': ''balanced''}'
+      pilihan_1se: '{''C'': 1.0, ''class_weight'': ''balanced''}'
+      n_kandidat: 4
+      overfit_gap_1se: 0.0221
+      sama_dengan_grid: false
+  gridsearch_seconds_total: 39.8
+  source_table: docs/tables/gridsearch_results.csv
+analisis_kesalahan:
+  n_sampel: 50
+  n_salah_linear_svc_tuned: 1040
+  pct_salah_linear_svc_tuned: 5.39
+  kategori:
+    label_keliru_pengguna: 24
+    negasi_kompleks: 10
+    kegagalan_preprocessing: 8
+    terlalu_pendek_ambigu: 3
+    sarkasme_ironi: 2
+    topik_netral_offtopic: 2
+    campur_kode: 1
+  pct_kategori:
+    label_keliru_pengguna: 48.0
+    negasi_kompleks: 20.0
+    kegagalan_preprocessing: 16.0
+    terlalu_pendek_ambigu: 6.0
+    sarkasme_ironi: 4.0
+    topik_netral_offtopic: 4.0
+    campur_kode: 2.0
+  n_label_keliru: 24
+  pct_label_keliru: 48.0
+  n_fp_sampel: 34
+  n_fp_label_keliru: 22
+  pct_fp_label_keliru: 64.7
+  n_fn_sampel: 16
+  n_fn_label_keliru: 2
+  pct_fn_label_keliru: 12.5
+  n_kesalahan_yakin: 22
+  n_yakin_label_keliru: 16
+  pct_yakin_label_keliru: 72.7
+  n_kesalahan_ragu: 28
+  derau_label_n: 499
+  derau_label_pct: 2.59
+  plafon_akurasi: 0.9741
+  pct_plafon_tercapai: 97.1
+  sisa_perbaikan_poin: 2.82
+  source_table: docs/tables/error_analysis_50_reviewed.csv
+tiga_kelas:
+  macro_f1: 0.647
+  macro_f1_biner_pembanding: 0.9341
+  penurunan_poin: 28.7
+  accuracy: 0.9021
+  recall_negatif: 0.8949
+  penurunan_recall_neg_poin: 4.2
+  recall_netral: 0.1103
+  recall_positif: 0.9449
+  n_train: 48156
+  n_test: 20000
+  n_netral_train: 2595
+  n_netral_test: 707
+  netral_jadi_negatif: 474
+  pct_netral_jadi_negatif: 67.0
+  netral_jadi_netral: 78
+  pct_netral_jadi_netral: 11.0
+  netral_jadi_positif: 155
+  pct_netral_jadi_positif: 21.9
+  rasio_netral_positif_test: 19.7
+  panjang_negatif: 21.46
+  panjang_netral: 19.76
+  panjang_positif: 4.94
+  source_table: ml/artifacts/reports/three_class_linear_svc.json
+fitur:
+  n_fitur_per_kelas: 20
+  teratas_negatif:
+  - tidak
+  - buruk
+  - jelek
+  - tolol
+  - parah
+  - batal
+  - sampah
+  - tidak ramah
+  - iklan
+  - malah
+  teratas_positif:
+  - bagus
+  - mantap
+  - mudah
+  - bantu
+  - sangat bantu
+  - keren
+  - tidak ribet
+  - oke
+  - terbaik
+  - cepat
+  source_table: docs/tables/top_features.csv
+topik:
+  n_kategori: 9
+  n_penetapan_kategori: 52998
+  lda_k: 9
+  coherence_cv: 0.5763
+  peringkat:
+  - peringkat: 1
+    kategori: Ketersediaan & Respons Mitra Driver
+    n: 9663
+    pct_negatif: 36.15
+    total_likes: 25913
+    rata_likes: 2.68
+    peringkat_likes: 2
+  - peringkat: 2
+    kategori: Pesanan GoFood & Pembatalan
+    n: 9155
+    pct_negatif: 34.25
+    total_likes: 27805
+    rata_likes: 3.04
+    peringkat_likes: 1
+  - peringkat: 3
+    kategori: Tarif, Ongkir & Promo
+    n: 6939
+    pct_negatif: 25.96
+    total_likes: 17754
+    rata_likes: 2.56
+    peringkat_likes: 4
+  - peringkat: 4
+    kategori: Layanan Pelanggan & Penanganan Keluhan
+    n: 6916
+    pct_negatif: 25.87
+    total_likes: 20941
+    rata_likes: 3.03
+    peringkat_likes: 3
+  - peringkat: 5
+    kategori: Transaksi & Saldo GoPay
+    n: 4874
+    pct_negatif: 18.23
+    total_likes: 11869
+    rata_likes: 2.44
+    peringkat_likes: 8
+  - peringkat: 6
+    kategori: GoPayLater, GoPinjam & Penagihan
+    n: 4786
+    pct_negatif: 17.9
+    total_likes: 12657
+    rata_likes: 2.65
+    peringkat_likes: 6
+  - peringkat: 7
+    kategori: Performa & Gangguan Aplikasi
+    n: 4479
+    pct_negatif: 16.76
+    total_likes: 15321
+    rata_likes: 3.42
+    peringkat_likes: 5
+  - peringkat: 8
+    kategori: Akurasi Lokasi & Rute
+    n: 3138
+    pct_negatif: 11.74
+    total_likes: 12086
+    rata_likes: 3.85
+    peringkat_likes: 7
+  - peringkat: 9
+    kategori: Akun, Login & Verifikasi
+    n: 3048
+    pct_negatif: 11.4
+    total_likes: 8037
+    rata_likes: 2.64
+    peringkat_likes: 9
+  dua_teratas_pct: 70.4
+  n_ulasan_negatif: 26732
+  kutipan:
+  - kategori: Ketersediaan & Respons Mitra Driver
+    nomor: 1
+    teks: tolong fitur pencarian drivernya segera diperbaiki, setiap kali memesan selalu saja dapat driver
+      yang lokasinya terlampau jauh, padahal dilokasi pemesanan banyak sekali driver yang lebih dekat,
+      tapi selalu saja malah dapet driver yang kejauhan.
+    likes: 190
+  - kategori: Ketersediaan & Respons Mitra Driver
+    nomor: 2
+    teks: Dapat driver selalu jauh, padahal ada yang dekat, pakai fitur prioritas tidak ngaruh, sekalinya
+      dapet di cancel, nyoba aplikasi ijo sebelah malah langsung dapat ngak kebanyakan drama
+    likes: 54
+  - kategori: Pesanan GoFood & Pembatalan
+    nomor: 1
+    teks: Kecewa berkali2 sama gojek, pesen makan ga dapet dapet driver padahal tempat saya dan makanannya
+      strategis dan tetap berkali kali ngga dapet driver padahal sudah coba pakai mode reguler dan mode
+      cepat tapi tetap ga ada hasil. Tolong di tingkatkan lagi lah
+    likes: 216
+  - kategori: Pesanan GoFood & Pembatalan
+    nomor: 2
+    teks: sudah di tunggu sejam lebih malah di cancel go-food saya!
+    likes: 168
+  - kategori: Tarif, Ongkir & Promo
+    nomor: 1
+    teks: pesanan gomart ada item yang tidak ada. langsung dikurangin di harga. kemudian promo langsung
+      tidak terpasang. tidak ada d infokan promo gratis ongkirnya bakalan hilang. telpon ke gojek JKT
+      jg TDK ad penyelesaian. padahal dari toko yang tidak ada produknya.
+    likes: 39
+  - kategori: Tarif, Ongkir & Promo
+    nomor: 2
+    teks: Pakai gojek plus g sampai yang 3 bulanan gk ada bedanya dengan gk pakai. Tarifnya sama aja,
+      vouchernya pada kemana dah katanyaa bakal lebih murah ternyata sama aja harganya.
+    likes: 22
+  ngram_pengemudi:
+    frekuensi: 14031
+    n_dokumen: 8838
+    pct_dokumen: 38.0
+  ngram_dapat_pengemudi:
+    frekuensi: 2415
+    n_dokumen: 2055
+    pct_dokumen: 8.8
+  ngram_tidak:
+    frekuensi: 22681
+    n_dokumen: 13703
+    pct_dokumen: 59.0
+  source_table: docs/tables/topics_ranked.csv
+validasi_silang:
+  n_sampel: 50
+  cohen_kappa: 0.4621
+  kesepakatan_longgar: 0.84
+  pct_kesepakatan_longgar: 84.0
+  kesepakatan_ketat: 0.52
+  pct_kesepakatan_ketat: 52.0
+  jaccard_rerata: 0.4967
+  source_table: docs/tables/h9_hasil_kesepakatan.csv
+tren:
+  n_bulan: 20
+  volume_tertinggi_bulan: 2024-07
+  volume_tertinggi: 6641
+  volume_terendah_bulan: 2025-08
+  volume_terendah: 3620
+  rata_rating_awal: 3.93
+  rata_rating_akhir: 3.57
+  puncak_kategori: Pesanan GoFood & Pembatalan
+  puncak_bulan: 2025-04
+  puncak_jumlah: 833
+  tarif_des2024: 572
+  tarif_des2025: 259
+  tarif_penurunan_pct: 54.7
+  source_table: docs/tables/topic_trend_monthly.csv
+angka_struktural:
+  penjelasan: Angka yang muncul di naskah sebagai penomoran, tahun, atau parameter konfigurasi — bukan
+    hasil pengukuran. Didaftarkan eksplisit agar verify_manuscript.py tidak menganggapnya angka tanpa
+    sumber.
+  penomoran_bagian:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  tahun:
+  - 1977
+  - 1984
+  - 2024
+  - 2025
+  - 2026
+  konfigurasi:
+    seed: 42
+    tfidf_ngram_min: 1
+    tfidf_ngram_max: 2
+    tfidf_min_df: 3
+    tfidf_max_features: 30000
+    test_size: 0.2
+    pct_train: 80
+    pct_test: 20
+    informative_min_words: 5
+    C_produksi: 1.0
+    C_grid:
+    - 0.1
+    - 0.5
+    - 1.0
+    - 5.0
+    alpha_grid:
+    - 0.1
+    - 0.5
+    - 1.0
+    - 2.0
+    n_top_features: 20
+    n_top_terms_lda: 20
+    lda_k_min: 5
+    lda_k_max: 12
+    min_reviews_per_version: 100
+    python: 3.12
+    postgres: 16
+    n_container: 3
+    n_endpoint_api: 7
+    n_komponen_dashboard: 7
+    n_gambar: 15
+    ambang_1se: 1
