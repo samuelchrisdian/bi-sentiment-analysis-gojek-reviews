@@ -367,3 +367,97 @@ Contoh dipilih dengan dua kriteria berurutan:
    satu pun dengan baik.
 2. **Likes tertinggi** di antara yang eksklusif, panjang 40–300 karakter agar
    dapat dikutip utuh.
+
+## 11. Validasi Silang (H-9)
+
+Penilai: **Samuel Chrisdian** (pemilik proyek), 19 September 2026. 50 ulasan
+negatif acak (`random_state=42`) dilabeli tanpa melihat keluaran pipeline.
+
+Yang dibandingkan adalah **hasil penetapan otomatis** pendekatan A — bukan skema
+H-8 di atas kertas. Ini pilihan yang disengaja: yang perlu divalidasi adalah
+kategorisasi yang benar-benar masuk `review_topics`, dashboard, dan Tabel 3.
+Membandingkan dengan skema saja hanya menguji konsistensi penamaan.
+
+| Metrik | Nilai | Membandingkan |
+|--------|-------|---------------|
+| **Cohen's κ** | **0,4621** — *moderate* | kategori utama penilai vs kategori otomatis berbobot tertinggi |
+| Kesepakatan longgar | 84,0% | kategori utama penilai ada di dalam himpunan otomatis |
+| Kesepakatan ketat | 52,0% | kecocokan persis label tunggal |
+| Jaccard rerata | 0,4967 | {kolom 1, kolom 2} vs seluruh himpunan otomatis |
+
+κ = 0,4621 berada di rentang *moderate* menurut Landis & Koch (1977), **bukan
+tinggi.** Angka itu dilaporkan apa adanya. Yang mengubah pelabelan dari
+"subjektif" menjadi "subjektif tetapi terukur" bukan besar angkanya, melainkan
+keberadaannya.
+
+### 11.1 Validasi menemukan cacat nyata — dan itu memang gunanya
+
+Ketidaksepakatan tidak tersebar merata. Delapan dari sembilan kategori berada di
+67–100%; **Akurasi Lokasi & Rute gagal total: 0 dari 3, Jaccard 0,000.**
+
+Penyebabnya terdiagnosis sampai akar, bukan diduga. Kata kunci kategori itu —
+`titik, jalan, alamat, sesuai, motor, tuju, rumah, barang, nyaman, bawa` —
+tidak memuat satu pun istilah yang paling jelas menandakannya:
+
+| Istilah | Frekuensi korpus negatif | Peringkat relevance topik 6 | Jadi kata kunci? |
+|---------|--------------------------|------------------------------|------------------|
+| `lokasi` | 497 | #15 | ❌ |
+| `peta` | 265 | #19 | ❌ |
+| `map` | 254 | #13 | ❌ |
+| `gps` | 51 | — | ❌ |
+
+Ketiga ulasan yang tidak disepakati persis bertipe ini — *"Maps tidak akurat"*,
+*"Maps ngawur parah."*, *"Gajelas gocek masa maps ga terdetek"* — dan seluruhnya
+**tidak memperoleh kategori apa pun** dari penetapan otomatis.
+
+Keempat istilah itu **lolos seluruh saringan kualitas** (`MAX_DF_KORPUS`,
+`MIN_LIFT`). Yang menyingkirkannya semata-mata batas `N_KATA_KUNCI = 10`, yang
+ditetapkan sembarang karena DoD hanya menuntut ≥5 kata kunci per kategori.
+
+Ini persis jenis cacat yang tidak dapat ditemukan metrik agregat mana pun.
+Cakupan 87,62% tampak sehat; kesesuaian A vs B 79,02% tampak meyakinkan.
+Keduanya tidak memperlihatkan bahwa satu kategori kehilangan kosakata intinya,
+karena kedua angka itu dihitung dari pipeline yang sama yang mengandung cacatnya.
+**Hanya penilaian manusia independen yang dapat menemukannya.**
+
+### 11.2 Besaran dampak, diukur bukan dikira
+
+Dampak di tingkat korpus lebih kecil daripada kesan yang ditimbulkan sampel:
+
+| Besaran | Nilai |
+|---------|-------|
+| Ulasan negatif menyebut `peta`/`lokasi`/`gps` | 771 |
+| Di antaranya **tanpa kategori apa pun** | **59 (7,7%)** |
+| Porsi dari seluruh korpus negatif | 0,22% |
+
+Sampel 50 kebetulan menarik tiga ulasan pendek yang isinya hanya kata tersebut,
+sehingga kegagalannya tampak total. Pada ulasan yang lebih panjang, kata lain
+(`titik`, `alamat`, `jalan`) tetap menangkapnya.
+
+### 11.3 Mengapa cacat ini tidak diperbaiki di Fase 5
+
+Memperbaiki kata kunci berdasarkan temuan di atas **membatalkan κ = 0,4621
+sebagai validasi versi yang diperbaiki** — parameternya akan disetel memakai
+sampel yang sama yang dipakai mengukurnya. Perbaikan yang sah menuntut sampel
+validasi baru dengan `random_state` berbeda.
+
+Keputusan pemilik proyek: **laporkan apa adanya.** κ = 0,4621 sah sebagai
+validasi versi pipeline yang benar-benar diuji, dan dilaporkan sebagai itu.
+Perbaikannya (menaikkan `N_KATA_KUNCI` secara global) tercatat sebagai
+rekomendasi, bukan dieksekusi diam-diam.
+
+> ### 📌 Catatan untuk Fase 9 — `docs/limitations.md`
+>
+> Tiga butir dari fase ini masuk bab Keterbatasan:
+>
+> 1. **Kesepakatan penilai moderate (κ = 0,46), bukan tinggi.** Pelabelan topik
+>    tetap mengandung subjektivitas yang terukur, dan divalidasi oleh **satu**
+>    penilai — bukan dua penilai independen.
+> 2. **Kategori "Akurasi Lokasi & Rute" kehilangan kosakata intinya**
+>    (`lokasi`, `peta`, `map`, `gps`) akibat batas `N_KATA_KUNCI = 10`.
+>    Terukur: 59 ulasan (7,7% dari yang bermuatan istilah itu) tidak
+>    terkategorikan. Perbaikannya diketahui — naikkan batas secara global —
+>    tetapi menuntut validasi ulang dengan sampel baru.
+> 3. **12,38% ulasan negatif tidak memperoleh kategori apa pun** (3.310 dari
+>    26.732), sebagian besar karena terlalu pendek atau memakai kosakata di luar
+>    daftar kata kunci.
