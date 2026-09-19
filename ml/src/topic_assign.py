@@ -455,3 +455,103 @@ if __name__ == "__main__":
     print("\nDisimpan: docs/tables/{topic_keywords,topics_ranked,topic_trend_monthly,"
           "tabel3_storytelling_topik}.csv")
     print("          data/processed/topics.parquet, docs/figures/gambar-09-peringkat-topik.png")
+
+
+def sampel_validasi_silang(n: int = 50) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Berkas gerbang H-9 — validasi silang.
+
+    Berkas penilai memuat TEKS ULASAN ASLI SAJA. Tidak ada label, tidak ada
+    kategori hasil H-8, tidak ada skor topik, dan urutan barisnya tidak
+    mengikuti apa pun yang dapat membocorkan penetapan otomatis. Penilai yang
+    melihat label yang sudah ada tidak lagi menilai secara independen, dan skor
+    kesepakatan yang dihasilkan menjadi tidak bermakna.
+
+    Kunci jawabannya disimpan terpisah (`_kunci`), tidak diserahkan ke penilai.
+    """
+    df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
+    neg = df[df["sentimen_aktual"] == 0]
+    sampel = neg.sample(n, random_state=CFG["seed"]).sort_index()
+
+    penilai = pd.DataFrame({
+        "no": range(1, len(sampel) + 1),
+        "review_id": sampel["id"].to_numpy(),
+        "ulasan": sampel["ulasan"].str.replace("\n", " ").str.strip().to_numpy(),
+        "kategori_penilai_1": "",     # DIISI PENILAI
+        "kategori_penilai_2": "",     # opsional — bila ulasan memuat >1 tema
+        "catatan": "",
+    })
+    return penilai, sampel
+
+
+def _definisi_kategori(kk: pd.DataFrame) -> pd.DataFrame:
+    """Lembar definisi kategori untuk penilai — TERPISAH dari berkas sampel."""
+    baris = []
+    for kat, g in kk.groupby("kategori"):
+        uni = g[g.n_gram == 1].nsmallest(8, "rank").keyword.tolist()
+        big = g[g.n_gram == 2].nsmallest(4, "rank").keyword.tolist()
+        baris.append({"kategori": kat,
+                      "kata_kunci_indikatif": ", ".join(uni + big)})
+    baris.append({"kategori": "TIDAK ADA YANG COCOK",
+                  "kata_kunci_indikatif": "pakai bila ulasan tidak masuk kategori mana pun"})
+    return pd.DataFrame(baris)
+
+
+def hitung_kesepakatan(path=None) -> dict:
+    """H-9 — kesepakatan penilai manusia vs penetapan otomatis (pendekatan A).
+
+    Yang dibandingkan adalah keluaran yang benar-benar dipakai sistem, bukan
+    skema H-8 di atas kertas: inilah kategorisasi yang masuk `review_topics`,
+    dashboard, dan Tabel 3.
+
+    Dua angka dilaporkan, dan keduanya perlu:
+
+    - **Kesepakatan longgar** — kategori penilai termasuk di antara kategori
+      yang ditetapkan otomatis. Relevan karena penetapan otomatis memang boleh
+      memberi lebih dari satu kategori per ulasan (rata-rata 2,26).
+    - **Cohen's κ pada label tunggal** — kategori utama penilai dibandingkan
+      kategori berbobot tertinggi dari penetapan otomatis. κ mengoreksi
+      kesepakatan yang terjadi karena kebetulan, yang penting di sini karena
+      dua kategori teratas saja sudah menguasai dua pertiga korpus.
+    """
+    from sklearn.metrics import cohen_kappa_score
+
+    path = path or TAB / "cross_validation_sample_50_reviewed.csv"
+    d = pd.read_csv(path)
+    kosong = d.kategori_penilai_1.isna() | (d.kategori_penilai_1.astype(str).str.strip() == "")
+    if kosong.any():
+        raise RuntimeError(
+            f"GERBANG H-9 belum dilewati: {int(kosong.sum())} dari {len(d)} baris "
+            "masih kosong pada kolom `kategori_penilai_1`.")
+
+    sah = set(KATEGORI_H8.values()) | {"TIDAK ADA YANG COCOK"}
+    asing = set(d.kategori_penilai_1.str.strip()) - sah
+    if asing:
+        raise RuntimeError(f"Kategori di luar daftar: {sorted(asing)}")
+
+    h = jalankan()
+    pemicu = kata_kunci_pemicu(h["neg"], h["kk"])
+    kk_skor = h["kk"].assign(_s=h["kk"].lift.fillna(h["kk"].bobot * 10))
+    prioritas = dict(zip(kk_skor.keyword, kk_skor._s))
+
+    otomatis, utama = {}, {}
+    for rid, g in pemicu.groupby("review_id"):
+        otomatis[rid] = set(g.kategori)
+        utama[rid] = g.assign(_s=g.keyword.map(prioritas)).nlargest(1, "_s").kategori.iloc[0]
+
+    d["otomatis_semua"] = d.review_id.map(lambda r: otomatis.get(r, set()))
+    d["otomatis_utama"] = d.review_id.map(lambda r: utama.get(r, "TIDAK ADA YANG COCOK"))
+    d["penilai"] = d.kategori_penilai_1.str.strip()
+
+    longgar = d.apply(
+        lambda r: r.penilai in r.otomatis_semua
+        or (r.penilai == "TIDAK ADA YANG COCOK" and not r.otomatis_semua), axis=1)
+    ketat = d.penilai == d.otomatis_utama
+    kappa = cohen_kappa_score(d.penilai, d.otomatis_utama)
+
+    return {"n": len(d),
+            "kesepakatan_longgar": round(float(longgar.mean()), 4),
+            "kesepakatan_ketat": round(float(ketat.mean()), 4),
+            "cohen_kappa": round(float(kappa), 4),
+            "tabel": d[["no", "review_id", "ulasan", "penilai",
+                        "otomatis_utama", "otomatis_semua"]],
+            "tidak_sepakat": d[~longgar][["no", "ulasan", "penilai", "otomatis_semua"]]}

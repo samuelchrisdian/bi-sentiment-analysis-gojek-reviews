@@ -185,8 +185,7 @@ merupakan keputusan pemilik proyek.
 # BAGIAN II — PENETAPAN TOPIK & PERINGKAT (T-5.5 s/d T-5.8)
 
 Sumber: `ml/src/topic_assign.py`. Kategori berasal dari gerbang H-8 — lihat
-`docs/topic_labeling_rules.md`, termasuk **catatan provenans pelabelan** di §5
-yang harus dinyatakan di bab metodologi.
+`docs/topic_labeling_rules.md` untuk pemetaan, aturan pelabelan, dan pelabelnya.
 
 ## 6. Pemilihan Kata Kunci per Kategori
 

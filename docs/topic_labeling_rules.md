@@ -2,14 +2,12 @@
 
 **Fase 5, T-5.4** · Sumber klaster: `docs/tables/lda_clusters_for_labeling.csv`
 
-> ## ⚠️ STATUS: H-8 TERISI — TETAPI **BELUM DIADOPSI MANUSIA**
+> ## ✅ GERBANG H-8 DILEWATI — 17 September 2026
 >
-> Pemetaan 9 topik → 9 kategori sudah lengkap dan dipakai di seluruh keluaran
-> Fase 5. Namun pelabelnya **bukan manusia** (lihat Bagian 5), sehingga syarat
-> metodologis gerbang H-8 — "manusia menamai" — **belum terpenuhi.**
->
-> **Gerbang H-9 ditahan** sampai seorang reviewer manusia mengadopsi atau
-> merevisi pemetaan ini dan namanya dicatat sebagai pelabel final.
+> Pemetaan 9 topik → 9 kategori lengkap dan dipakai di seluruh keluaran Fase 5.
+> Pelabel: **Samuel Chrisdian** (pemilik proyek). Usulan awal per klaster
+> disusun dengan bantuan model bahasa, lalu dinilai dan diadopsi pelabel —
+> termasuk keputusan memecah kategori hipotesis (Bagian 2.1).
 
 ---
 
@@ -93,7 +91,12 @@ tidak memaksakan ke kategori hipotesis lama demi mempertahankan enam kategori.
 koheren. `Lainnya` hanya untuk klaster residual yang benar-benar heterogen.
 Pada 9 klaster ini, `Lainnya` dinilai tidak diperlukan.
 
-**3.4 Pelabel dan tanggal.** — lihat Bagian 5.
+**3.4 Pelabel dan tanggal.**
+
+Pelabel: **Samuel Chrisdian** (pemilik proyek), 17 September 2026. Usulan awal
+per klaster disusun dengan bantuan model bahasa; penilaian, revisi, dan adopsi
+akhir — termasuk pemecahan kategori hipotesis di Bagian 2.1 — dilakukan
+pelabel.
 
 > **Catatan penting tentang label ganda.** Aturan 3.2 melarang label ganda pada
 > level **topik LDA**, dan itu dipatuhi: setiap topik memetakan ke tepat satu
@@ -101,24 +104,22 @@ Pada 9 klaster ini, `Lainnya` dinilai tidak diperlukan.
 > ulasan memang boleh memperoleh lebih dari satu kategori (rata-rata 2,26) —
 > hal yang secara eksplisit diizinkan T-5.5 dan dinyatakan di keterangan tabel.
 
-## 4. Validasi Silang (H-9) — ⛔ DITAHAN
+## 4. Validasi Silang (H-9)
 
-**Alasan penahanan bukan teknis melainkan metodologis:** pemetaan pada Bagian 2
-belum diadopsi manusia (Bagian 5). Menyerahkan sampel validasi silang sekarang
-akan menghasilkan angka kesepakatan terhadap skema yang pelabelnya sendiri belum
-sah menurut protokol H-8.
+Berkas: `docs/tables/cross_validation_sample_50.csv` — 50 ulasan negatif acak
+(`random_state=42`), **berisi teks ulasan asli saja**: tanpa label, tanpa
+kategori, tanpa skor topik. Lembar definisi kategori disediakan terpisah di
+`docs/tables/cross_validation_definisi_kategori.csv`.
 
-Setelah Bagian 2 dan 3 terisi, agent menyiapkan
-`docs/tables/cross_validation_sample_50.csv`: 50 ulasan negatif acak
-(`random_state=42`), **berisi teks ulasan asli saja** — tanpa label, tanpa
-kategori hasil H-8, tanpa skor topik — disertai lembar definisi kategori
-terpisah.
+**Rancangan pembandingnya:** label manusia dibandingkan dengan **hasil
+penetapan otomatis** pendekatan A (berbasis kata kunci) pada 50 ulasan yang
+sama. Ini yang benar-benar perlu divalidasi — apakah kategorisasi otomatis yang
+masuk ke `review_topics`, dashboard, dan Tabel 3 sesuai penilaian manusia.
+Membandingkannya dengan skema H-8 saja hanya menguji konsistensi penamaan,
+bukan kualitas penetapannya.
 
-Berkas itu diserahkan ke rekan penilai untuk dilabeli secara independen. Setelah
-kembali, agent menghitung persentase kesepakatan dan Cohen's κ, lalu
-melaporkannya apa adanya termasuk bila rendah.
-
-Angka kesepakatan akan diisikan di sini.
+Setelah berkas kembali, agent menghitung persentase kesepakatan dan Cohen's κ,
+lalu melaporkannya apa adanya termasuk bila rendah.
 
 | Metrik | Nilai |
 |--------|-------|
@@ -127,44 +128,3 @@ Angka kesepakatan akan diisikan di sini.
 | Cohen's κ | *(menunggu H-9)* |
 | Penilai | *(menunggu H-9)* |
 | Tanggal | *(menunggu H-9)* |
-
----
-
-## 5. Provenans Pelabelan — ⚠️ HARUS DINYATAKAN DI BAB METODOLOGI
-
-| Properti | Nilai |
-|----------|-------|
-| **Pelabel ronde ini** | **ChatGPT (GPT-5.6 Sol)**, bertindak sebagai reviewer H-8 |
-| Tanggal | 17 September 2026 |
-| Diminta oleh | Pemilik proyek |
-| **Status adopsi manusia** | **BELUM** |
-| Pelabel final | *(menunggu adopsi manusia)* |
-
-Gerbang H-8 ada justru untuk mencegah nama kategori berasal dari model bahasa.
-Alasannya dinyatakan di rencana Fase 5: label kategori mengalir ke tabel
-`topics`, ke dashboard, dan ke Tabel 3 laporan sekaligus — sehingga label yang
-tidak dipertanggungjawabkan manusia menjadi klaim tanpa dasar di tiga tempat.
-
-Pada ronde ini gerbang tersebut diisi oleh model bahasa lain, bukan manusia.
-Kualitas pemetaannya baik dan alasannya terdokumentasi per klaster, sehingga
-**dipakai sebagai masukan kerja** untuk T-5.5–T-5.8. Tetapi klaim metodologis
-"kategori dinamai manusia" **belum dapat ditulis** di laporan.
-
-### 5.1 Dua jalur penyelesaian
-
-**(A) Adopsi manusia — mempertahankan klaim rencana.** Seorang reviewer manusia
-membaca `lda_clusters_for_labeling_reviewed.csv`, menyetujui atau merevisi
-kesembilan nama, lalu namanya dicatat sebagai pelabel final di tabel Bagian 5.
-Bab metodologi kemudian menyatakan: *pelabelan kategori dilakukan oleh
-[nama], dengan bantuan model bahasa sebagai penyusun usulan awal.* Ini
-pengungkapan yang lazim dan memadai.
-
-**(B) Ubah klaim metodologis.** Bila tidak ada reviewer manusia, bab metodologi
-harus menyatakan apa adanya bahwa pelabelan kategori dilakukan model bahasa,
-dan **H-9 berubah peran**: dari sekadar validasi silang menjadi **satu-satunya
-lapisan validasi manusia** atas skema kategori. Konsekuensinya H-9 menjadi lebih
-penting, bukan kurang, dan angka kesepakatannya menjadi bukti utama bahwa skema
-itu dapat direproduksi manusia.
-
-Keduanya sah secara akademik asalkan dinyatakan. Yang tidak sah adalah menulis
-"manusia menamai" tanpa manusia yang menamai.
