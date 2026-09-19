@@ -503,15 +503,24 @@ def hitung_kesepakatan(path=None) -> dict:
     skema H-8 di atas kertas: inilah kategorisasi yang masuk `review_topics`,
     dashboard, dan Tabel 3.
 
-    Dua angka dilaporkan, dan keduanya perlu:
+    Tiga angka dilaporkan, karena tidak satu pun sendirian memadai:
 
-    - **Kesepakatan longgar** — kategori penilai termasuk di antara kategori
-      yang ditetapkan otomatis. Relevan karena penetapan otomatis memang boleh
-      memberi lebih dari satu kategori per ulasan (rata-rata 2,26).
-    - **Cohen's κ pada label tunggal** — kategori utama penilai dibandingkan
-      kategori berbobot tertinggi dari penetapan otomatis. κ mengoreksi
-      kesepakatan yang terjadi karena kebetulan, yang penting di sini karena
-      dua kategori teratas saja sudah menguasai dua pertiga korpus.
+    - **Cohen's κ pada label tunggal** — kategori UTAMA penilai
+      (`kategori_penilai_1`) dibandingkan kategori berbobot tertinggi dari
+      penetapan otomatis. κ mengoreksi kesepakatan yang terjadi karena
+      kebetulan, yang penting di sini karena dua kategori teratas saja sudah
+      menguasai dua pertiga korpus. Ini angka utama.
+    - **Kesepakatan longgar** — kategori utama penilai termasuk di antara
+      kategori yang ditetapkan otomatis. Relevan karena penetapan otomatis
+      memang boleh memberi lebih dari satu kategori per ulasan (rata-rata 2,26),
+      sehingga menuntut kecocokan persis akan menghukumnya secara tidak adil.
+    - **Jaccard antar-himpunan** — {`kategori_penilai_1`, `kategori_penilai_2`}
+      dibandingkan seluruh himpunan kategori otomatis. Inilah satu-satunya
+      ukuran yang memakai kolom kedua, dan satu-satunya yang menilai penetapan
+      multi-kategori sebagaimana ia benar-benar dipakai sistem.
+
+    `kategori_penilai_2` opsional; baris yang mengosongkannya diperlakukan
+    sebagai himpunan beranggota satu, bukan sebagai data hilang.
     """
     from sklearn.metrics import cohen_kappa_score
 
@@ -542,16 +551,38 @@ def hitung_kesepakatan(path=None) -> dict:
     d["otomatis_utama"] = d.review_id.map(lambda r: utama.get(r, "TIDAK ADA YANG COCOK"))
     d["penilai"] = d.kategori_penilai_1.str.strip()
 
+    k2 = d.get("kategori_penilai_2", pd.Series("", index=d.index))
+    k2 = k2.fillna("").astype(str).str.strip()
+    asing2 = set(k2[k2 != ""]) - sah
+    if asing2:
+        raise RuntimeError(f"kategori_penilai_2 di luar daftar: {sorted(asing2)}")
+    d["penilai_semua"] = [
+        {a} | ({b} if b else set()) for a, b in zip(d.penilai, k2)]
+
+    tanpa_kategori = d.penilai == "TIDAK ADA YANG COCOK"
     longgar = d.apply(
-        lambda r: r.penilai in r.otomatis_semua
+        lambda r: (r.penilai in r.otomatis_semua)
         or (r.penilai == "TIDAK ADA YANG COCOK" and not r.otomatis_semua), axis=1)
     ketat = d.penilai == d.otomatis_utama
     kappa = cohen_kappa_score(d.penilai, d.otomatis_utama)
 
+    def _jaccard(r):
+        a = set() if r.penilai == "TIDAK ADA YANG COCOK" else r.penilai_semua
+        b = r.otomatis_semua
+        if not a and not b:
+            return 1.0                       # sepakat bahwa tidak ada kategori
+        return len(a & b) / len(a | b) if (a | b) else 0.0
+
+    d["jaccard"] = d.apply(_jaccard, axis=1)
+
     return {"n": len(d),
+            "n_penilai_dua_kategori": int((k2 != "").sum()),
+            "cohen_kappa": round(float(kappa), 4),
             "kesepakatan_longgar": round(float(longgar.mean()), 4),
             "kesepakatan_ketat": round(float(ketat.mean()), 4),
-            "cohen_kappa": round(float(kappa), 4),
-            "tabel": d[["no", "review_id", "ulasan", "penilai",
-                        "otomatis_utama", "otomatis_semua"]],
-            "tidak_sepakat": d[~longgar][["no", "ulasan", "penilai", "otomatis_semua"]]}
+            "jaccard_rerata": round(float(d.jaccard.mean()), 4),
+            "n_tidak_ada_kategori": int(tanpa_kategori.sum()),
+            "tabel": d[["no", "review_id", "ulasan", "penilai", "penilai_semua",
+                        "otomatis_utama", "otomatis_semua", "jaccard"]],
+            "tidak_sepakat": d[~longgar][["no", "ulasan", "penilai",
+                                          "otomatis_semua"]]}

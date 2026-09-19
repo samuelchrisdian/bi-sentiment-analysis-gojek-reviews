@@ -118,13 +118,39 @@ masuk ke `review_topics`, dashboard, dan Tabel 3 sesuai penilaian manusia.
 Membandingkannya dengan skema H-8 saja hanya menguji konsistensi penamaan,
 bukan kualitas penetapannya.
 
-Setelah berkas kembali, agent menghitung persentase kesepakatan dan Cohen's κ,
-lalu melaporkannya apa adanya termasuk bila rendah.
+### 4.1 Cara mengisi berkas penilai
+
+| Kolom | Wajib? | Isi |
+|-------|--------|-----|
+| `kategori_penilai_1` | **Ya — 50 baris** | Kategori **utama**, yaitu tema paling dominan pada ulasan itu |
+| `kategori_penilai_2` | Tidak | Hanya bila ada tema kedua yang jelas; dikosongkan bila tidak ada |
+| `catatan` | Tidak | Bebas |
+
+Bila satu ulasan memuat dua tema, **yang dominan masuk kolom 1** — Cohen's κ
+dihitung dari kolom itu. Gunakan `TIDAK ADA YANG COCOK` bila ulasan tidak masuk
+kategori mana pun (mis. "bosok", "Mampersulit...").
+
+### 4.2 Tiga angka yang dilaporkan
+
+Tidak satu pun memadai sendirian, karena penetapan otomatis boleh memberi lebih
+dari satu kategori per ulasan (rata-rata 2,26):
+
+| Ukuran | Membandingkan | Kegunaan |
+|--------|---------------|----------|
+| **Cohen's κ** | kolom 1 vs kategori otomatis berbobot tertinggi | **Angka utama.** Mengoreksi kesepakatan yang terjadi karena kebetulan — penting karena dua kategori teratas saja menguasai dua pertiga korpus |
+| **Kesepakatan longgar** | kolom 1 ada di dalam himpunan kategori otomatis | Tidak menghukum penetapan multi-kategori secara tidak adil |
+| **Jaccard rerata** | {kolom 1, kolom 2} vs seluruh himpunan otomatis | Satu-satunya yang memakai kolom 2, dan satu-satunya yang menilai penetapan multi-kategori sebagaimana ia dipakai sistem |
+
+Baris yang mengosongkan kolom 2 diperlakukan sebagai himpunan beranggota satu,
+bukan sebagai data hilang.
+
+Ketiganya dilaporkan apa adanya, termasuk bila rendah.
 
 | Metrik | Nilai |
 |--------|-------|
 | Jumlah sampel | 50 |
-| Kesepakatan (%) | *(menunggu H-9)* |
 | Cohen's κ | *(menunggu H-9)* |
+| Kesepakatan longgar | *(menunggu H-9)* |
+| Jaccard rerata | *(menunggu H-9)* |
 | Penilai | *(menunggu H-9)* |
 | Tanggal | *(menunggu H-9)* |
