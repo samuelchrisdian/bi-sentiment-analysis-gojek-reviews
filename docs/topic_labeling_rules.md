@@ -146,11 +146,76 @@ bukan sebagai data hilang.
 
 Ketiganya dilaporkan apa adanya, termasuk bila rendah.
 
+### 4.3 Hasil
+
 | Metrik | Nilai |
 |--------|-------|
 | Jumlah sampel | 50 |
-| Cohen's κ | *(menunggu H-9)* |
-| Kesepakatan longgar | *(menunggu H-9)* |
-| Jaccard rerata | *(menunggu H-9)* |
-| Penilai | *(menunggu H-9)* |
-| Tanggal | *(menunggu H-9)* |
+| **Cohen's κ** | **0,4621** — *moderate* (Landis & Koch, 1977) |
+| Kesepakatan longgar | 84,0% |
+| Kesepakatan ketat | 52,0% |
+| Jaccard rerata | 0,4967 |
+| Baris berkategori ganda dari penilai | 17 |
+| Baris `TIDAK ADA YANG COCOK` | 4 |
+| **Penilai** | **Samuel Chrisdian** (pemilik proyek) |
+| Tanggal | 19 September 2026 |
+
+Berkas rinci per baris: `docs/tables/h9_hasil_kesepakatan.csv`.
+
+**κ 0,46 berada di rentang *moderate*, bukan tinggi, dan itu dilaporkan apa
+adanya.** Angka ini yang mengubah pelabelan dari "subjektif" menjadi "subjektif
+tetapi terukur" — dan nilai sesungguhnya bukan pada angkanya, melainkan pada
+apa yang ditemukannya (§4.4).
+
+### 4.4 Ketidaksepakatan terkonsentrasi pada satu kategori
+
+| Kategori (label penilai) | n | Sepakat | % | Jaccard |
+|---|---|---|---|---|
+| Tarif, Ongkir & Promo | 7 | 7 | **100%** | 0,557 |
+| Akun, Login & Verifikasi | 4 | 4 | **100%** | 0,562 |
+| GoPayLater, GoPinjam & Penagihan | 4 | 4 | **100%** | 0,354 |
+| Ketersediaan & Respons Mitra Driver | 12 | 11 | 91,7% | 0,572 |
+| Pesanan GoFood & Pembatalan | 8 | 7 | 87,5% | 0,500 |
+| Layanan Pelanggan & Penanganan Keluhan | 5 | 4 | 80,0% | 0,483 |
+| TIDAK ADA YANG COCOK | 4 | 3 | 75,0% | 0,750 |
+| Performa & Gangguan Aplikasi | 3 | 2 | 66,7% | 0,328 |
+| **Akurasi Lokasi & Rute** | **3** | **0** | **0%** | **0,000** |
+
+Kegagalannya tidak merata. Delapan dari sembilan kategori berada di 67–100%;
+**Akurasi Lokasi & Rute gagal total (0 dari 3).**
+
+**Penyebabnya terdiagnosis, bukan diduga.** Kata kunci kategori itu adalah
+`titik, jalan, alamat, sesuai, motor, tuju, rumah, barang, nyaman, bawa` —
+tidak memuat satu pun istilah yang paling jelas menandakannya:
+
+| Istilah | Frekuensi korpus negatif | Jadi kata kunci? |
+|---------|--------------------------|------------------|
+| `lokasi` | 497 | ❌ |
+| `peta` | 265 | ❌ |
+| `map` | 254 | ❌ |
+| `gps` | 51 | ❌ |
+
+Ketiga ulasan yang tidak disepakati persis bertipe ini: *"Maps tidak akurat"*,
+*"Maps ngawur parah."*, *"Gajelas gocek masa maps ga terdetek"* — seluruhnya
+**tidak memperoleh kategori apa pun** dari penetapan otomatis.
+
+Ketiga istilah itu **lolos seluruh saringan kualitas** (`MAX_DF_KORPUS`,
+`MIN_LIFT`); yang menyingkirkannya adalah batas `N_KATA_KUNCI = 10` semata.
+Pada peringkat *relevance* topik 6: `map` #13, `lokasi` #15, `peta` #19 — tepat
+di luar sepuluh besar. Angka 10 itu ditetapkan sembarang (DoD hanya menuntut
+≥5), dan validasi silang inilah yang menunjukkan bahwa ia terlalu ketat.
+
+Dampak di tingkat korpus lebih kecil daripada yang tampak pada sampel: dari 771
+ulasan negatif yang menyebut `peta`/`lokasi`/`gps`, **59 (7,7%)** sama sekali
+tidak memperoleh kategori. Sampel 50 kebetulan menarik tiga ulasan pendek yang
+hanya berisi kata itu.
+
+### 4.5 Catatan metodologis — mengapa perbaikan menuntut sampel baru
+
+Memperbaiki kata kunci berdasarkan temuan di atas **membatalkan κ = 0,4621
+sebagai validasi versi yang diperbaiki**: parameter disetel memakai sampel yang
+sama yang dipakai mengukurnya. Setiap perbaikan karena itu menuntut sampel
+validasi baru (`random_state` berbeda) bila angkanya ingin tetap bermakna.
+
+Angka 0,4621 sah sebagai validasi **versi pipeline yang benar-benar diuji**, dan
+dilaporkan sebagai itu.
