@@ -41,5 +41,20 @@ services:
       - "8000:8000"
     restart: unless-stopped
 
+  web:
+    build:
+      context: ./web
+      args:
+        # Dibaca saat BUILD dan di-inline ke dalam bundel. Peramban pengguna
+        # yang memanggil API, bukan container web, jadi alamatnya harus alamat
+        # yang terlihat dari host — bukan http://api:8000.
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8000}
+    container_name: gojek_web
+    depends_on: [api]
+    ports:
+      # 5173 di host -> 80 (nginx) di container.
+      - "5173:80"
+    restart: unless-stopped
+
 volumes:
   pgdata:
