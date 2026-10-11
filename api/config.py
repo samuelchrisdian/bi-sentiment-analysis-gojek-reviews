@@ -27,7 +27,13 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg2://gojek:gojek@localhost:5433/gojek_sentiment"
     artifacts_dir: Path = ROOT / "ml" / "artifacts"
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:4173"]
+    # localhost, 127.0.0.1, dan 0.0.0.0 adalah origin BERBEDA bagi peramban —
+    # semuanya perlu didaftarkan agar dashboard jalan apa pun alamat yang diketik.
+    cors_origins: list[str] = [
+        "http://localhost:5173", "http://localhost:4173",
+        "http://127.0.0.1:5173", "http://127.0.0.1:4173",
+        "http://0.0.0.0:5173", "http://0.0.0.0:4173",
+    ]
 
     # Nama model produksi — gerbang H-10, docs/model_decision.md.
     # Materialized view agg_* memakai nama yang sama; bila diubah di sini tanpa
