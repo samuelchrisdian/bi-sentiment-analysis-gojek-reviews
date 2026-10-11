@@ -1,161 +1,161 @@
 model,kelas,rank,fitur,bobot
-linear_svc,negatif,1,tidak,2.8591291737511284
-linear_svc,negatif,2,buruk,2.322994837054633
-linear_svc,negatif,3,parah,1.9297017875615945
-linear_svc,negatif,4,batal,1.8800337374660638
-linear_svc,negatif,5,bintang satu,1.867981845358269
-linear_svc,negatif,6,jelek,1.7564950715057064
-linear_svc,negatif,7,malah,1.7430002419240445
-linear_svc,negatif,8,tolol,1.713006380812092
-linear_svc,negatif,9,padahal,1.6949777506880332
-linear_svc,negatif,10,blokir,1.679808519906213
-linear_svc,negatif,11,selamat tinggal,1.679395644002537
-linear_svc,negatif,12,kecewa,1.6653566095376637
-linear_svc,negatif,13,tidak puas,1.6225971727048958
-linear_svc,negatif,14,bangkrut,1.6213536386769951
-linear_svc,negatif,15,iklan,1.5688524341021175
-linear_svc,negatif,16,sampah,1.537366410497223
-linear_svc,negatif,17,tipu,1.5285384424152018
-linear_svc,negatif,18,tidak ramah,1.5261834306893747
-linear_svc,negatif,19,payah,1.519512064314369
-linear_svc,negatif,20,tidak bisa,1.514473170682368
-linear_svc,positif,1,mantap,-2.713364091682282
-linear_svc,positif,2,pernah kecewa,-2.3439135786607537
-linear_svc,positif,3,tidak ribet,-2.2943958246244938
-linear_svc,positif,4,bagus,-2.1071568166679064
-linear_svc,positif,5,mudah,-1.981909473032594
-linear_svc,positif,6,oke,-1.92410643040561
-linear_svc,positif,7,tidak kecewa,-1.921994081405685
-linear_svc,positif,8,bantu,-1.8888584615740682
-linear_svc,positif,9,sangat bantu,-1.857593934450441
-linear_svc,positif,10,terima kasih,-1.8154343855211135
-linear_svc,positif,11,terbaik,-1.8060147211361803
-linear_svc,positif,12,alhamdulillah,-1.7940543562924762
-linear_svc,positif,13,kadang,-1.6801360450053047
-linear_svc,positif,14,keren,-1.5224702856419248
-linear_svc,positif,15,cepat,-1.4316790527721277
-linear_svc,positif,16,puas,-1.4305279803152842
-linear_svc,positif,17,tidak lama,-1.4181259140489322
-linear_svc,positif,18,bintang empat,-1.3919281109052422
-linear_svc,positif,19,terkadang,-1.373422694548334
-linear_svc,positif,20,ramah,-1.354216868740753
-logistic_regression,negatif,1,tidak,8.664319845860962
-logistic_regression,negatif,2,buruk,7.549332796563788
-logistic_regression,negatif,3,parah,6.5620618198374885
-logistic_regression,negatif,4,batal,5.856094290347503
-logistic_regression,negatif,5,jelek,5.641995380724752
-logistic_regression,negatif,6,tolol,5.577908419919306
-logistic_regression,negatif,7,malah,5.557349512596861
-logistic_regression,negatif,8,bintang satu,5.47615800646476
-logistic_regression,negatif,9,kecewa,5.1397559110827284
-logistic_regression,negatif,10,sampah,5.123308352231118
-logistic_regression,negatif,11,padahal,5.103720941607738
-logistic_regression,negatif,12,blokir,5.050587252682989
-logistic_regression,negatif,13,bagus up,4.910252829330637
-logistic_regression,negatif,14,iklan,4.902503900851984
-logistic_regression,negatif,15,payah,4.853110270018852
-logistic_regression,negatif,16,bangkrut,4.841254275793285
-logistic_regression,negatif,17,tidak puas,4.826217658056022
-logistic_regression,negatif,18,aneh,4.729681233708544
-logistic_regression,negatif,19,selamat tinggal,4.701624774548691
-logistic_regression,negatif,20,tidak ramah,4.679264577727658
-logistic_regression,positif,1,mantap,-9.901003831464868
-logistic_regression,positif,2,bagus,-7.976739448253865
-logistic_regression,positif,3,mudah,-7.378508258588118
-logistic_regression,positif,4,sangat bantu,-7.25332461843696
-logistic_regression,positif,5,oke,-7.010518298847935
-logistic_regression,positif,6,pernah kecewa,-6.768906017388961
-logistic_regression,positif,7,tidak ribet,-6.616558464566685
-logistic_regression,positif,8,terbaik,-6.531748186069301
-logistic_regression,positif,9,bantu,-6.454371086202677
-logistic_regression,positif,10,alhamdulillah,-5.919216777346325
-logistic_regression,positif,11,terima kasih,-5.885850249711841
-logistic_regression,positif,12,keren,-5.48761199228462
-logistic_regression,positif,13,tidak kecewa,-5.472430873246219
-logistic_regression,positif,14,puas,-5.0725479057860055
-logistic_regression,positif,15,cepat,-5.021701081719011
-logistic_regression,positif,16,ramah,-5.0019154784627045
-logistic_regression,positif,17,kadang,-4.715959815983299
-logistic_regression,positif,18,moga,-4.601740087987116
-logistic_regression,positif,19,permudah,-4.564169476496525
-logistic_regression,positif,20,perbanyak,-4.500204769070719
-complement_nb,negatif,1,aplikasi sampah,4.144829496637701
-complement_nb,negatif,2,tidak mutu,4.141879042160818
-complement_nb,negatif,3,aplikasi tolol,4.054229714696181
-complement_nb,negatif,4,mending pindah,3.9442590873447188
-complement_nb,negatif,5,aplikasi busuk,3.834922140166782
-complement_nb,negatif,6,ampas,3.6860093186493295
-complement_nb,negatif,7,aplikasi tipu,3.6377329311458375
-complement_nb,negatif,8,buruk sangat,3.627117365690875
-complement_nb,negatif,9,gjls,3.6229915637699044
-complement_nb,negatif,10,tolol,3.5382776829841536
-complement_nb,negatif,11,aplikasi bodoh,3.472935595826346
-complement_nb,negatif,12,worst,3.4707890563558
-complement_nb,negatif,13,makin kacau,3.463006207671949
-complement_nb,negatif,14,lintah,3.4479867908297166
-complement_nb,negatif,15,makin jelek,3.42912229267262
-complement_nb,negatif,16,jam cari,3.3788602095945315
-complement_nb,negatif,17,jam malah,3.361221396972928
-complement_nb,negatif,18,mau bangkrut,3.357083996787244
-complement_nb,negatif,19,gaguna,3.3468784092047326
-complement_nb,negatif,20,parah parah,3.330395265427601
-complement_nb,positif,1,mantap banyak,-5.403607821371921
-complement_nb,positif,2,cepat ramah,-5.371069249938714
-complement_nb,positif,3,gojek terbaik,-5.32301637267039
-complement_nb,positif,4,bantu segala,-5.297776938473987
-complement_nb,positif,5,mantap sangat,-5.2893791871014715
-complement_nb,positif,6,oke banget,-5.2763060278406275
-complement_nb,positif,7,sukses selalu,-5.247298850791501
-complement_nb,positif,8,jadi mudah,-5.218973366012559
-complement_nb,positif,9,bantu kala,-5.177170194172774
-complement_nb,positif,10,mantap pokok,-5.144018730953325
-complement_nb,positif,11,mantap aplikasi,-5.12953268141988
-complement_nb,positif,12,cepat aman,-5.112002656888549
-complement_nb,positif,13,moga selalu,-5.096880500571878
-complement_nb,positif,14,awesome,-5.070829383419172
-complement_nb,positif,15,sangat bantu,-5.039194005013393
-complement_nb,positif,16,bantu jalan,-5.023938017962139
-complement_nb,positif,17,selalu bantu,-5.022094253792231
-complement_nb,positif,18,sukses terus,-4.9768171324122665
-complement_nb,positif,19,gojek mantap,-4.964234083354393
-complement_nb,positif,20,alhamdulillah sangat,-4.890290548311491
-multinomial_nb,negatif,1,aplikasi sampah,3.7917117262866125
-multinomial_nb,negatif,2,aplikasi tolol,3.6769148426511844
-multinomial_nb,negatif,3,tidak mutu,3.473113479723983
-multinomial_nb,negatif,4,tolol,3.4580141750324813
-multinomial_nb,negatif,5,ampas,3.362972637404761
-multinomial_nb,negatif,6,mending pindah,3.277854309319233
-multinomial_nb,negatif,7,makin jelek,3.235816060338875
-multinomial_nb,negatif,8,aplikasi busuk,3.1700355129468676
-multinomial_nb,negatif,9,sampah,3.158765726911355
-multinomial_nb,negatif,10,busuk,3.149223946450574
-multinomial_nb,negatif,11,gjls,3.1440873421415834
-multinomial_nb,negatif,12,aplikasi tipu,3.0886114515584886
-multinomial_nb,negatif,13,najis,3.07013116893261
-multinomial_nb,negatif,14,telat hari,3.049019798564128
-multinomial_nb,negatif,15,layan buruk,3.0257090409577163
-multinomial_nb,negatif,16,aplikasi buruk,3.005074145768157
-multinomial_nb,negatif,17,makin kacau,2.990884468548339
-multinomial_nb,negatif,18,aplikasi bodoh,2.971017918480145
-multinomial_nb,negatif,19,buruk sangat,2.96560805351994
-multinomial_nb,negatif,20,taik,2.924998669033357
-multinomial_nb,positif,1,sukses selalu,-5.000366046461827
-multinomial_nb,positif,2,sangat bantu,-4.999909769710725
-multinomial_nb,positif,3,oke banget,-4.923657511948522
-multinomial_nb,positif,4,jadi mudah,-4.916919448630963
-multinomial_nb,positif,5,mantap sangat,-4.81144040113719
-multinomial_nb,positif,6,bantu sekali,-4.768774949653175
-multinomial_nb,positif,7,bagus bagus,-4.71159053284778
-multinomial_nb,positif,8,mantap banyak,-4.703474378264733
-multinomial_nb,positif,9,mantap,-4.703089052464496
-multinomial_nb,positif,10,bantu jalan,-4.692729935839283
-multinomial_nb,positif,11,mantap aplikasi,-4.677762140727136
-multinomial_nb,positif,12,cepat ramah,-4.671150694000998
-multinomial_nb,positif,13,cepat aman,-4.66545335876919
-multinomial_nb,positif,14,sukses terus,-4.6289328714209725
-multinomial_nb,positif,15,gojek mantap,-4.6247970934239
-multinomial_nb,positif,16,gojek terbaik,-4.623428137473919
-multinomial_nb,positif,17,bantu segala,-4.5983686194628035
-multinomial_nb,positif,18,easy,-4.5931351348351335
-multinomial_nb,positif,19,alhamdulillah,-4.585513937024722
-multinomial_nb,positif,20,cepat tepat,-4.556714481631545
+linear_svc,negatif,1,tidak,2.861924495833077
+linear_svc,negatif,2,buruk,2.3314523926000037
+linear_svc,negatif,3,parah,1.9790273154419005
+linear_svc,negatif,4,batal,1.8718197608092233
+linear_svc,negatif,5,bintang satu,1.8671133811984615
+linear_svc,negatif,6,malah,1.7370565220932674
+linear_svc,negatif,7,jelek,1.731162994413242
+linear_svc,negatif,8,tolol,1.7110003202442345
+linear_svc,negatif,9,padahal,1.6859769531847617
+linear_svc,negatif,10,blokir,1.6748367165714226
+linear_svc,negatif,11,selamat tinggal,1.6596965162397377
+linear_svc,negatif,12,tidak puas,1.6328984754096092
+linear_svc,negatif,13,kecewa,1.6284951167390531
+linear_svc,negatif,14,bangkrut,1.6095890997035744
+linear_svc,negatif,15,iklan,1.5736226161378015
+linear_svc,negatif,16,tidak bisa,1.5535321364912194
+linear_svc,negatif,17,sampah,1.5432115937338107
+linear_svc,negatif,18,tidak ramah,1.5145639519858671
+linear_svc,negatif,19,tipu,1.497713711139069
+linear_svc,negatif,20,tidak bantu,1.4912540245041712
+linear_svc,positif,1,mantap,-2.7111062197032276
+linear_svc,positif,2,tidak ribet,-2.31955345435257
+linear_svc,positif,3,pernah kecewa,-2.3097940295171164
+linear_svc,positif,4,bagus,-2.1010706842320666
+linear_svc,positif,5,mudah,-2.0102399461571885
+linear_svc,positif,6,oke,-1.9065326504257387
+linear_svc,positif,7,sangat bantu,-1.8811672057997366
+linear_svc,positif,8,tidak kecewa,-1.877069614716466
+linear_svc,positif,9,bantu,-1.8528107772278357
+linear_svc,positif,10,terbaik,-1.7922283368037903
+linear_svc,positif,11,alhamdulillah,-1.7877719105065824
+linear_svc,positif,12,terima kasih,-1.7802539358520995
+linear_svc,positif,13,kadang,-1.6637101914927976
+linear_svc,positif,14,sejauh,-1.5791742121466763
+linear_svc,positif,15,keren,-1.5245336343517806
+linear_svc,positif,16,puas,-1.43588455459351
+linear_svc,positif,17,cepat,-1.4240866092172282
+linear_svc,positif,18,tidak lama,-1.4121637218122758
+linear_svc,positif,19,bintang empat,-1.3896901743082006
+linear_svc,positif,20,terkadang,-1.3754965556528371
+logistic_regression,negatif,1,tidak,8.691167594690876
+logistic_regression,negatif,2,buruk,7.565565156241379
+logistic_regression,negatif,3,parah,6.685111946094584
+logistic_regression,negatif,4,batal,5.831394933834045
+logistic_regression,negatif,5,tolol,5.585727697711103
+logistic_regression,negatif,6,malah,5.5510382491679895
+logistic_regression,negatif,7,jelek,5.54457732167064
+logistic_regression,negatif,8,bintang satu,5.473027688912538
+logistic_regression,negatif,9,sampah,5.125181161320175
+logistic_regression,negatif,10,padahal,5.081311168823401
+logistic_regression,negatif,11,kecewa,5.033116374756327
+logistic_regression,negatif,12,blokir,5.031325480067636
+logistic_regression,negatif,13,iklan,4.907507921367082
+logistic_regression,negatif,14,tidak puas,4.823095262803519
+logistic_regression,negatif,15,bangkrut,4.804779520307271
+logistic_regression,negatif,16,payah,4.757622423745317
+logistic_regression,negatif,17,aneh,4.677576829465193
+logistic_regression,negatif,18,tidak bantu,4.661399662755249
+logistic_regression,negatif,19,tidak ramah,4.646415388050198
+logistic_regression,negatif,20,selamat tinggal,4.6396240617347155
+logistic_regression,positif,1,mantap,-9.8961089110835
+logistic_regression,positif,2,bagus,-7.990307910100161
+logistic_regression,positif,3,mudah,-7.501679956155416
+logistic_regression,positif,4,sangat bantu,-7.326982570616549
+logistic_regression,positif,5,oke,-6.928732854258663
+logistic_regression,positif,6,tidak ribet,-6.688955106993535
+logistic_regression,positif,7,pernah kecewa,-6.6616664880938
+logistic_regression,positif,8,terbaik,-6.496384282262719
+logistic_regression,positif,9,bantu,-6.379128045420486
+logistic_regression,positif,10,alhamdulillah,-5.903000386069801
+logistic_regression,positif,11,terima kasih,-5.770440934054278
+logistic_regression,positif,12,keren,-5.461495417058093
+logistic_regression,positif,13,tidak kecewa,-5.336371790936067
+logistic_regression,positif,14,puas,-5.049109226482146
+logistic_regression,positif,15,cepat,-5.0127404019099275
+logistic_regression,positif,16,sejauh,-4.955523081909094
+logistic_regression,positif,17,ramah,-4.876711353046127
+logistic_regression,positif,18,kadang,-4.673762410887754
+logistic_regression,positif,19,moga,-4.594028065581223
+logistic_regression,positif,20,permudah,-4.565957549096737
+complement_nb,negatif,1,tidak mutu,4.150084432036024
+complement_nb,negatif,2,aplikasi sampah,4.139226067739637
+complement_nb,negatif,3,aplikasi tolol,4.047239005785309
+complement_nb,negatif,4,mending pindah,3.935041898914795
+complement_nb,negatif,5,aplikasi busuk,3.8284364546926284
+complement_nb,negatif,6,ampas,3.667234629017127
+complement_nb,negatif,7,buruk sangat,3.625313362636202
+complement_nb,negatif,8,aplikasi tipu,3.6208155937065527
+complement_nb,negatif,9,gjls,3.6176476603075756
+complement_nb,negatif,10,tolol,3.533820663736628
+complement_nb,negatif,11,aplikasi bodoh,3.4638890151261563
+complement_nb,negatif,12,worst,3.4597848033963725
+complement_nb,negatif,13,makin kacau,3.45043139976395
+complement_nb,negatif,14,lintah,3.4432031301412636
+complement_nb,negatif,15,makin jelek,3.409073036076908
+complement_nb,negatif,16,jam cari,3.3647163953402135
+complement_nb,negatif,17,jam malah,3.354566835620048
+complement_nb,negatif,18,mau bangkrut,3.343887357634335
+complement_nb,negatif,19,gaguna,3.338327693424965
+complement_nb,negatif,20,busuk,3.3237920991853294
+complement_nb,positif,1,mantap banyak,-5.400017964374776
+complement_nb,positif,2,cepat ramah,-5.384220476412329
+complement_nb,positif,3,gojek terbaik,-5.320521222965377
+complement_nb,positif,4,bantu segala,-5.306510862305652
+complement_nb,positif,5,mantap sangat,-5.29599271132647
+complement_nb,positif,6,sukses selalu,-5.28589602161448
+complement_nb,positif,7,oke banget,-5.268741648505736
+complement_nb,positif,8,jadi mudah,-5.221621275266783
+complement_nb,positif,9,bantu kala,-5.182190700647915
+complement_nb,positif,10,mantap pokok,-5.151558538624707
+complement_nb,positif,11,mantap aplikasi,-5.12903991464008
+complement_nb,positif,12,moga selalu,-5.120325261580907
+complement_nb,positif,13,cepat aman,-5.113150753740131
+complement_nb,positif,14,sangat bantu,-5.0443730261814705
+complement_nb,positif,15,selalu bantu,-5.037313524698924
+complement_nb,positif,16,bantu jalan,-5.020422014097045
+complement_nb,positif,17,sukses terus,-4.976990026533626
+complement_nb,positif,18,gojek mantap,-4.958230904116864
+complement_nb,positif,19,mantabs,-4.896769187459119
+complement_nb,positif,20,alhamdulillah sangat,-4.896385346041031
+multinomial_nb,negatif,1,tidak mutu,4.150084432036024
+multinomial_nb,negatif,2,aplikasi sampah,4.139226067739637
+multinomial_nb,negatif,3,aplikasi tolol,4.047239005785308
+multinomial_nb,negatif,4,mending pindah,3.935041898914795
+multinomial_nb,negatif,5,aplikasi busuk,3.8284364546926284
+multinomial_nb,negatif,6,ampas,3.667234629017125
+multinomial_nb,negatif,7,buruk sangat,3.625313362636204
+multinomial_nb,negatif,8,aplikasi tipu,3.620815593706558
+multinomial_nb,negatif,9,gjls,3.6176476603075702
+multinomial_nb,negatif,10,tolol,3.5338206637366305
+multinomial_nb,negatif,11,aplikasi bodoh,3.463889015126158
+multinomial_nb,negatif,12,worst,3.4597848033963743
+multinomial_nb,negatif,13,makin kacau,3.450431399763948
+multinomial_nb,negatif,14,lintah,3.4432031301412653
+multinomial_nb,negatif,15,makin jelek,3.4090730360769115
+multinomial_nb,negatif,16,jam cari,3.3647163953402135
+multinomial_nb,negatif,17,jam malah,3.354566835620046
+multinomial_nb,negatif,18,mau bangkrut,3.343887357634337
+multinomial_nb,negatif,19,gaguna,3.338327693424965
+multinomial_nb,negatif,20,busuk,3.323792099185326
+multinomial_nb,positif,1,mantap banyak,-5.400017964374776
+multinomial_nb,positif,2,cepat ramah,-5.384220476412329
+multinomial_nb,positif,3,gojek terbaik,-5.320521222965377
+multinomial_nb,positif,4,bantu segala,-5.306510862305652
+multinomial_nb,positif,5,mantap sangat,-5.295992711326462
+multinomial_nb,positif,6,sukses selalu,-5.285896021614484
+multinomial_nb,positif,7,oke banget,-5.268741648505729
+multinomial_nb,positif,8,jadi mudah,-5.221621275266781
+multinomial_nb,positif,9,bantu kala,-5.182190700647917
+multinomial_nb,positif,10,mantap pokok,-5.151558538624707
+multinomial_nb,positif,11,mantap aplikasi,-5.129039914640089
+multinomial_nb,positif,12,moga selalu,-5.120325261580907
+multinomial_nb,positif,13,cepat aman,-5.1131507537401255
+multinomial_nb,positif,14,sangat bantu,-5.044373026181468
+multinomial_nb,positif,15,selalu bantu,-5.037313524698922
+multinomial_nb,positif,16,bantu jalan,-5.020422014097036
+multinomial_nb,positif,17,sukses terus,-4.976990026533627
+multinomial_nb,positif,18,gojek mantap,-4.958230904116861
+multinomial_nb,positif,19,mantabs,-4.896769187459119
+multinomial_nb,positif,20,alhamdulillah sangat,-4.896385346041031

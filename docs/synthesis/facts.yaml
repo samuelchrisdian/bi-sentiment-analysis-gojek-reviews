@@ -47,6 +47,13 @@ dataset:
       torch: 2.14.1+cpu
       n_ulasan_diterjemahkan: 14671
       n_kalimat: 31174
+    audit_manual:
+      n_sampel: 50
+      n_deteksi_benar: 47
+      pct_deteksi_benar: 94.0
+      n_terjemahan_layak: 43
+      pct_terjemahan_layak: 86.0
+      source_table: docs/tables/audit_terjemahan_sampel_50_reviewed.csv
   source_table: docs/tables/profil_dataset.csv
 distribusi_rating:
   bintang_1:
@@ -107,266 +114,299 @@ komposisi_kelas:
   source_table: docs/tables/komposisi_kelas.csv
 preprocessing:
   n_baris: 526322
-  teks_kosong_akhir: 1316
+  teks_kosong_akhir: 1321
   pct_teks_kosong_akhir: 0.3
-  n_entri_slang: 572
-  n_entri_slang_multikata: 45
+  n_entri_slang: 639
+  n_entri_slang_multikata: 56
   n_negation_keep: 24
-  n_sampel_verifikasi_manual: null
-  n_putaran_verifikasi: null
-  status_verifikasi_manual: MENUNGGU — verifikasi manual sampel pra-pemrosesan data scraping (docs/tables/preprocessing_sample_100.csv)
-  dok_tidak: 105845
-  dok_tidak_bisa: 33374
-  dok_tidak_ada: 20762
-  dok_jangan: 7899
+  n_sampel_verifikasi_manual: 400
+  n_putaran_verifikasi: 4
+  status_verifikasi_manual: selesai
+  dok_tidak: 106708
+  dok_tidak_bisa: 33766
+  dok_tidak_ada: 20963
+  dok_jangan: 7898
   source_table: data/processed/reviews_clean.parquet
 model:
-  n_train: 223244
+  n_train: 222308
   n_train_sebelum_dedup: 403366
   n_test: 100842
-  n_test_informative: 45487
+  n_test_informative: 45069
   baseline:
     macro_f1_full: 0.4154
     accuracy_full: 0.7106
     pct_accuracy_full: 71.1
-    macro_f1_informative: 0.3088
+    macro_f1_informative: 0.3062
   varian:
     complement_nb:
       default:
         full:
+          macro_f1: 0.9036
+          recall_neg: 0.9409
+          precision_neg: 0.805
+          f1_neg: 0.8677
+          accuracy: 0.917
+          n_eval: 100842
+        informative:
+          macro_f1: 0.8831
+          recall_neg: 0.9598
+          precision_neg: 0.8558
+          f1_neg: 0.9048
+          accuracy: 0.8872
+          n_eval: 45069
+      tuned:
+        full:
           macro_f1: 0.9037
-          recall_neg: 0.9418
-          precision_neg: 0.8048
+          recall_neg: 0.9414
+          precision_neg: 0.805
           f1_neg: 0.8679
           accuracy: 0.917
           n_eval: 100842
         informative:
-          macro_f1: 0.8849
-          recall_neg: 0.9606
-          precision_neg: 0.8554
-          f1_neg: 0.905
-          accuracy: 0.8884
-          n_eval: 45487
-      tuned:
-        full:
-          macro_f1: 0.9038
-          recall_neg: 0.9422
-          precision_neg: 0.8047
-          f1_neg: 0.868
-          accuracy: 0.9171
-          n_eval: 100842
-        informative:
-          macro_f1: 0.8849
-          recall_neg: 0.961
-          precision_neg: 0.8552
-          f1_neg: 0.905
-          accuracy: 0.8884
-          n_eval: 45487
-        train_seconds: 3.71
+          macro_f1: 0.8833
+          recall_neg: 0.9602
+          precision_neg: 0.8557
+          f1_neg: 0.9049
+          accuracy: 0.8873
+          n_eval: 45069
+        train_seconds: 6.09
     multinomial_nb:
       default:
         full:
-          macro_f1: 0.9182
-          recall_neg: 0.9344
-          precision_neg: 0.8429
-          f1_neg: 0.8863
-          accuracy: 0.9306
+          macro_f1: 0.9183
+          recall_neg: 0.9337
+          precision_neg: 0.8436
+          f1_neg: 0.8864
+          accuracy: 0.9307
           n_eval: 100842
         informative:
-          macro_f1: 0.8854
-          recall_neg: 0.959
+          macro_f1: 0.8836
+          recall_neg: 0.9584
           precision_neg: 0.8571
-          f1_neg: 0.9052
-          accuracy: 0.8888
-          n_eval: 45487
+          f1_neg: 0.9049
+          accuracy: 0.8875
+          n_eval: 45069
       tuned:
         full:
-          macro_f1: 0.9182
-          recall_neg: 0.9344
-          precision_neg: 0.8429
-          f1_neg: 0.8863
-          accuracy: 0.9306
+          macro_f1: 0.9185
+          recall_neg: 0.9346
+          precision_neg: 0.8434
+          f1_neg: 0.8867
+          accuracy: 0.9309
           n_eval: 100842
         informative:
-          macro_f1: 0.8854
-          recall_neg: 0.959
-          precision_neg: 0.8571
+          macro_f1: 0.8838
+          recall_neg: 0.9592
+          precision_neg: 0.8569
           f1_neg: 0.9052
-          accuracy: 0.8888
-          n_eval: 45487
-        train_seconds: 3.51
+          accuracy: 0.8877
+          n_eval: 45069
+        train_seconds: 6.66
     linear_svc:
       default:
         full:
-          macro_f1: 0.9224
-          recall_neg: 0.9056
-          precision_neg: 0.8759
-          f1_neg: 0.8905
-          accuracy: 0.9355
+          macro_f1: 0.9228
+          recall_neg: 0.9071
+          precision_neg: 0.8755
+          f1_neg: 0.891
+          accuracy: 0.9358
           n_eval: 100842
         informative:
-          macro_f1: 0.8899
-          recall_neg: 0.9283
-          precision_neg: 0.8825
-          f1_neg: 0.9048
-          accuracy: 0.8919
-          n_eval: 45487
+          macro_f1: 0.889
+          recall_neg: 0.9299
+          precision_neg: 0.8822
+          f1_neg: 0.9054
+          accuracy: 0.8914
+          n_eval: 45069
       tuned:
         full:
-          macro_f1: 0.9269
-          recall_neg: 0.9239
-          precision_neg: 0.8724
+          macro_f1: 0.927
+          recall_neg: 0.9237
+          precision_neg: 0.8727
           f1_neg: 0.8974
           accuracy: 0.9389
           n_eval: 100842
         informative:
-          macro_f1: 0.8975
-          recall_neg: 0.9489
-          precision_neg: 0.8795
-          f1_neg: 0.9129
-          accuracy: 0.8998
-          n_eval: 45487
-        train_seconds: 4.73
+          macro_f1: 0.8958
+          recall_neg: 0.9484
+          precision_neg: 0.8794
+          f1_neg: 0.9126
+          accuracy: 0.8985
+          n_eval: 45069
+        train_seconds: 9.34
     logistic_regression:
       default:
         full:
-          macro_f1: 0.926
-          recall_neg: 0.9188
+          macro_f1: 0.9261
+          recall_neg: 0.9192
           precision_neg: 0.8742
-          f1_neg: 0.896
-          accuracy: 0.9382
+          f1_neg: 0.8961
+          accuracy: 0.9383
           n_eval: 100842
         informative:
-          macro_f1: 0.8967
-          recall_neg: 0.9441
-          precision_neg: 0.8815
-          f1_neg: 0.9117
-          accuracy: 0.8989
-          n_eval: 45487
+          macro_f1: 0.8951
+          recall_neg: 0.9442
+          precision_neg: 0.8813
+          f1_neg: 0.9116
+          accuracy: 0.8977
+          n_eval: 45069
       tuned:
         full:
-          macro_f1: 0.926
-          recall_neg: 0.9188
+          macro_f1: 0.9261
+          recall_neg: 0.9192
           precision_neg: 0.8742
-          f1_neg: 0.896
-          accuracy: 0.9382
+          f1_neg: 0.8961
+          accuracy: 0.9383
           n_eval: 100842
         informative:
-          macro_f1: 0.8967
-          recall_neg: 0.9441
-          precision_neg: 0.8815
-          f1_neg: 0.9117
-          accuracy: 0.8989
-          n_eval: 45487
-        train_seconds: 5.71
+          macro_f1: 0.8951
+          recall_neg: 0.9442
+          precision_neg: 0.8813
+          f1_neg: 0.9116
+          accuracy: 0.8977
+          n_eval: 45069
+        train_seconds: 4.78
   source_table: docs/tables/model_metrics.csv
   rentang_macro_f1_tuned:
-    tertinggi: 0.9269
+    tertinggi: 0.927
     tertinggi_model: linear_svc
-    terendah: 0.9038
+    terendah: 0.9037
     terendah_model: complement_nb
-    rentang_poin: 2.31
+    rentang_poin: 2.33
     selisih_dua_teratas_poin: 0.09
     selisih_dua_teratas_baris: 91
   produksi:
     nama: logistic_regression
     parameter: C=1.0, class_weight=balanced
     full:
-      macro_f1: 0.926
-      recall_neg: 0.9188
+      macro_f1: 0.9261
+      recall_neg: 0.9192
       precision_neg: 0.8742
-      f1_neg: 0.896
-      accuracy: 0.9382
+      f1_neg: 0.8961
+      accuracy: 0.9383
       n_eval: 100842
     informative:
-      macro_f1: 0.8967
-      recall_neg: 0.9441
-      precision_neg: 0.8815
-      f1_neg: 0.9117
-      accuracy: 0.8989
-      n_eval: 45487
-    recall_pos_full: 0.9462
-    precision_pos_full: 0.9662
-    selisih_macro_f1_poin: 2.94
-    selisih_accuracy_poin: 3.94
-    selisih_recall_neg_poin: 2.53
-    unggul_baseline_poin: 51.06
+      macro_f1: 0.8951
+      recall_neg: 0.9442
+      precision_neg: 0.8813
+      f1_neg: 0.9116
+      accuracy: 0.8977
+      n_eval: 45069
+    recall_pos_full: 0.9461
+    precision_pos_full: 0.9664
+    selisih_macro_f1_poin: 3.1
+    selisih_accuracy_poin: 4.06
+    selisih_recall_neg_poin: 2.5
+    unggul_baseline_poin: 51.07
 tuning:
   n_kombinasi: 24
   n_fit: 120
   cv_folds: 5
   linear_svc:
-    cv_macro_f1: 0.9008
-    std: 0.0004
-    overfit_gap: 0.0145
-    train_score_c5: 0.941
-    cv_score_c5: 0.8787
-    overfit_gap_c5: 0.0623
+    cv_macro_f1: 0.9004
+    std: 0.0009
+    overfit_gap: 0.0147
+    train_score_c5: 0.9405
+    cv_score_c5: 0.8781
+    overfit_gap_c5: 0.0625
   logistic_regression:
     pemenang_grid: '{''C'': 1.0, ''class_weight'': ''balanced''}'
-    cv_macro_f1_grid: 0.899704
-    std_grid: 0.000826
-    overfit_gap_grid: 0.0142
+    cv_macro_f1_grid: 0.89921
+    std_grid: 0.000775
+    overfit_gap_grid: 0.0146
     pilihan_1se: '{''C'': 1.0, ''class_weight'': ''balanced''}'
-    cv_macro_f1_1se: 0.899704
-    std_1se: 0.000826
-    overfit_gap_1se: 0.0142
+    cv_macro_f1_1se: 0.89921
+    std_1se: 0.000775
+    overfit_gap_1se: 0.0146
     selisih_cv: 0.0
   seleksi_1se:
     complement_nb:
       pemenang_grid: '{''alpha'': 0.5}'
       pilihan_1se: '{''alpha'': 2.0}'
       n_kandidat: 4
-      overfit_gap_1se: 0.0066
+      overfit_gap_1se: 0.0065
       sama_dengan_grid: false
     multinomial_nb:
-      pemenang_grid: '{''alpha'': 1.0}'
+      pemenang_grid: '{''alpha'': 0.5}'
       pilihan_1se: '{''alpha'': 2.0}'
       n_kandidat: 4
-      overfit_gap_1se: 0.0066
+      overfit_gap_1se: 0.0065
       sama_dengan_grid: false
     linear_svc:
       pemenang_grid: '{''C'': 0.1, ''class_weight'': ''balanced''}'
       pilihan_1se: '{''C'': 0.1, ''class_weight'': ''balanced''}'
       n_kandidat: 2
-      overfit_gap_1se: 0.0145
+      overfit_gap_1se: 0.0147
       sama_dengan_grid: true
     logistic_regression:
       pemenang_grid: '{''C'': 1.0, ''class_weight'': ''balanced''}'
       pilihan_1se: '{''C'': 1.0, ''class_weight'': ''balanced''}'
       n_kandidat: 2
-      overfit_gap_1se: 0.0142
+      overfit_gap_1se: 0.0146
       sama_dengan_grid: true
-  gridsearch_seconds_total: 192.5
+  gridsearch_seconds_total: 213.1
   source_table: docs/tables/gridsearch_results.csv
 analisis_kesalahan:
-  status: MENUNGGU — analisis kesalahan manual (kategori penyebab) belum dikerjakan untuk data scraping
-  berkas_yang_harus_diisi: docs/tables/error_analysis_50.csv -> *_reviewed.csv
-  n_salah_linear_svc_tuned: 6164
+  n_sampel: 50
+  n_salah_linear_svc_tuned: 6161
   pct_salah_linear_svc_tuned: 6.11
+  kategori:
+    label_keliru_pengguna: 25
+    negasi_kompleks: 10
+    terlalu_pendek_ambigu: 7
+    topik_netral_offtopic: 3
+    sarkasme_ironi: 2
+    campur_kode: 2
+    kegagalan_preprocessing: 1
+  pct_kategori:
+    label_keliru_pengguna: 50.0
+    negasi_kompleks: 20.0
+    terlalu_pendek_ambigu: 14.0
+    topik_netral_offtopic: 6.0
+    sarkasme_ironi: 4.0
+    campur_kode: 4.0
+    kegagalan_preprocessing: 2.0
+  n_label_keliru: 25
+  pct_label_keliru: 50.0
+  n_fp_sampel: 30
+  n_fp_label_keliru: 23
+  pct_fp_label_keliru: 76.7
+  n_fn_sampel: 20
+  n_fn_label_keliru: 2
+  pct_fn_label_keliru: 10.0
+  n_kesalahan_yakin: 22
+  n_yakin_label_keliru: 15
+  pct_yakin_label_keliru: 68.2
+  n_kesalahan_ragu: 28
+  derau_label_n: 3080
+  derau_label_pct: 3.05
+  plafon_akurasi: 0.9695
+  pct_plafon_tercapai: 96.8
+  sisa_perbaikan_poin: 3.12
+  source_table: docs/tables/error_analysis_50_reviewed.csv
 tiga_kelas:
-  macro_f1: 0.6616
-  macro_f1_biner_pembanding: 0.9269
+  macro_f1: 0.6617
+  macro_f1_biner_pembanding: 0.927
   penurunan_poin: 26.5
-  accuracy: 0.8862
-  recall_negatif: 0.8684
-  penurunan_recall_neg_poin: 5.6
-  recall_netral: 0.1877
-  recall_positif: 0.9365
-  n_train: 238578
+  accuracy: 0.8864
+  recall_negatif: 0.8686
+  penurunan_recall_neg_poin: 5.5
+  recall_netral: 0.1872
+  recall_positif: 0.9368
+  n_train: 237626
   n_test: 105265
-  n_netral_train: 15450
+  n_netral_train: 15447
   n_netral_test: 4423
-  netral_jadi_negatif: 2424
+  netral_jadi_negatif: 2425
   pct_netral_jadi_negatif: 54.8
-  netral_jadi_netral: 830
-  pct_netral_jadi_netral: 18.8
-  netral_jadi_positif: 1169
-  pct_netral_jadi_positif: 26.4
+  netral_jadi_netral: 828
+  pct_netral_jadi_netral: 18.7
+  netral_jadi_positif: 1170
+  pct_netral_jadi_positif: 26.5
   rasio_netral_positif_test: 16.2
-  panjang_negatif: 20.47
-  panjang_netral: 17.77
-  panjang_positif: 4.78
+  panjang_negatif: 20.57
+  panjang_netral: 17.86
+  panjang_positif: 4.76
   source_table: ml/artifacts/reports/three_class_linear_svc.json
 fitur:
   n_fitur_per_kelas: 20
@@ -375,77 +415,89 @@ fitur:
   - buruk
   - parah
   - batal
-  - jelek
   - tolol
   - malah
+  - jelek
   - bintang satu
-  - kecewa
   - sampah
+  - padahal
   teratas_positif:
   - mantap
   - bagus
   - mudah
   - sangat bantu
   - oke
-  - pernah kecewa
   - tidak ribet
+  - pernah kecewa
   - terbaik
   - bantu
   - alhamdulillah
   source_table: docs/tables/top_features.csv
 topik:
   n_kategori: 5
-  n_penetapan_kategori: 187553
+  n_penetapan_kategori: 183542
   lda_k: 5
-  coherence_cv: 0.5998
+  coherence_cv: 0.5908
   peringkat:
   - peringkat: 1
-    kategori: Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan
-    n: 55831
-    pct_negatif: 38.26
-    total_likes: 144891
-    rata_likes: 2.6
+    kategori: Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan
+    n: 55745
+    pct_negatif: 38.2
+    total_likes: 144538
+    rata_likes: 2.59
     peringkat_likes: 2
   - peringkat: 2
-    kategori: Tarif, Ongkir & Promo
-    n: 41648
-    pct_negatif: 28.54
-    total_likes: 103181
-    rata_likes: 2.48
-    peringkat_likes: 3
-  - peringkat: 3
-    kategori: Layanan Pelanggan & Pemblokiran Akun
-    n: 41125
-    pct_negatif: 28.18
-    total_likes: 146531
-    rata_likes: 3.56
+    kategori: Layanan Pelanggan & Penanganan Keluhan
+    n: 41154
+    pct_negatif: 28.2
+    total_likes: 148724
+    rata_likes: 3.61
     peringkat_likes: 1
+  - peringkat: 3
+    kategori: Tarif, Ongkir & Promo
+    n: 36061
+    pct_negatif: 24.71
+    total_likes: 91095
+    rata_likes: 2.53
+    peringkat_likes: 3
   - peringkat: 4
-    kategori: Transaksi & Saldo GoPay
-    n: 38874
-    pct_negatif: 26.64
-    total_likes: 93817
-    rata_likes: 2.41
+    kategori: Transaksi, Saldo & Pemblokiran GoPay
+    n: 32251
+    pct_negatif: 22.1
+    total_likes: 73579
+    rata_likes: 2.28
     peringkat_likes: 4
   - peringkat: 5
-    kategori: Akun, Login & Pembaruan Aplikasi
-    n: 10075
-    pct_negatif: 6.9
-    total_likes: 27976
-    rata_likes: 2.78
+    kategori: Kendala Penggunaan Aplikasi & Akses Akun
+    n: 18331
+    pct_negatif: 12.56
+    total_likes: 47601
+    rata_likes: 2.6
     peringkat_likes: 5
-  dua_teratas_pct: 66.8
+  dua_teratas_pct: 66.4
   n_ulasan_negatif: 145924
   kutipan:
-  - kategori: Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan
+  - kategori: Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan
     nomor: 1
     teks: jika goride hemat ya ga ada yang mau ambil, hapus aja pake single rate. buang2 waktu nunggu
       dan gimick aja
     likes: 742
-  - kategori: Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan
+  - kategori: Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan
     nomor: 2
-    teks: Apk cacat. Pesan di go mart di batalkan terus alasan macem2. Ini apk atau trial. Apk cacaaaat
-    likes: 311
+    teks: Lagi laper mau pesen makan malah error' dan muncul tulisan "server sedang sibuk" dan diulang²
+      tetep muncul terus kata kata seperti itu (Sudah update ke versi terbaru dan dalam posisi memakai
+      sinyal WiFi yang lancar, tetapi masih error' terus)
+    likes: 394
+  - kategori: Layanan Pelanggan & Penanganan Keluhan
+    nomor: 1
+    teks: Jawaban Customer Service sangat tidak solutif. Memang sudah saatnya beralih ke Aplikasi sebelah
+    likes: 1386
+  - kategori: Layanan Pelanggan & Penanganan Keluhan
+    nomor: 2
+    teks: perbaiki lagi sistem aplikatornya. titik lokasi terkadang mental klo ga di cek lagi. buat yg
+      awam ini jadi masalah komunikasi dengan driver. dan untuk aplikasi terkadang signal hilang tidak
+      jelas. protect nya di perkuat. jgn buat kecewa!!! tq
+    likes: 793
   - kategori: Tarif, Ongkir & Promo
     nomor: 1
     teks: Setiap ada perubahan bukannya makin bagus malah makin gak jelas, contoh perubahan tampilan di
@@ -456,33 +508,28 @@ topik:
     nomor: 2
     teks: Parah makin jelek aj aplikasi ini..bnyk kecewa
     likes: 201
-  - kategori: Layanan Pelanggan & Pemblokiran Akun
-    nomor: 1
-    teks: Sebelum di update sudah ada "BUG"nya, setelah di update malah tambah banyak!!! Mau logout malah
-      tidak bisa, layar tertutup tulisan-tulisan TIDAK JELAS, tidak bisa di geser atau dipindah!!! Mana
-      secara tampilan tidak ada perubahan, fungsi-fungsinya masih sama. Lama-lama aku UNINSTAL aplikasi
-      ini!!!
-    likes: 2375
-  - kategori: Layanan Pelanggan & Pemblokiran Akun
-    nomor: 2
-    teks: Jawaban Customer Service sangat tidak solutif. Memang sudah saatnya beralih ke Aplikasi sebelah
-    likes: 1386
   ngram_pengemudi:
-    frekuensi: 55934
-    n_dokumen: 35519
+    frekuensi: 56289
+    n_dokumen: 35532
     pct_dokumen: 28.2
   ngram_dapat_pengemudi:
-    frekuensi: 8863
-    n_dokumen: 7692
+    frekuensi: 8862
+    n_dokumen: 7691
     pct_dokumen: 6.1
   ngram_tidak:
-    frekuensi: 120888
-    n_dokumen: 75146
-    pct_dokumen: 59.7
+    frekuensi: 122019
+    n_dokumen: 75715
+    pct_dokumen: 60.2
   source_table: docs/tables/topics_ranked.csv
 validasi_silang:
-  status: MENUNGGU — validasi silang oleh penilai independen belum dikerjakan untuk data scraping
-  berkas_yang_harus_diisi: docs/tables/cross_validation_sample_50.csv -> *_reviewed.csv
+  n_sampel: 50
+  cohen_kappa: 0.543
+  kesepakatan_longgar: 0.78
+  pct_kesepakatan_longgar: 78.0
+  kesepakatan_ketat: 0.62
+  pct_kesepakatan_ketat: 62.0
+  jaccard_rerata: 0.615
+  source_table: docs/tables/h9_hasil_kesepakatan.csv
 tren:
   n_bulan: 60
   volume_tertinggi_bulan: 2021-11
@@ -493,105 +540,105 @@ tren:
   bulan_penuh_akhir: 2026-09
   rata_rating_awal: 3.98
   rata_rating_akhir: 2.9
-  puncak_kategori: Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan
+  puncak_kategori: Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan
   puncak_bulan: 2021-11
-  puncak_jumlah: 2128
+  puncak_jumlah: 2124
   kategori_bulan_penuh_awal_vs_akhir:
-    Akun, Login & Pembaruan Aplikasi:
-      awal: 671
-      akhir: 55
-    Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan:
-      awal: 1310
+    Kendala Penggunaan Aplikasi & Akses Akun:
+      awal: 1225
+      akhir: 87
+    Layanan Pelanggan & Penanganan Keluhan:
+      awal: 1368
+      akhir: 498
+    Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan:
+      awal: 1309
       akhir: 950
-    Layanan Pelanggan & Pemblokiran Akun:
-      awal: 1507
-      akhir: 466
     Tarif, Ongkir & Promo:
-      awal: 1028
-      akhir: 494
-    Transaksi & Saldo GoPay:
-      awal: 1540
-      akhir: 318
+      awal: 879
+      akhir: 450
+    Transaksi, Saldo & Pemblokiran GoPay:
+      awal: 1394
+      akhir: 216
   source_table: docs/tables/topic_trend_monthly.csv
 pola_sentimen_rm3:
   label: prediksi logistic_regression_final
-  pct_negatif_keseluruhan: 31.99
+  pct_negatif_keseluruhan: 31.98
   bulanan_pct_negatif:
     2021-10: 26.45
-    2021-11: 27.8
-    2021-12: 29.35
-    2022-01: 27.18
-    2022-02: 24.82
+    2021-11: 27.83
+    2021-12: 29.31
+    2022-01: 27.16
+    2022-02: 24.79
     2022-03: 22.32
     2022-04: 26.04
-    2022-05: 38.98
-    2022-06: 20.63
-    2022-07: 21.7
-    2022-08: 24.69
-    2022-09: 29.52
-    2022-10: 31.92
+    2022-05: 39.01
+    2022-06: 20.67
+    2022-07: 21.65
+    2022-08: 24.75
+    2022-09: 29.56
+    2022-10: 31.88
     2022-11: 35.28
-    2022-12: 29.05
-    2023-01: 31.26
-    2023-02: 33.35
-    2023-03: 35.83
-    2023-04: 40.6
-    2023-05: 35.56
-    2023-06: 34.06
-    2023-07: 26.41
-    2023-08: 37.91
-    2023-09: 37.3
-    2023-10: 39.07
-    2023-11: 38.02
-    2023-12: 44.42
-    2024-01: 36.29
-    2024-02: 37.75
-    2024-03: 40.36
-    2024-04: 43.18
-    2024-05: 32.32
-    2024-06: 30.75
-    2024-07: 27.75
-    2024-08: 26.64
-    2024-09: 29.57
-    2024-10: 33.92
-    2024-11: 40.38
-    2024-12: 38.92
-    2025-01: 35.73
-    2025-02: 32.93
-    2025-03: 36.72
-    2025-04: 37.16
-    2025-05: 28.79
-    2025-06: 30.65
-    2025-07: 32.24
-    2025-08: 37.09
-    2025-09: 31.57
-    2025-10: 38.37
-    2025-11: 38.72
-    2025-12: 42.26
-    2026-01: 41.51
-    2026-02: 43.16
-    2026-03: 51.11
-    2026-04: 37.54
-    2026-05: 33.75
-    2026-06: 34.09
-    2026-07: 45.44
-    2026-08: 51.69
-    2026-09: 56.72
+    2022-12: 29.01
+    2023-01: 31.19
+    2023-02: 33.4
+    2023-03: 35.75
+    2023-04: 40.47
+    2023-05: 35.54
+    2023-06: 34.03
+    2023-07: 26.39
+    2023-08: 37.88
+    2023-09: 37.27
+    2023-10: 39.01
+    2023-11: 37.93
+    2023-12: 44.34
+    2024-01: 36.32
+    2024-02: 37.74
+    2024-03: 40.38
+    2024-04: 43.17
+    2024-05: 32.33
+    2024-06: 30.78
+    2024-07: 27.61
+    2024-08: 26.63
+    2024-09: 29.67
+    2024-10: 33.94
+    2024-11: 40.51
+    2024-12: 39.01
+    2025-01: 35.78
+    2025-02: 32.88
+    2025-03: 36.77
+    2025-04: 37.09
+    2025-05: 28.71
+    2025-06: 30.61
+    2025-07: 32.28
+    2025-08: 37.14
+    2025-09: 31.47
+    2025-10: 38.25
+    2025-11: 38.74
+    2025-12: 42.31
+    2026-01: 41.44
+    2026-02: 43.05
+    2026-03: 51.15
+    2026-04: 37.56
+    2026-05: 33.77
+    2026-06: 34.12
+    2026-07: 45.47
+    2026-08: 51.62
+    2026-09: 56.62
   bulan_parsial: []
   bulan_penuh_pct_negatif_terendah:
     bulan: 2022-06
-    pct: 20.63
+    pct: 20.67
   bulan_penuh_pct_negatif_tertinggi:
     bulan: 2026-09
-    pct: 56.72
+    pct: 56.62
   n_versi_dianalisis: 198
   n_ulasan_versi_dianalisis: 410313
   versi_pct_negatif_terendah:
     versi: '4.13'
-    pct: 18.23
+    pct: 17.66
   versi_pct_negatif_tertinggi:
     versi: '5.75'
-    pct: 61.46
+    pct: 60.63
   status_uji_rm3: BELUM DIIMPLEMENTASIKAN — uji chi-kuadrat & penandaan rilis
   source_table: data/processed/review_scores.parquet
 angka_struktural:

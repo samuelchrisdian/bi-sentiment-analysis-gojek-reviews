@@ -23,7 +23,7 @@ AMBANG_INFORMATIF = CFG["evaluation"]["informative_min_words"]
 
 # Angka resmi Fase 3 (docs/model_comparison_findings.md). Dipakai sebagai
 # pengaman regresi, bukan sebagai dokumentasi.
-FASE3 = {"n_labeled": 504208, "n_train": 403366, "n_test": 100842, "n_train_dedup": 223244}
+FASE3 = {"n_labeled": 504208, "n_train": 403366, "n_test": 100842, "n_train_dedup": 222308}
 
 
 def muat_parquet() -> pd.DataFrame:

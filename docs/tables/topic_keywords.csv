@@ -1,126 +1,126 @@
 topic_id,kategori,keyword,rank,bobot,relevance,df_korpus,lift,n_gram,n_dokumen
-1,"Akun, Login & Pembaruan Aplikasi",upgrade,1,0.006064,-2.3669,0.0156,2.05,1,
-1,"Akun, Login & Pembaruan Aplikasi",ktp,2,0.005101,-2.3749,0.0093,2.06,1,
-1,"Akun, Login & Pembaruan Aplikasi",login,3,0.005127,-2.6033,0.0181,2.13,1,
-1,"Akun, Login & Pembaruan Aplikasi",instal,4,0.003583,-2.7274,0.0113,2.08,1,
-1,"Akun, Login & Pembaruan Aplikasi",verifikasi,5,0.002962,-2.9102,0.0101,2.01,1,
-1,"Akun, Login & Pembaruan Aplikasi",log,6,0.001132,-3.4618,0.0036,2.03,1,
-1,"Akun, Login & Pembaruan Aplikasi",buram,7,0.000541,-3.4864,0.0006,2.15,1,
-1,"Akun, Login & Pembaruan Aplikasi",sinyal,8,0.001241,-3.6076,0.0069,2.1,1,
-1,"Akun, Login & Pembaruan Aplikasi",vivo,9,0.00041,-3.675,0.0006,2.21,1,
-1,"Akun, Login & Pembaruan Aplikasi",selfi,10,0.000484,-3.6826,0.0008,2.13,1,
-1,"Akun, Login & Pembaruan Aplikasi",login aja,1,0.993464,,,,2,153.0
-1,"Akun, Login & Pembaruan Aplikasi",bisa instal,2,0.98895,,,,2,181.0
-1,"Akun, Login & Pembaruan Aplikasi",bisa unduh,3,0.988636,,,,2,264.0
-1,"Akun, Login & Pembaruan Aplikasi",mau upgrade,4,0.987382,,,,2,317.0
-1,"Akun, Login & Pembaruan Aplikasi",instal ulang,5,0.986376,,,,2,367.0
-1,"Akun, Login & Pembaruan Aplikasi",mau login,6,0.98583,,,,2,494.0
-1,"Akun, Login & Pembaruan Aplikasi",suruh pembaruan,7,0.977477,,,,2,222.0
-1,"Akun, Login & Pembaruan Aplikasi",pakai nomor,8,0.971731,,,,2,283.0
-1,"Akun, Login & Pembaruan Aplikasi",verifikasi wajah,9,0.968127,,,,2,251.0
-1,"Akun, Login & Pembaruan Aplikasi",mau daftar,10,0.966777,,,,2,301.0
-1,"Akun, Login & Pembaruan Aplikasi",internet mati,11,0.962766,,,,2,188.0
-1,"Akun, Login & Pembaruan Aplikasi",ganggu terus,12,0.960526,,,,2,152.0
-1,"Akun, Login & Pembaruan Aplikasi",bisa login,13,0.958888,,,,2,827.0
-1,"Akun, Login & Pembaruan Aplikasi",padahal pembaruan,14,0.957831,,,,2,166.0
-1,"Akun, Login & Pembaruan Aplikasi",padahal internet,15,0.95625,,,,2,160.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",dapat,1,0.040901,-1.3638,0.1383,2.26,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",pesan,2,0.033288,-1.5057,0.117,2.07,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",order,3,0.022713,-1.7347,0.0796,2.3,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",batal,4,0.024064,-1.8343,0.1142,2.62,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu,5,0.020271,-1.9056,0.0961,2.62,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh,6,0.015576,-1.9256,0.0527,2.71,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",restoran,7,0.01361,-1.9445,0.0348,2.11,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",sen,8,0.014373,-1.9497,0.0489,2.09,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",cari,9,0.013424,-2.0189,0.0507,2.62,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",jam,10,0.014246,-2.1636,0.0737,2.69,1,
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",gofood tunggu,1,0.954918,,,,2,244.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu dapat,2,0.95092,,,,2,163.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi jam,3,0.941581,,,,2,291.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi sekali,4,0.938776,,,,2,196.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",lama cari,5,0.936937,,,,2,222.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi tunggu,6,0.933002,,,,2,403.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh titik,7,0.924731,,,,2,186.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh pengemudi,8,0.92053,,,,2,151.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu pengemudi,9,0.917986,,,,2,695.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",dapat jauh,10,0.917226,,,,2,447.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",estimasi waktu,11,0.913043,,,,2,184.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",sekali dapat,12,0.912593,,,,2,675.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",waktu tunggu,13,0.911854,,,,2,329.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh lokasi,14,0.911765,,,,2,170.0
-2,"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi dekat,15,0.911141,,,,2,754.0
-4,Layanan Pelanggan & Pemblokiran Akun,layan,1,0.031703,-1.4479,0.0914,3.38,1,
-4,Layanan Pelanggan & Pemblokiran Akun,pelanggan,2,0.029767,-1.516,0.0916,3.41,1,
-4,Layanan Pelanggan & Pemblokiran Akun,blokir,3,0.019062,-1.5199,0.0303,2.68,1,
-4,Layanan Pelanggan & Pemblokiran Akun,guna,4,0.018028,-1.7881,0.056,2.46,1,
-4,Layanan Pelanggan & Pemblokiran Akun,kasih,5,0.016313,-1.8915,0.0589,2.01,1,
-4,Layanan Pelanggan & Pemblokiran Akun,bantu,6,0.013016,-1.8955,0.0332,3.34,1,
-4,Layanan Pelanggan & Pemblokiran Akun,aku,7,0.014096,-1.9133,0.0328,2.49,1,
-4,Layanan Pelanggan & Pemblokiran Akun,masalah,8,0.012588,-1.959,0.0361,3.05,1,
-4,Layanan Pelanggan & Pemblokiran Akun,mohon,9,0.010065,-2.0016,0.0239,2.11,1,
-4,Layanan Pelanggan & Pemblokiran Akun,lapor,10,0.010129,-2.0583,0.0254,3.56,1,
-4,Layanan Pelanggan & Pemblokiran Akun,layan layan,1,0.802817,,,,2,213.0
-4,Layanan Pelanggan & Pemblokiran Akun,selesai masalah,2,0.775401,,,,2,374.0
-4,Layanan Pelanggan & Pemblokiran Akun,beri solusi,3,0.771084,,,,2,249.0
-4,Layanan Pelanggan & Pemblokiran Akun,pelanggan layan,4,0.711813,,,,2,982.0
-4,Layanan Pelanggan & Pemblokiran Akun,slow respons,5,0.689441,,,,2,161.0
-4,Layanan Pelanggan & Pemblokiran Akun,ada selesai,6,0.668203,,,,2,217.0
-4,Layanan Pelanggan & Pemblokiran Akun,hubung layan,7,0.665753,,,,2,365.0
-4,Layanan Pelanggan & Pemblokiran Akun,pelanggan gojek,8,0.66087,,,,2,575.0
-4,Layanan Pelanggan & Pemblokiran Akun,layan sangat,9,0.658537,,,,2,246.0
-4,Layanan Pelanggan & Pemblokiran Akun,tidak beri,10,0.654945,,,,2,455.0
-4,Layanan Pelanggan & Pemblokiran Akun,tidak milik,11,0.654255,,,,2,188.0
-4,Layanan Pelanggan & Pemblokiran Akun,blokir tanpa,12,0.649635,,,,2,274.0
-4,Layanan Pelanggan & Pemblokiran Akun,bantu sama,13,0.643077,,,,2,325.0
-4,Layanan Pelanggan & Pemblokiran Akun,ada jawab,14,0.641509,,,,2,212.0
-4,Layanan Pelanggan & Pemblokiran Akun,ada balas,15,0.63522,,,,2,159.0
-3,"Tarif, Ongkir & Promo",makin,1,0.042257,-1.1544,0.0704,3.5,1,
-3,"Tarif, Ongkir & Promo",voucher,2,0.03087,-1.1601,0.0379,3.32,1,
-3,"Tarif, Ongkir & Promo",promo,3,0.030375,-1.2349,0.0453,3.53,1,
-3,"Tarif, Ongkir & Promo",kirim,4,0.033155,-1.2647,0.0643,4.51,1,
-3,"Tarif, Ongkir & Promo",biaya,5,0.023887,-1.4182,0.0379,6.02,1,
-3,"Tarif, Ongkir & Promo",sekarang,6,0.028158,-1.4971,0.0868,2.27,1,
-3,"Tarif, Ongkir & Promo",mahal,7,0.023885,-1.5168,0.0581,6.41,1,
-3,"Tarif, Ongkir & Promo",ongkos,8,0.019659,-1.6374,0.0434,7.15,1,
-3,"Tarif, Ongkir & Promo",harga,9,0.01875,-1.6457,0.0402,4.67,1,
-3,"Tarif, Ongkir & Promo",ribu,10,0.018105,-1.6802,0.033,4.29,1,
-3,"Tarif, Ongkir & Promo",biaya ongkos,1,0.898305,,,,2,177.0
-3,"Tarif, Ongkir & Promo",mahal ongkos,2,0.880631,,,,2,444.0
-3,"Tarif, Ongkir & Promo",mahal biaya,3,0.875648,,,,2,193.0
-3,"Tarif, Ongkir & Promo",kirim ribu,4,0.861702,,,,2,282.0
-3,"Tarif, Ongkir & Promo",kirim makin,5,0.857143,,,,2,168.0
-3,"Tarif, Ongkir & Promo",harga makan,6,0.855918,,,,2,583.0
-3,"Tarif, Ongkir & Promo",gratis ongkos,7,0.842697,,,,2,267.0
-3,"Tarif, Ongkir & Promo",mahal harga,8,0.833333,,,,2,198.0
-3,"Tarif, Ongkir & Promo",harga ongkos,9,0.824074,,,,2,216.0
-3,"Tarif, Ongkir & Promo",kirim gofood,10,0.81457,,,,2,302.0
-3,"Tarif, Ongkir & Promo",biaya penanganan,11,0.811159,,,,2,233.0
-3,"Tarif, Ongkir & Promo",terlalu mahal,12,0.80787,,,,2,432.0
-3,"Tarif, Ongkir & Promo",banyak biaya,13,0.791774,,,,2,389.0
-3,"Tarif, Ongkir & Promo",kirim mahal,14,0.785064,,,,2,549.0
-3,"Tarif, Ongkir & Promo",makin mahal,15,0.77266,,,,2,1346.0
-0,Transaksi & Saldo GoPay,gopay,1,0.105399,-0.3257,0.1081,4.61,1,
-0,Transaksi & Saldo GoPay,saldo,2,0.048538,-0.8008,0.0517,6.47,1,
-0,Transaksi & Saldo GoPay,bayar,3,0.038064,-1.1924,0.0759,3.31,1,
-0,Transaksi & Saldo GoPay,up,4,0.023724,-1.2757,0.0314,6.52,1,
-0,Transaksi & Saldo GoPay,masuk,5,0.032643,-1.3083,0.0731,4.26,1,
-0,Transaksi & Saldo GoPay,uang,6,0.022433,-1.3241,0.029,3.98,1,
-0,Transaksi & Saldo GoPay,hari,7,0.025805,-1.3797,0.0491,3.85,1,
-0,Transaksi & Saldo GoPay,transaksi,8,0.018529,-1.4265,0.0237,4.89,1,
-0,Transaksi & Saldo GoPay,isi,9,0.015732,-1.4652,0.0185,5.25,1,
-0,Transaksi & Saldo GoPay,transfer,10,0.015818,-1.4985,0.0199,5.25,1,
-0,Transaksi & Saldo GoPay,masuk saldo,1,0.68662,,,,2,284.0
-0,Transaksi & Saldo GoPay,belum masuk,2,0.634259,,,,2,648.0
-0,Transaksi & Saldo GoPay,up saldo,3,0.565714,,,,2,350.0
-0,Transaksi & Saldo GoPay,gopay saldo,4,0.550296,,,,2,169.0
-0,Transaksi & Saldo GoPay,tidak tambah,5,0.550296,,,,2,169.0
-0,Transaksi & Saldo GoPay,masuk masuk,6,0.521866,,,,2,343.0
-0,Transaksi & Saldo GoPay,jatuh tempo,7,0.520833,,,,2,480.0
-0,Transaksi & Saldo GoPay,hari denda,8,0.517045,,,,2,176.0
-0,Transaksi & Saldo GoPay,telat hari,9,0.492718,,,,2,412.0
-0,Transaksi & Saldo GoPay,kembali saldo,10,0.481928,,,,2,166.0
-0,Transaksi & Saldo GoPay,kena denda,11,0.466667,,,,2,285.0
-0,Transaksi & Saldo GoPay,denda ribu,12,0.465863,,,,2,249.0
-0,Transaksi & Saldo GoPay,gopay potong,13,0.450909,,,,2,275.0
-0,Transaksi & Saldo GoPay,saldo tidak,14,0.446657,,,,2,703.0
-0,Transaksi & Saldo GoPay,saldo go,15,0.441558,,,,2,154.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,buka,1,0.012406,-1.9968,0.0374,2.03,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,ponsel,2,0.007746,-2.3108,0.0238,2.05,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,upgrade,3,0.006124,-2.3552,0.0156,2.2,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,ktp,4,0.005138,-2.3657,0.0093,2.26,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,daftar,5,0.005767,-2.5012,0.0183,2.07,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,login,6,0.00518,-2.5917,0.0181,2.37,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,unduh,7,0.004146,-2.6131,0.0121,2.13,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,kode,8,0.003911,-2.6761,0.0112,2.13,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,instal,9,0.003612,-2.718,0.0113,2.27,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,otp,10,0.002838,-2.8661,0.0081,2.31,1,
+3,Kendala Penggunaan Aplikasi & Akses Akun,login aja,1,1.0,,,,2,153.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,bisa instal,2,0.989071,,,,2,183.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,mau login,3,0.987854,,,,2,494.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,bisa unduh,4,0.984906,,,,2,265.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,otp nya,5,0.984211,,,,2,190.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,instal ulang,6,0.983651,,,,2,367.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,pakai nomor,7,0.982394,,,,2,284.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,mau upgrade,8,0.977918,,,,2,317.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,padahal internet,9,0.975,,,,2,160.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,pakai wi-fi,10,0.973077,,,,2,260.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,login akun,11,0.97093,,,,2,172.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,ganti pin,12,0.964758,,,,2,227.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,suruh pembaruan,13,0.964286,,,,2,224.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,padahal jaring,14,0.963889,,,,2,360.0
+3,Kendala Penggunaan Aplikasi & Akses Akun,jaring bagus,15,0.961373,,,,2,233.0
+1,Layanan Pelanggan & Penanganan Keluhan,layan,1,0.031525,-1.4515,0.0914,3.12,1,
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan,2,0.029618,-1.5191,0.0916,3.18,1,
+1,Layanan Pelanggan & Penanganan Keluhan,kasih,3,0.017235,-1.8352,0.0589,2.1,1,
+1,Layanan Pelanggan & Penanganan Keluhan,bantu,4,0.013457,-1.884,0.0348,3.03,1,
+1,Layanan Pelanggan & Penanganan Keluhan,aku,5,0.014327,-1.9034,0.0336,2.75,1,
+1,Layanan Pelanggan & Penanganan Keluhan,masalah,6,0.012244,-1.9848,0.0361,2.92,1,
+1,Layanan Pelanggan & Penanganan Keluhan,mohon,7,0.009764,-2.0302,0.0239,2.08,1,
+1,Layanan Pelanggan & Penanganan Keluhan,guna,8,0.014074,-2.0468,0.0579,2.29,1,
+1,Layanan Pelanggan & Penanganan Keluhan,pihak,9,0.010167,-2.0761,0.0282,2.56,1,
+1,Layanan Pelanggan & Penanganan Keluhan,bintang,10,0.01019,-2.0763,0.0283,2.82,1,
+1,Layanan Pelanggan & Penanganan Keluhan,tidak milik,1,0.808511,,,,2,188.0
+1,Layanan Pelanggan & Penanganan Keluhan,layan layan,2,0.778802,,,,2,217.0
+1,Layanan Pelanggan & Penanganan Keluhan,sopir tidak,3,0.772222,,,,2,180.0
+1,Layanan Pelanggan & Penanganan Keluhan,selesai masalah,4,0.762032,,,,2,374.0
+1,Layanan Pelanggan & Penanganan Keluhan,beri solusi,5,0.759036,,,,2,249.0
+1,Layanan Pelanggan & Penanganan Keluhan,pengalaman buruk,6,0.688525,,,,2,183.0
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan layan,7,0.685976,,,,2,984.0
+1,Layanan Pelanggan & Penanganan Keluhan,bahkan tidak,8,0.660338,,,,2,474.0
+1,Layanan Pelanggan & Penanganan Keluhan,layan sangat,9,0.658537,,,,2,246.0
+1,Layanan Pelanggan & Penanganan Keluhan,lambat respons,10,0.649289,,,,2,211.0
+1,Layanan Pelanggan & Penanganan Keluhan,tidak baik,11,0.633987,,,,2,153.0
+1,Layanan Pelanggan & Penanganan Keluhan,pelanggan gojek,12,0.633043,,,,2,575.0
+1,Layanan Pelanggan & Penanganan Keluhan,tidak beri,13,0.632967,,,,2,455.0
+1,Layanan Pelanggan & Penanganan Keluhan,respons sama,14,0.631902,,,,2,163.0
+1,Layanan Pelanggan & Penanganan Keluhan,hubung layan,15,0.628415,,,,2,366.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",dapat,1,0.03897,-1.4193,0.1383,2.17,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",pesan,2,0.03113,-1.5707,0.117,2.0,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",order,3,0.021282,-1.7978,0.0796,2.29,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",batal,4,0.022716,-1.8917,0.1142,2.52,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh,5,0.015657,-1.9427,0.0523,2.68,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu,6,0.019018,-1.9687,0.0961,2.53,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",sen,7,0.013488,-2.0117,0.049,2.2,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",restoran,8,0.012678,-2.0148,0.0348,2.08,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",cari,9,0.012664,-2.0776,0.0507,2.6,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",jam,10,0.013581,-2.2156,0.0737,2.64,1,
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",ujung batal,1,0.980263,,,,2,152.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",gofood tunggu,2,0.963115,,,,2,244.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu dapat,3,0.957055,,,,2,163.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",dapat jauh,4,0.955257,,,,2,447.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi sekali,5,0.954082,,,,2,196.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi jam,6,0.95189,,,,2,291.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",lama cari,7,0.945946,,,,2,222.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh jadi,8,0.94,,,,2,150.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu pengemudi,9,0.938129,,,,2,695.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",hujan susah,10,0.936937,,,,2,222.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",jauh titik,11,0.935484,,,,2,186.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",pengemudi tunggu,12,0.935484,,,,2,403.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",dapat dapat,13,0.930359,,,,2,919.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",tunggu makan,14,0.92944,,,,2,411.0
+2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",selalu jauh,15,0.928571,,,,2,168.0
+4,"Tarif, Ongkir & Promo",makin,1,0.045902,-1.0696,0.0704,3.49,1,
+4,"Tarif, Ongkir & Promo",voucher,2,0.033583,-1.0752,0.0379,3.26,1,
+4,"Tarif, Ongkir & Promo",promo,3,0.033393,-1.143,0.0453,3.53,1,
+4,"Tarif, Ongkir & Promo",kirim,4,0.036791,-1.168,0.0655,4.41,1,
+4,"Tarif, Ongkir & Promo",biaya,5,0.027859,-1.2846,0.0395,5.93,1,
+4,"Tarif, Ongkir & Promo",mahal,6,0.026167,-1.4279,0.0581,6.53,1,
+4,"Tarif, Ongkir & Promo",ongkos,7,0.021351,-1.5526,0.0434,7.18,1,
+4,"Tarif, Ongkir & Promo",harga,8,0.02039,-1.5607,0.0402,4.75,1,
+4,"Tarif, Ongkir & Promo",tambah,9,0.015267,-1.6824,0.0289,2.97,1,
+4,"Tarif, Ongkir & Promo",diskon,10,0.013823,-1.6886,0.0197,4.61,1,
+4,"Tarif, Ongkir & Promo",mahal ongkos,1,0.894144,,,,2,444.0
+4,"Tarif, Ongkir & Promo",biaya ongkos,2,0.882682,,,,2,179.0
+4,"Tarif, Ongkir & Promo",kirim biaya,3,0.871166,,,,2,163.0
+4,"Tarif, Ongkir & Promo",kirim ribu,4,0.866667,,,,2,285.0
+4,"Tarif, Ongkir & Promo",mahal biaya,5,0.865979,,,,2,194.0
+4,"Tarif, Ongkir & Promo",kirim makin,6,0.847059,,,,2,170.0
+4,"Tarif, Ongkir & Promo",harga makan,7,0.830189,,,,2,583.0
+4,"Tarif, Ongkir & Promo",mahal harga,8,0.828283,,,,2,198.0
+4,"Tarif, Ongkir & Promo",biaya penanganan,9,0.824034,,,,2,233.0
+4,"Tarif, Ongkir & Promo",terlalu mahal,10,0.819444,,,,2,432.0
+4,"Tarif, Ongkir & Promo",harga ongkos,11,0.814815,,,,2,216.0
+4,"Tarif, Ongkir & Promo",kirim gofood,12,0.811075,,,,2,307.0
+4,"Tarif, Ongkir & Promo",banyak biaya,13,0.803483,,,,2,402.0
+4,"Tarif, Ongkir & Promo",gratis ongkos,14,0.801498,,,,2,267.0
+4,"Tarif, Ongkir & Promo",makin mahal,15,0.784707,,,,2,1347.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",gopay,1,0.103498,-0.3418,0.1081,4.36,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",saldo,2,0.047652,-0.8171,0.0517,5.37,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",blokir,3,0.03708,-0.8537,0.0303,3.79,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",bayar,4,0.037454,-1.2074,0.0759,3.57,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",up,5,0.023304,-1.2918,0.0314,5.68,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",top,6,0.018055,-1.4377,0.0239,7.26,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",transaksi,7,0.01819,-1.4431,0.0237,4.57,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",uang,8,0.019584,-1.458,0.029,3.19,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",isi,9,0.015487,-1.4796,0.0185,4.42,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",transfer,10,0.015532,-1.515,0.0199,4.5,1,
+0,"Transaksi, Saldo & Pemblokiran GoPay",hari denda,1,0.767045,,,,2,176.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",denda ribu,2,0.75502,,,,2,249.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",masuk saldo,3,0.690141,,,,2,284.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",telat hari,4,0.68932,,,,2,412.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",jatuh tempo,5,0.666667,,,,2,480.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",belum masuk,6,0.638109,,,,2,677.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",gopay saldo,7,0.615385,,,,2,169.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",up saldo,8,0.588571,,,,2,350.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",tidak tambah,9,0.561404,,,,2,171.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",kena denda,10,0.554386,,,,2,285.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",telat bayar,11,0.521739,,,,2,552.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",kembali saldo,12,0.475904,,,,2,166.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",masuk masuk,13,0.472834,,,,2,681.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",gopay pinjam,14,0.470517,,,,2,831.0
+0,"Transaksi, Saldo & Pemblokiran GoPay",up gopay,15,0.469466,,,,2,786.0
