@@ -17,7 +17,8 @@ OUT = ROOT / "ml" / "src" / "slang_dict.py"
 
 HEADER = '''"""Kamus normalisasi slang — DIHASILKAN OTOMATIS, JANGAN DISUNTING TANGAN.
 
-Sumber  : docs/tables/token_normalisasi_terisi.csv (diisi manusia, gerbang H-5)
+Sumber  : docs/tables/token_normalisasi_terisi.csv, token_normalisasi_tambahan.csv,
+          unknown_tokens_baru_scraping_reviewed.csv (seluruhnya diisi manusia)
 Pembuat : python -m ml.src.build_slang_dict
 
 SLANG_DICT memetakan token informal ke daftar token baku. Nilainya berupa list
@@ -59,6 +60,24 @@ def main() -> None:
                 peta[tok] = baku.split()
                 n_tambahan += 1
         print(f"  tambahan H-6: {n_tambahan} pemetaan")
+
+    # Tambahan data scraping: 60 token tak dikenal berfrekuensi tertinggi pada
+    # data baru, diputuskan manusia. Kolom `buang` berisi ya/tidak. Berkas ini
+    # dibaca terakhir, sehingga entrinya menggantikan entri lama (mis. `goceng`).
+    scraping = ROOT / "docs" / "tables" / "unknown_tokens_baru_scraping_reviewed.csv"
+    if scraping.exists():
+        s = pd.read_csv(scraping, keep_default_na=False, encoding="utf-8-sig")
+        n_peta = n_buang = 0
+        for r in s.itertuples():
+            tok, baku = str(r.token_asli).strip().lower(), str(r.bentuk_baku).strip().lower()
+            if str(r.buang).strip().lower() == "ya":
+                peta.pop(tok, None)
+                buang = sorted(set(buang) | {tok})
+                n_buang += 1
+            elif tok and baku:
+                peta[tok] = baku.split()
+                n_peta += 1
+        print(f"  tambahan data scraping: {n_peta} pemetaan, {n_buang} dibuang")
 
     lines = [HEADER, "SLANG_DICT: dict[str, list[str]] = {\n"]
     def _freq(t: str) -> int:

@@ -115,6 +115,20 @@ def _penanganan_bahasa() -> dict:
     meta = resolve(cfg, "translation.output_csv").with_suffix(".meta.json")
     if out["mode"] == "translate" and meta.exists():
         out["terjemahan"] = json.loads(meta.read_text())
+    if not ada_tabel("audit_terjemahan_sampel_50_reviewed"):
+        out["audit_manual"] = menunggu("audit manual terjemahan",
+                                       "docs/tables/audit_terjemahan_sampel_50.csv -> *_reviewed.csv")
+        return out
+    a = tabel("audit_terjemahan_sampel_50_reviewed")
+    ya = lambda c: int((a[c].astype(str).str.strip().str.lower() == "ya").sum())
+    out["audit_manual"] = {
+        "n_sampel": int(len(a)),
+        "n_deteksi_benar": ya("deteksi_benar_inggris"),
+        "pct_deteksi_benar": r(ya("deteksi_benar_inggris") / len(a) * 100, 1),
+        "n_terjemahan_layak": ya("terjemahan_layak"),
+        "pct_terjemahan_layak": r(ya("terjemahan_layak") / len(a) * 100, 1),
+        "source_table": "docs/tables/audit_terjemahan_sampel_50_reviewed.csv",
+    }
     return out
 
 
@@ -614,9 +628,13 @@ def fakta_preprocessing() -> dict:
     def n_dok(frasa: str) -> int:
         return int(teks.str.contains(rf"\b{_re.escape(frasa)}\b", regex=True).sum())
 
-    berkas = [f"preprocessing_sample_{s}_reviewed" for s in ("100", "ronde2", "ronde3")]
-    n_sampel = (sum(len(tabel(b)) for b in berkas if ada_tabel(b))
-                if any(ada_tabel(b) for b in berkas) else None)
+    # Putaran verifikasi: sampel_100, lalu ronde2, ronde3, ... Sebuah putaran
+    # dihitung bila berkas `_reviewed`-nya ada. Verifikasi belum selesai selama
+    # masih ada berkas sampel yang belum dikembalikan sebagai `_reviewed`.
+    nama = ["preprocessing_sample_100"] + [f"preprocessing_sample_ronde{i}" for i in range(2, 10)]
+    selesai = [b for b in nama if ada_tabel(f"{b}_reviewed")]
+    tertunda = [b for b in nama if ada_tabel(b) and not ada_tabel(f"{b}_reviewed")]
+    n_sampel = sum(len(tabel(f"{b}_reviewed")) for b in selesai) if selesai else None
     return {
         "n_baris": int(len(df)),
         "teks_kosong_akhir": int((teks.str.strip() == "").sum()),
@@ -627,10 +645,10 @@ def fakta_preprocessing() -> dict:
         ),
         "n_negation_keep": int(len(NEGATION_KEEP)),
         "n_sampel_verifikasi_manual": n_sampel,
-        "n_putaran_verifikasi": None if n_sampel is None else 3,
+        "n_putaran_verifikasi": len(selesai) or None,
         "status_verifikasi_manual": (
-            "MENUNGGU — verifikasi manual sampel pra-pemrosesan data scraping "
-            "(docs/tables/preprocessing_sample_100.csv)" if n_sampel is None else "selesai"),
+            f"MENUNGGU — verifikasi manual sampel pra-pemrosesan data scraping "
+            f"(docs/tables/{tertunda[0]}.csv)" if tertunda else "selesai"),
         "dok_tidak": n_dok("tidak"),
         "dok_tidak_bisa": n_dok("tidak bisa"),
         "dok_tidak_ada": n_dok("tidak ada"),

@@ -72,6 +72,27 @@ def bangun_berkas_kerja() -> tuple[pd.DataFrame, pd.DataFrame]:
     return err, sampel[KOLOM]
 
 
+def pertahankan_label(err: pd.DataFrame, sampel: pd.DataFrame,
+                      lama: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """Pertahankan sampel yang sudah dilabeli manusia saat pipeline dijalankan ulang.
+
+    Ulasan pada `lama` yang MASIH salah diprediksi model baru tetap dipakai
+    beserta label penyebabnya. Yang kini diprediksi benar diganti kesalahan
+    acak baru (random_state sama) dengan kolom `kategori_penyebab` kosong.
+    Mengembalikan sampel gabungan dan jumlah baris pengganti.
+    """
+    lama = lama.set_index("id")
+    tetap = err[err["id"].isin(lama.index)].copy()
+    tetap["kategori_penyebab"] = tetap["id"].map(lama["kategori_penyebab"]).fillna("")
+    tetap["catatan"] = tetap["id"].map(lama["catatan"]).fillna("")
+    n_ganti = N_SAMPEL - len(tetap)
+    pengganti = (err[~err["id"].isin(lama.index)]
+                 .sample(n_ganti, random_state=SEED)
+                 .assign(kategori_penyebab="", catatan=""))
+    gabung = pd.concat([tetap, pengganti]).sort_values("jarak_ke_batas")
+    return gabung[KOLOM], n_ganti
+
+
 def profil_kesalahan(err: pd.DataFrame, n_test: int) -> pd.DataFrame:
     """Statistik yang murni mekanis — tidak menyentuh penyebab."""
     tot = len(err)
@@ -135,11 +156,22 @@ if __name__ == "__main__":
     err, sampel = bangun_berkas_kerja()
     d_n_test = FASE3["n_test"]
     p = ROOT / "docs" / "tables" / "error_analysis_50.csv"
-    sampel.to_csv(p, index=False)
+    p_rev = p.with_name("error_analysis_50_reviewed.csv")
+    if p_rev.exists():
+        # Label manusia dari run sebelumnya dipertahankan (lihat pertahankan_label).
+        sampel, n_ganti = pertahankan_label(err, sampel, pd.read_csv(p_rev, keep_default_na=False))
+        sampel.to_csv(p, index=False)
+        if n_ganti == 0:
+            sampel.to_csv(p_rev, index=False)
+        else:
+            p_rev.rename(p_rev.with_name("error_analysis_50_reviewed_sebelumnya.csv"))
+        print(f"Label dipertahankan: {N_SAMPEL - n_ganti}; baris pengganti yang perlu "
+              f"dilabeli: {n_ganti}")
+    else:
+        sampel.to_csv(p, index=False)
 
     print(f"Model diperiksa : {MODEL_DIPERIKSA}_tuned")
-    print(f"Disimpan        : {p.relative_to(ROOT)} "
-          f"({len(sampel)} baris, kolom `kategori_penyebab` KOSONG)\n")
+    print(f"Disimpan        : {p.relative_to(ROOT)} ({len(sampel)} baris)\n")
     print("Profil kesalahan (mekanis, bukan penyebab):")
     print(profil_kesalahan(err, d_n_test).to_string(index=False))
     print("\nTumpang tindih kesalahan antar model (Jaccard):")

@@ -43,6 +43,7 @@ RE_PUNCT = re.compile(r"[^a-z\s]")               # sisakan huruf & spasi
 RE_REPEAT = re.compile(r"(.)\1{2,}")             # 3+ huruf identik -> 1
 RE_SPACE = re.compile(r"\s+")
 RE_EKOR = re.compile(r"(\w)\1+\b")            # huruf ganda di akhir kata
+_PENGUBAH_EMOJI = "[\U0001F3FB-\U0001F3FF️‍]*"   # warna kulit, selektor varian
 
 # Normalisasi tingkat FRASA — dijalankan sebelum angka & tanda baca dibuang,
 # karena sebagiannya justru bergantung pada angka atau tanda hubung.
@@ -61,6 +62,16 @@ FRASA: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bbintang\s*4\b"), "bintang empat"),
     (re.compile(r"\bbintang\s*5\b"), "bintang lima"),
     (re.compile(r"\bb[#@*$]ng[a-z]{1,4}\b"), "bangsat"),   # umpatan tersamar: b#ngasd, b@ngsat
+    # Verifikasi data scraping putaran 1. "top up" sebelumnya menjadi
+    # "bagus up" karena `top` -> `bagus` dipetakan per token (3.304 ulasan,
+    # kebanyakan keluhan GoPay). Disatukan agar mengikuti entri `topup`.
+    (re.compile(r"\btop\s*-?\s*up\b"), "topup"),
+    # Kata ulang dengan angka: `mati2an` -> `mati matian`, `kata2nya` ->
+    # `kata katanya`. Sebelumnya angka dibuang sehingga akhiran tertinggal
+    # sebagai token sendiri (`an` -> `sekitar`). Tidak berlaku bila angka
+    # bersambung ke angka lain (`rp2.000`, `tahun2022`).
+    (re.compile(r"\b(?!rp\b)([a-z]{2,})[2²]([a-z]*)\b(?![.,]?\d)"), r"\1 \1\2"),
+    (re.compile(r"\bwas\s*-?\s*was\b"), "waswas"),   # `was` tunggal = bahasa Inggris, dibuang
 ]
 
 STOPWORDS = build_stopwords()
@@ -78,7 +89,9 @@ def bersihkan(teks: str, petakan_emoji: bool = False) -> str:
     if petakan_emoji:
         for emo, kata in EMOJI_MAP.items():       # sebelum non-ASCII dibuang
             if emo in t:
-                t = t.replace(emo, f" {kata} ")
+                # Emoji identik yang berurutan dihitung sekali: "🔥🔥🔥" -> "keren",
+                # bukan "keren keren keren" (verifikasi data scraping putaran 1).
+                t = re.sub(f"(?:{re.escape(emo)}{_PENGUBAH_EMOJI})+", f" {kata} ", t)
     if P["remove_url"]:
         t = RE_URL.sub(" ", t)
     t = RE_MENTION.sub(" ", t)
@@ -89,8 +102,32 @@ def bersihkan(teks: str, petakan_emoji: bool = False) -> str:
     if P["remove_punctuation"]:
         t = RE_PUNCT.sub(" ", t)          # tanda baca -> SPASI, bukan dihapus
     t = RE_REPEAT.sub(r"\1", t)
-    t = RE_EKOR.sub(r"\1", t)         # `jahatt` -> `jahat`, `mudahh` -> `mudah`
+    t = RE_KATA.sub(_ringkas_ekor, t)  # `jahatt` -> `jahat`, `mudahh` -> `mudah`
     return RE_SPACE.sub(" ", t).strip()
+
+
+RE_KATA = re.compile(r"\b[a-z]+\b")
+
+
+def _ringkas_ekor(m: re.Match) -> str:
+    """Huruf ganda di akhir kata diringkas, KECUALI kata itu entri kamus slang.
+
+    Verifikasi data scraping putaran 2 menemukan entri kamus yang berakhiran
+    huruf ganda tidak pernah berlaku karena sudah diringkas lebih dulu:
+    `gpp` -> `gp` (bukan "tidak apa-apa"), `fee` -> `fe`, `sll` -> `sl`,
+    `full` -> `ful`, `call` -> `cal`, `acc` -> `ac`, `shopee` -> `shope`.
+
+    Putaran 3 menambahkan akronim dan istilah yang memang berakhiran huruf
+    ganda: "go bill" menjadi "go bil", "SS" (tangkapan layar) menjadi "s", dan
+    pada putaran 2 "PBB" menjadi "pb".
+    """
+    w = m.group(0)
+    if w in SLANG_DICT or w in NOISE_TOKENS or w in EKOR_SAH:
+        return w
+    return RE_EKOR.sub(r"\1", w)
+
+
+EKOR_SAH = frozenset({"bill", "ss", "pbb", "cc"})
 
 
 # Ambang kata untuk pemetaan emoji. Lihat bersihkan_adaptif().
@@ -121,12 +158,27 @@ def bersihkan_adaptif(teks: str) -> str:
 
 # --------------------------------------------------------------- tahap 2 ---
 def normalisasi_token(tokens: list[str]) -> list[str]:
-    """Terapkan kamus slang per token; satu token dapat menjadi beberapa kata."""
+    """Terapkan kamus slang per token; satu token dapat menjadi beberapa kata.
+
+    Bila sebuah token dipetakan ke bentuk berhubung (`gara` -> `gara-gara`,
+    `ugal` -> `ugal-ugalan`), token berikutnya yang merupakan bagian dari bentuk
+    itu dilewati. Tanpa ini, "gara gara" menjadi "gara-gara gara-gara".
+    """
     out: list[str] = []
+    bagian: set[str] = set()
     for tok in tokens:
         if tok in NOISE_TOKENS:
             continue
-        out.extend(SLANG_DICT.get(tok, [tok]) if P["normalize_slang"] else [tok])
+        if tok in bagian:
+            bagian = set()
+            continue
+        baku = SLANG_DICT.get(tok, [tok]) if P["normalize_slang"] else [tok]
+        bagian = set()
+        if len(baku) == 1 and baku[0].count("-") == 1:
+            a, b = baku[0].split("-")
+            if b.startswith(a):                  # kata ulang, bukan `gocar-nya`
+                bagian = {a, b}
+        out.extend(baku)
     return out
 
 
@@ -259,13 +311,20 @@ def jalankan() -> pd.DataFrame:
     return out
 
 
-def sampel_verifikasi(df: pd.DataFrame, n: int = 100) -> pd.DataFrame:
-    """Sampel before/after untuk pemeriksaan manual (gerbang H-6)."""
-    s = df.sample(n, random_state=CFG["seed"])[
+def sampel_verifikasi(df: pd.DataFrame, n: int = 100,
+                      nama: str = "preprocessing_sample_100",
+                      kecuali: set[int] | None = None) -> pd.DataFrame:
+    """Sampel before/after untuk pemeriksaan manual.
+
+    Putaran berikutnya memakai `kecuali` (id yang sudah pernah diperiksa) agar
+    sampelnya baru, dengan `random_state` yang sama.
+    """
+    pool = df[~df["id"].isin(kecuali)] if kecuali else df
+    s = pool.sample(n, random_state=CFG["seed"])[
         ["id", "ulasan", "ulasan_normalized", "ulasan_clean", "rating", "word_count"]]
     s = s.assign(menjadi_kosong=s.ulasan_clean.str.strip() == "",
                  catatan_pemeriksa="")
-    path = ROOT / "docs" / "tables" / "preprocessing_sample_100.csv"
+    path = ROOT / "docs" / "tables" / f"{nama}.csv"
     s.to_csv(path, index=False)
     return s
 

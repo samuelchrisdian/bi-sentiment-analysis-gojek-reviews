@@ -86,4 +86,17 @@ STEM_OVERRIDE: dict[str, str] = {
     "tujuannya": "tujuan",
     "dibenahi": "dibenahi",         # pasif dipertahankan
     "sebagainya": "sebagainya",     # -> `bagai`: frasa "dan sebagainya" rusak
+
+    # --- Tambahan verifikasi data scraping putaran 2 ---
+    # Ditemukan pemeriksa dan diukur di seluruh korpus (dokumen mentah).
+    "sejauh": "sejauh",             # -> `jauh`: "sejauh ini bagus" menjadi keluhan jarak (1.887 dok; muncul di dua putaran)
+    "penerima": "penerima",         # -> `terima`: pihak penerima tertukar dengan status diterima (248 dok)
+    "setuju": "setuju",             # -> `tuju`: "tidak setuju" menjadi "tidak tuju" (98 dok)
+    "tertarik": "tertarik",         # -> `tarik`: bentrok dengan "tarik saldo"
+    "menarik": "menarik",
+
+    # --- Tambahan verifikasi data scraping putaran 3 ---
+    # `acc` -> `setujui` (kamus) lalu di-stem menjadi `tuju`, akar yang sama
+    # dengan `tujuan`: "ACC pengajuan" tercampur dengan tujuan perjalanan (438 dok).
+    "setujui": "disetujui",
 }
