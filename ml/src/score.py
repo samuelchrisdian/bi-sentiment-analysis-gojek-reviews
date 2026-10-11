@@ -96,8 +96,8 @@ def sanity_check(df: pd.DataFrame, skor: pd.DataFrame) -> None:
 
 def main() -> None:
     df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
-    assert len(df) == CFG["schema"]["expected_rows"], \
-        f"{len(df)} != {CFG['schema']['expected_rows']}"
+    assert len(df) == CFG["schema"]["expected_rows_analysis"], \
+        f"{len(df)} != {CFG['schema']['expected_rows_analysis']}"
 
     skor = skor_semua_model(df)
     sanity_check(df, skor)

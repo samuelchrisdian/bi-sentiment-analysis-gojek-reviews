@@ -91,8 +91,8 @@ SELECT
           / NULLIF(count(*), 0), 2)              AS persen_negatif,
     round(avg(r.rating)::numeric, 2)             AS rata_rating,
     sum(r.likes)                                 AS total_likes,
-    -- Pekan parsial: pekan pertama (data mulai 21 Mei 2024, hari Selasa) dan
-    -- pekan terakhir (data berhenti 31 Desember 2025, hari Rabu).
+    -- Pekan parsial: pekan pertama (data mulai 6 Oktober 2025, hari Senin,
+    -- tetapi dari pukul 21.46) dan pekan terakhir (data berhenti 5 Oktober 2026).
     date_trunc('week', r.tanggal)::date IN (
         (SELECT date_trunc('week', min(tanggal))::date FROM reviews),
         (SELECT date_trunc('week', max(tanggal))::date FROM reviews)

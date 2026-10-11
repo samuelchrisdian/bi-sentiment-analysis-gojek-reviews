@@ -31,6 +31,20 @@ def tabel(nama: str) -> pd.DataFrame:
     return pd.read_csv(TABLES / f"{nama}.csv")
 
 
+def ada_tabel(nama: str) -> bool:
+    return (TABLES / f"{nama}.csv").exists()
+
+
+def menunggu(langkah: str, berkas: str) -> dict:
+    """Penanda seksi yang bergantung pada isian manusia yang belum ada."""
+    return {"status": f"MENUNGGU — {langkah} belum dikerjakan untuk data scraping",
+            "berkas_yang_harus_diisi": berkas}
+
+
+def manifest() -> dict:
+    return json.loads((ROOT / "ml" / "artifacts" / "MANIFEST.json").read_text())
+
+
 def laporan(nama: str) -> dict:
     return json.loads((REPORTS / f"{nama}.json").read_text())
 
@@ -80,9 +94,28 @@ def fakta_dataset() -> dict:
         "pct_duplikat_teks": r(dup.loc["Duplikat teks Ulasan", "persen"], 1),
         "pct_likes_nol": r(likes["persen_likes_nol"], 1),
         "likes_maks": int(likes["max"]),
-        "berkas_sumber": "ulasan_com.gojek.app.csv",
+        "berkas_sumber": manifest()["data"]["raw_file"],
+        "sumber_data": "scraping Google Play (google-play-scraper), bukan Kaggle",
+        "penanganan_bahasa": _penanganan_bahasa(),
         "source_table": "docs/tables/profil_dataset.csv",
     }
+
+
+def _penanganan_bahasa() -> dict:
+    from ml.src.config import load_config, resolve
+    from ml.src.ingest import ringkasan_saring_bahasa
+    cfg = load_config()
+    h = ringkasan_saring_bahasa(cfg)
+    out = {"mode": cfg["language_filter"]["mode"],
+           "n_mentah": h["n_mentah"], "n_dominan_inggris": h["n_inggris"],
+           "pct_dominan_inggris": r(h["n_inggris"] / h["n_mentah"] * 100, 1),
+           "n_dianalisis": h["n_analisis"],
+           "dominan_inggris_per_rating": {int(k): int(v)
+                                          for k, v in h["inggris_per_rating"].items()}}
+    meta = resolve(cfg, "translation.output_csv").with_suffix(".meta.json")
+    if out["mode"] == "translate" and meta.exists():
+        out["terjemahan"] = json.loads(meta.read_text())
+    return out
 
 
 def fakta_rating() -> dict:
@@ -223,7 +256,7 @@ def fakta_model() -> dict:
     cm = laporan("logistic_regression_final_full")
     hasil["produksi"] = {
         "nama": "logistic_regression",
-        "parameter": "C=1.0, class_weight=balanced",
+        "parameter": ", ".join(f"{k}={v}" for k, v in manifest()["model"]["params"].items()),
         "full": _metrik(prod_full),
         "informative": _metrik(prod_inf),
         "recall_pos_full": r(cm["positif"]["recall"]),
@@ -254,7 +287,6 @@ def fakta_tuning() -> dict:
         ]
         return sub.iloc[0]
 
-    lr_c1 = kombinasi("logistic_regression", "1.0")
     svc_c5 = kombinasi("linear_svc", "5.0")
 
     out = {
@@ -270,13 +302,16 @@ def fakta_tuning() -> dict:
             "overfit_gap_c5": r(svc_c5["overfit_gap"], 4),
         },
         "logistic_regression": {
-            "cv_macro_f1_c5": r(lr["mean_test_score"], 6),
-            "cv_macro_f1_c1": r(lr_c1["mean_test_score"], 6),
-            "std_c5": r(lr["std_test_score"], 6),
-            "std_c1": r(lr_c1["std_test_score"], 6),
-            "selisih_cv": r(lr["mean_test_score"] - lr_c1["mean_test_score"], 5),
-            "overfit_gap_c5": r(lr["overfit_gap"], 4),
-            "overfit_gap_c1": r(lr_c1["overfit_gap"], 4),
+            "pemenang_grid": str(bp["logistic_regression"]["best_params"]),
+            "cv_macro_f1_grid": r(lr["mean_test_score"], 6),
+            "std_grid": r(lr["std_test_score"], 6),
+            "overfit_gap_grid": r(lr["overfit_gap"], 4),
+            "pilihan_1se": str(bp["logistic_regression"]["seleksi_1se"]["best_params"]),
+            "cv_macro_f1_1se": r(bp["logistic_regression"]["seleksi_1se"]["cv_f1_macro"], 6),
+            "std_1se": r(bp["logistic_regression"]["seleksi_1se"]["cv_f1_macro_std"], 6),
+            "overfit_gap_1se": r(bp["logistic_regression"]["seleksi_1se"]["overfit_gap"], 4),
+            "selisih_cv": r(lr["mean_test_score"]
+                            - bp["logistic_regression"]["seleksi_1se"]["cv_f1_macro"], 5),
         },
         "seleksi_1se": {
             model: {
@@ -300,6 +335,14 @@ def fakta_tuning() -> dict:
 # 3. Analisis kesalahan, tiga kelas, fitur
 # --------------------------------------------------------------------------
 def fakta_error(n_test: int, akurasi_produksi: float) -> dict:
+    if not ada_tabel("error_analysis_50_reviewed"):
+        m = tabel("model_metrics")
+        idx = m[m["dedup_training"]].set_index(["model_name", "eval_set"])
+        n_salah = int(round((1 - idx.loc[("linear_svc_tuned", "full")]["accuracy"]) * n_test))
+        return {**menunggu("analisis kesalahan manual (kategori penyebab)",
+                           "docs/tables/error_analysis_50.csv -> *_reviewed.csv"),
+                "n_salah_linear_svc_tuned": n_salah,
+                "pct_salah_linear_svc_tuned": r(n_salah / n_test * 100, 2)}
     e = tabel("error_analysis_50_reviewed")
     n = len(e)
     kat = e["kategori_penyebab"].value_counts()
@@ -461,6 +504,9 @@ def fakta_topik(n_negatif: int) -> dict:
 
 
 def fakta_validasi() -> dict:
+    if not ada_tabel("h9_hasil_kesepakatan"):
+        return menunggu("validasi silang oleh penilai independen",
+                        "docs/tables/cross_validation_sample_50.csv -> *_reviewed.csv")
     d = tabel("h9_hasil_kesepakatan")
     return {
         "n_sampel": int(len(d)),
@@ -478,7 +524,11 @@ def fakta_tren() -> dict:
     v = tabel("volume_bulanan")
     t = tabel("topic_trend_monthly")
     puncak = t.loc[t["jumlah"].idxmax()]
-    tarif = t[t["kategori"] == "Tarif, Ongkir & Promo"].set_index("bulan")["jumlah"]
+    penuh = v[~v["periode_parsial"]]
+    t_penuh = t[~t["periode_parsial"]]
+    awal, akhir = t_penuh["bulan"].min(), t_penuh["bulan"].max()
+    per_kat = t_penuh.pivot_table(index="kategori", columns="bulan", values="jumlah",
+                                  fill_value=0)
     return {
         "n_bulan": int(len(v)),
         "volume_tertinggi_bulan": str(v.loc[v["jumlah"].idxmax(), "bulan"]),
@@ -487,17 +537,60 @@ def fakta_tren() -> dict:
             v[~v["periode_parsial"]].loc[v[~v["periode_parsial"]]["jumlah"].idxmin(), "bulan"]
         ),
         "volume_terendah": int(v[~v["periode_parsial"]]["jumlah"].min()),
-        "rata_rating_awal": r(v.iloc[1]["rata_rating"], 2),
-        "rata_rating_akhir": r(v.iloc[-1]["rata_rating"], 2),
+        "bulan_penuh_awal": str(penuh.iloc[0]["bulan"]),
+        "bulan_penuh_akhir": str(penuh.iloc[-1]["bulan"]),
+        "rata_rating_awal": r(penuh.iloc[0]["rata_rating"], 2),
+        "rata_rating_akhir": r(penuh.iloc[-1]["rata_rating"], 2),
         "puncak_kategori": str(puncak["kategori"]),
         "puncak_bulan": str(puncak["bulan"])[:7],
         "puncak_jumlah": int(puncak["jumlah"]),
-        "tarif_des2024": int(tarif["2024-12-01"]),
-        "tarif_des2025": int(tarif["2025-12-01"]),
-        "tarif_penurunan_pct": r(
-            (tarif["2024-12-01"] - tarif["2025-12-01"]) / tarif["2024-12-01"] * 100, 1
-        ),
+        "kategori_bulan_penuh_awal_vs_akhir": {
+            str(k): {"awal": int(row[awal]), "akhir": int(row[akhir])}
+            for k, row in per_kat.iterrows()
+        },
         "source_table": "docs/tables/topic_trend_monthly.csv",
+    }
+
+
+def fakta_pola_sentimen() -> dict:
+    """Deskriptif RM3: proporsi negatif (prediksi model produksi) per bulan & versi.
+
+    Hanya statistik deskriptif. Uji chi-kuadrat dan aturan penandaan rilis
+    (Bab 3, 3.6.7) belum diimplementasikan.
+    """
+    rev = pd.read_parquet(ROOT / "data" / "processed" / "reviews_clean.parquet",
+                          columns=["id", "tanggal", "versi_minor", "sentimen_aktual"])
+    sk = pd.read_parquet(ROOT / "data" / "processed" / "review_scores.parquet")
+    sk = sk[sk["model_name"] == MODEL_PRODUKSI][["review_id", "pred_label"]]
+    d = rev.merge(sk, left_on="id", right_on="review_id")
+    d["neg"] = d["pred_label"] == 0
+    d["bulan"] = pd.to_datetime(d["tanggal"]).dt.strftime("%Y-%m")
+    parsial = set(yaml.safe_load((ROOT / "ml" / "config.yaml").read_text())
+                  ["temporal"]["partial_months"])
+    bln = d.groupby("bulan").agg(n=("neg", "size"), pct_neg=("neg", "mean"))
+    bln_penuh = bln[~bln.index.isin(parsial)]
+    ver = d.dropna(subset=["versi_minor"]).groupby("versi_minor").agg(
+        n=("neg", "size"), pct_neg=("neg", "mean"))
+    ver = ver[ver["n"] >= 100]
+    return {
+        "label": f"prediksi {MODEL_PRODUKSI}",
+        "pct_negatif_keseluruhan": r(d["neg"].mean() * 100, 2),
+        "bulanan_pct_negatif": {k: r(v * 100, 2) for k, v in bln["pct_neg"].items()},
+        "bulan_parsial": sorted(parsial),
+        "bulan_penuh_pct_negatif_terendah": {
+            "bulan": str(bln_penuh["pct_neg"].idxmin()),
+            "pct": r(bln_penuh["pct_neg"].min() * 100, 2)},
+        "bulan_penuh_pct_negatif_tertinggi": {
+            "bulan": str(bln_penuh["pct_neg"].idxmax()),
+            "pct": r(bln_penuh["pct_neg"].max() * 100, 2)},
+        "n_versi_dianalisis": int(len(ver)),
+        "n_ulasan_versi_dianalisis": int(ver["n"].sum()),
+        "versi_pct_negatif_terendah": {
+            "versi": str(ver["pct_neg"].idxmin()), "pct": r(ver["pct_neg"].min() * 100, 2)},
+        "versi_pct_negatif_tertinggi": {
+            "versi": str(ver["pct_neg"].idxmax()), "pct": r(ver["pct_neg"].max() * 100, 2)},
+        "status_uji_rm3": "BELUM DIIMPLEMENTASIKAN — uji chi-kuadrat & penandaan rilis",
+        "source_table": "data/processed/review_scores.parquet",
     }
 
 
@@ -521,10 +614,9 @@ def fakta_preprocessing() -> dict:
     def n_dok(frasa: str) -> int:
         return int(teks.str.contains(rf"\b{_re.escape(frasa)}\b", regex=True).sum())
 
-    n_sampel = sum(
-        len(tabel(f"preprocessing_sample_{sufiks}_reviewed"))
-        for sufiks in ("100", "ronde2", "ronde3")
-    )
+    berkas = [f"preprocessing_sample_{s}_reviewed" for s in ("100", "ronde2", "ronde3")]
+    n_sampel = (sum(len(tabel(b)) for b in berkas if ada_tabel(b))
+                if any(ada_tabel(b) for b in berkas) else None)
     return {
         "n_baris": int(len(df)),
         "teks_kosong_akhir": int((teks.str.strip() == "").sum()),
@@ -535,7 +627,10 @@ def fakta_preprocessing() -> dict:
         ),
         "n_negation_keep": int(len(NEGATION_KEEP)),
         "n_sampel_verifikasi_manual": n_sampel,
-        "n_putaran_verifikasi": 3,
+        "n_putaran_verifikasi": None if n_sampel is None else 3,
+        "status_verifikasi_manual": (
+            "MENUNGGU — verifikasi manual sampel pra-pemrosesan data scraping "
+            "(docs/tables/preprocessing_sample_100.csv)" if n_sampel is None else "selesai"),
         "dok_tidak": n_dok("tidak"),
         "dok_tidak_bisa": n_dok("tidak bisa"),
         "dok_tidak_ada": n_dok("tidak ada"),
@@ -554,7 +649,7 @@ ANGKA_STRUKTURAL = {
         "verify_manuscript.py tidak menganggapnya angka tanpa sumber."
     ),
     "penomoran_bagian": list(range(0, 21)),
-    "tahun": [1977, 1984, 2024, 2025, 2026],
+    "tahun": [1977, 1984, 2014, 2024, 2025, 2026],
     "konfigurasi": {
         "seed": 42,
         "tfidf_ngram_min": 1,
@@ -565,7 +660,7 @@ ANGKA_STRUKTURAL = {
         "pct_train": 80,
         "pct_test": 20,
         "informative_min_words": 5,
-        "C_produksi": 1.0,
+        "C_produksi": manifest()["model"]["params"].get("C"),
         "C_grid": [0.1, 0.5, 1.0, 5.0],
         "alpha_grid": [0.1, 0.5, 1.0, 2.0],
         "n_top_features": 20,
@@ -598,7 +693,7 @@ def main() -> None:
     facts = {
         "meta": {
             "dihasilkan_oleh": "python -m ml.src.collect_facts",
-            "fase": "fase-10",
+            "fase": "pembaruan data scraping",
             "aturan": (
                 "Seluruh nilai dihitung ulang dari docs/tables/*.csv dan "
                 "ml/artifacts/reports/*.json. Angka yang tidak ada di berkas ini "
@@ -623,6 +718,7 @@ def main() -> None:
         "topik": fakta_topik(kelas["n_negatif"]),
         "validasi_silang": fakta_validasi(),
         "tren": fakta_tren(),
+        "pola_sentimen_rm3": fakta_pola_sentimen(),
         "angka_struktural": ANGKA_STRUKTURAL,
     }
 

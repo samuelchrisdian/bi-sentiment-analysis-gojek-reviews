@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from .config import load_config
-from .dataset import siapkan_teks
+from .dataset import FASE3, siapkan_teks
 
 CFG = load_config()
 ROOT = CFG["_root"]
@@ -133,7 +133,7 @@ def hitung_distribusi(path=None) -> pd.DataFrame:
 
 if __name__ == "__main__":
     err, sampel = bangun_berkas_kerja()
-    d_n_test = 19294
+    d_n_test = FASE3["n_test"]
     p = ROOT / "docs" / "tables" / "error_analysis_50.csv"
     sampel.to_csv(p, index=False)
 

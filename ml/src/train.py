@@ -62,7 +62,7 @@ def siapkan_data(dedup: bool = True) -> dict:
     df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
     df = df[df["sentimen_aktual"].notna()].copy()          # buang rating 3
     df["sentimen_aktual"] = df["sentimen_aktual"].astype(int)
-    print(f"  data berlabel        : {len(df):,} baris (100.000 - 3.534 netral)")
+    print(f"  data berlabel        : {len(df):,} baris (rating 3 dibuang)")
 
     X_tr, X_te, y_tr, y_te, idx_tr, idx_te = train_test_split(
         df["ulasan_clean"], df["sentimen_aktual"], df.index,
@@ -73,6 +73,7 @@ def siapkan_data(dedup: bool = True) -> dict:
     print(f"  train / test         : {len(X_tr):,} / {len(X_te):,}")
 
     n_sebelum = len(X_tr)
+    y_tr_asli = y_tr.to_numpy()        # sebaran kelas nyata, untuk baseline
     if dedup:
         # HANYA training set. Test set harus merepresentasikan distribusi nyata
         # yang akan dihadapi model, duplikat dan semuanya.
@@ -88,6 +89,7 @@ def siapkan_data(dedup: bool = True) -> dict:
 
     wc = df.loc[idx_te, "word_count"].to_numpy()
     return {"Xtr": Xtr, "Xte": Xte, "y_tr": y_tr.to_numpy(), "y_te": y_te.to_numpy(),
+            "y_tr_asli": y_tr_asli,
             "vec": vec, "mask_informatif": wc >= AMBANG_INFORMATIF,
             "n_train": len(X_tr), "n_train_sebelum_dedup": n_sebelum, "n_test": len(X_te)}
 
@@ -121,9 +123,15 @@ def jalankan(dedup: bool = True, simpan: bool = True) -> pd.DataFrame:
     hasil: list[dict] = []
 
     # --- BASELINE DIHITUNG LEBIH DULU, sebelum model apa pun dilatih ---
+    # Kelas mayoritas diambil dari label latih SEBELUM deduplikasi. Deduplikasi
+    # membuang terutama pujian pendek berulang (kelas positif), sehingga pada
+    # data scraping kelas negatif menjadi mayoritas di data latih hasil dedup;
+    # baseline dari sana selalu menebak "negatif" dan tidak lagi mewakili
+    # sebaran kelas yang nyata dihadapi model.
     print("\n[baseline] kelas mayoritas")
     t0 = time.perf_counter()
-    dummy = DummyClassifier(strategy="most_frequent").fit(d["Xtr"], d["y_tr"])
+    dummy = DummyClassifier(strategy="most_frequent").fit(
+        np.zeros((len(d["y_tr_asli"]), 1)), d["y_tr_asli"])
     t_train = time.perf_counter() - t0
     t0 = time.perf_counter()
     pred = dummy.predict(d["Xte"])
@@ -158,8 +166,23 @@ def jalankan(dedup: bool = True, simpan: bool = True) -> pd.DataFrame:
     return out
 
 
+def dampak_dedup(dengan: pd.DataFrame, tanpa: pd.DataFrame) -> pd.DataFrame:
+    """macro-F1 set `full` dengan vs tanpa deduplikasi data latih."""
+    a = tanpa[tanpa.eval_set == "full"].set_index("model_name").macro_f1
+    b = dengan[dengan.eval_set == "full"].set_index("model_name").macro_f1
+    out = pd.DataFrame({"tanpa_dedup": a.round(4), "dengan_dedup": b.round(4)})
+    out["selisih"] = (out.dengan_dedup - out.tanpa_dedup).round(4)
+    return out.reset_index().sort_values("model_name")
+
+
 if __name__ == "__main__":
     tabel = jalankan(dedup=CFG["preprocessing"]["dedup_training_text"])
+    # Pembanding tanpa deduplikasi: laporan JSON tidak ditulis agar tidak
+    # menimpa laporan protokol resmi.
+    tanpa = jalankan(dedup=False, simpan=False)
     path = ROOT / "docs" / "tables" / "model_metrics.csv"
-    tabel.to_csv(path, index=False)
-    print(f"\nDisimpan: {path.relative_to(ROOT)} ({len(tabel)} baris)")
+    pd.concat([tabel, tanpa], ignore_index=True).to_csv(path, index=False)
+    print(f"\nDisimpan: {path.relative_to(ROOT)} ({len(tabel) + len(tanpa)} baris)")
+    pd_ = ROOT / "docs" / "tables" / "dedup_impact.csv"
+    dampak_dedup(tabel, tanpa).to_csv(pd_, index=False)
+    print(f"Disimpan: {pd_.relative_to(ROOT)}")

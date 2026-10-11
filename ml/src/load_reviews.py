@@ -49,7 +49,7 @@ def main() -> None:
     print(f"  netral (NULL): {nul:,}")
     print(f"  rentang      : {rng[0]} s/d {rng[1]}")
     print(f"  total likes  : {lk:,}")
-    assert n == CFG["schema"]["expected_rows"], f"{n} != {CFG['schema']['expected_rows']}"
+    assert n == CFG["schema"]["expected_rows_analysis"], f"{n} != {CFG['schema']['expected_rows_analysis']}"
 
 
 if __name__ == "__main__":

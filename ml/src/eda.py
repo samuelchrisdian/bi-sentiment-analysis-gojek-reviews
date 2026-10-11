@@ -227,12 +227,12 @@ def volume_bulanan(df: pd.DataFrame) -> pd.DataFrame:
     g = df.groupby("bulan")
     out = pd.DataFrame({"bulan": g.size().index.astype(str), "jumlah": g.size().values,
                         "rata_rating": g["Rating"].mean().round(2).values})
-    out["periode_parsial"] = out["bulan"] == CFG["temporal"]["partial_month"]
+    out["periode_parsial"] = out["bulan"].isin(CFG["temporal"]["partial_months"])
     fig, ax = plt.subplots(figsize=(9, 4))
     ax.plot(out["bulan"], out["jumlah"], marker="o", color="#4C78A8")
-    if out["periode_parsial"].any():
-        ax.axvspan(-0.4, 0.4, color="#E45756", alpha=0.15)
-        ax.text(0.5, out["jumlah"].max() * 0.95, "Mei 2024 — periode parsial\n(mulai 21 Mei)",
+    for i in np.flatnonzero(out["periode_parsial"].to_numpy()):
+        ax.axvspan(i - 0.4, i + 0.4, color="#E45756", alpha=0.15)
+        ax.text(i, out["jumlah"].max() * 0.95, "parsial", ha="center",
                 fontsize=8, color="#E45756")
     ax.set_xticks(range(len(out)))
     ax.set_xticklabels(out["bulan"], rotation=60, ha="right", fontsize=8)

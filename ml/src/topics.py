@@ -40,7 +40,7 @@ def korpus_negatif() -> tuple[pd.DataFrame, dict]:
     """T-5.1 — korpus topik: ulasan negatif dengan >=5 kata."""
     df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
     neg = df[df["sentimen_aktual"] == 0].copy()
-    assert len(neg) == 26732, f"korpus negatif {len(neg)} != 26732"
+    assert len(neg) == 145924, f"korpus negatif {len(neg)} != 145924"
 
     topik = neg[neg["word_count"] >= AMBANG_KATA].copy()
     info = {

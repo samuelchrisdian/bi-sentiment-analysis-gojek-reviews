@@ -21,8 +21,15 @@ SELECT
           / NULLIF(count(*), 0), 2)              AS persen_negatif,
     round(avg(r.rating)::numeric, 2)             AS rata_rating,
     sum(r.likes)                                 AS total_likes,
-    bool_or(date_trunc('month', r.tanggal)::date = DATE '2024-05-01')
-                                                 AS periode_parsial
+    -- Bulan parsial = bulan pertama/terakhir data bila tidak tercakup penuh
+    -- (data scraping: 6 Oktober 2025 s.d. 5 Oktober 2026).
+    bool_or(
+        (date_trunc('month', r.tanggal) = (SELECT date_trunc('month', min(tanggal)) FROM reviews)
+         AND (SELECT min(tanggal)::date FROM reviews) > date_trunc('month', r.tanggal)::date)
+     OR (date_trunc('month', r.tanggal) = (SELECT date_trunc('month', max(tanggal)) FROM reviews)
+         AND (SELECT max(tanggal)::date FROM reviews)
+             < (date_trunc('month', r.tanggal) + interval '1 month - 1 day')::date)
+    )                                            AS periode_parsial
 FROM reviews r
 JOIN review_scores rs
   ON rs.review_id = r.id AND rs.model_name = 'logistic_regression_final'

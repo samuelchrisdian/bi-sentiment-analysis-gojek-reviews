@@ -3,16 +3,50 @@
 seed: 42
 
 paths:
-  raw_csv: data/raw/ulasan_com.gojek.app.csv   # nama file memakai TITIK
+  # Hasil scraping Google Play (google-play-scraper), rentang lima tahun —
+  # data/script-scraping/scrape_5_tahun.py. Versi sebelumnya diarsipkan di
+  # archive/kaggle-v1/ (Kaggle) dan archive/scraping-1y-v1/ (scraping 1 tahun).
+  raw_csv: data/raw/gojek_reviews_5Y.csv
   processed_dir: data/processed
   clean_parquet: data/processed/reviews_clean.parquet
   artifacts_dir: ml/artifacts
 
 schema:
+  # Kolom keluaran google-play-scraper -> nama kolom internal pipeline.
+  # Setelah di-rename, seluruh modul hilir melihat skema yang sama seperti
+  # sebelumnya. Kolom scraper lain (reviewId, userImage, replyContent,
+  # repliedAt, appVersion) tidak dipakai analisis.
+  source_columns:
+    userName: "Nama User"
+    content: "Ulasan"
+    score: "Rating"
+    at: "Tanggal"
+    thumbsUpCount: "Likes"
+    reviewCreatedVersion: "Versi App"
   expected_columns: ["Nama User", "Ulasan", "Rating", "Tanggal", "Likes", "Versi App"]
-  expected_rows: 100000
+  expected_rows: 526329         # baris CSV mentah hasil scraping (lang id + en)
+  expected_rows_analysis: 526322 # tanpa 7 ulasan berteks kosong; ulasan Inggris diterjemahkan
   date_format: null
-  valid_date_range: ["2024-05-21", "2025-12-31"]
+  valid_date_range: ["2021-10-01", "2026-09-30"]
+
+language_filter:
+  # Penanganan ulasan dominan berbahasa Inggris (ml/src/language_filter.py):
+  #   translate — diganti terjemahan bahasa Indonesia (ml/src/translate.py)
+  #   drop      — dikeluarkan dari analisis
+  #   off       — dibiarkan apa adanya
+  mode: translate
+  min_tokens: 3
+  min_english_function_words: 2
+  english_to_indonesian_ratio: 2
+
+translation:
+  model: Helsinki-NLP/opus-mt-en-id
+  revision: 6e4c52d61a6b16fe3509b0267cbfec65011b860b
+  num_beams: 4
+  batch_size: 32
+  max_tokens: 256
+  threads: 14
+  output_csv: data/interim/terjemahan_inggris.csv
 
 labeling:
   scheme: binary             # dikonfirmasi H-3
@@ -47,7 +81,7 @@ split:
 evaluation:
   informative_min_words: 5
   primary_metric: f1_macro
-  majority_baseline: 0.723
+  majority_baseline: 0.711    # akurasi baseline kelas mayoritas pada set full (train.py)
   eval_sets: ["full", "informative_ge5w"]
 
 topics:
@@ -66,8 +100,10 @@ versions:
   aggregate_to_minor: true
 
 temporal:
-  exclude_partial_first_month: true
-  partial_month: "2024-05"
+  # Rentang scraping dipilih tepat 60 bulan penuh (Oktober 2021 – September
+  # 2026), sehingga tidak ada bulan parsial.
+  exclude_partial_months: true
+  partial_months: []
 
 database:
   dsn_env: DATABASE_URL

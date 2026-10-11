@@ -36,23 +36,25 @@ MIN_LIFT = 2.0        # kata kunci harus >=2x lebih terkonsentrasi dari pangsa t
 MAX_DF_KORPUS = 0.15  # kata di >15% korpus tidak dapat membedakan kategori apa pun
 MAX_BIGRAM = 15       # batas bigram per kategori — lihat kata_kunci_bigram()
 
-# Hasil gerbang H-8 — pemetaan topic_id -> kategori bisnis.
+# Pemetaan topic_id -> kategori bisnis dibaca dari berkas pelabelan, bukan
+# ditulis di kode, agar mengganti nama kategori cukup dengan menyunting CSV
+# lalu menjalankan ulang modul ini.
 # Sumber: docs/tables/lda_clusters_for_labeling_reviewed.csv
 # Provenans pelabel dicatat di docs/topic_labeling_rules.md §5.
-KATEGORI_H8: dict[int, str] = {
-    2: "Pesanan GoFood & Pembatalan",
-    0: "Ketersediaan & Respons Mitra Driver",
-    4: "Tarif, Ongkir & Promo",
-    7: "GoPayLater, GoPinjam & Penagihan",
-    5: "Performa & Gangguan Aplikasi",
-    6: "Akurasi Lokasi & Rute",
-    8: "Akun, Login & Verifikasi",
-    1: "Layanan Pelanggan & Penanganan Keluhan",
-    3: "Transaksi & Saldo GoPay",
-}
+def _muat_kategori() -> dict[int, str]:
+    lab = pd.read_csv(TAB / "lda_clusters_for_labeling_reviewed.csv")
+    kosong = lab.kategori_usulan.isna() | (lab.kategori_usulan.astype(str).str.strip() == "")
+    if kosong.any():
+        raise RuntimeError(f"Penamaan kategori belum lengkap: topik "
+                           f"{lab.topic_id[kosong].tolist()} belum bernama")
+    return dict(zip(lab.topic_id.astype(int), lab.kategori_usulan.str.strip()))
 
 
-def muat_lda(k: int = 9):
+KATEGORI_H8: dict[int, str] = _muat_kategori()
+
+
+def muat_lda(k: int | None = None):
+    k = k or len(KATEGORI_H8)
     lda = LdaModel.load(str(ROOT / "ml" / "artifacts" / f"lda_k{k}.gensim"))
     dist = np.load(ROOT / "data" / "processed" / "lda_doc_topic.npy")
     return lda, dist
@@ -216,7 +218,7 @@ def jalankan() -> dict:
     kk, tabrakan = buang_tabrakan(pd.concat([uni, big], ignore_index=True))
     peta = peta_kata_kunci(kk)
 
-    # Pendekatan A dijalankan pada SELURUH korpus negatif (26.732), bukan hanya
+    # Pendekatan A dijalankan pada SELURUH korpus negatif (145.924), bukan hanya
     # korpus LDA: pencocokan kata kunci tidak menuntut panjang minimum, dan DoD
     # meminta proporsi ulasan negatif yang memperoleh >=1 topik.
     df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
@@ -331,10 +333,10 @@ def tren_bulanan(eng) -> pd.DataFrame:
         ORDER BY 1, 3 DESC
     """
     d = pd.read_sql(q, eng)
-    # Mei 2024 parsial (Temuan 6) — tidak dibuang, tetapi ditandai agar tidak
-    # terbaca sebagai bulan dengan volume rendah.
-    parsial = pd.Timestamp(CFG["temporal"]["partial_month"] + "-01").date()
-    d["periode_parsial"] = d.bulan == parsial
+    # Bulan pertama dan terakhir data tidak penuh — tidak dibuang, tetapi
+    # ditandai agar tidak terbaca sebagai bulan dengan volume rendah.
+    parsial = {pd.Timestamp(b + "-01").date() for b in CFG["temporal"]["partial_months"]}
+    d["periode_parsial"] = d.bulan.isin(parsial)
     return d
 
 

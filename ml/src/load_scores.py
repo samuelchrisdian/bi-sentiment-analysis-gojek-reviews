@@ -48,8 +48,8 @@ def main() -> None:
                   f"pred_proba_terisi={r[3]:,}")
 
     n_model = df.model_name.nunique()
-    assert n == CFG["schema"]["expected_rows"] * n_model, \
-        f"{n} != {CFG['schema']['expected_rows']} x {n_model}"
+    assert n == CFG["schema"]["expected_rows_analysis"] * n_model, \
+        f"{n} != {CFG['schema']['expected_rows_analysis']} x {n_model}"
 
 
 if __name__ == "__main__":

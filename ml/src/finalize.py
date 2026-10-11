@@ -140,6 +140,7 @@ def bangun(nama: str, out: Path, seleksi: str = "1se") -> dict:
             "raw_file": raw.name,
             "sha256": _sha256(raw),
             "n_rows_raw": CFG["schema"]["expected_rows"],
+            "n_rows_after_language_filter": CFG["schema"]["expected_rows_analysis"],
             "n_rows_used": d["n_labeled"],
             "n_train_before_dedup": d["n_train_sebelum_dedup"],
             "n_train_after_dedup": d["n_train"],

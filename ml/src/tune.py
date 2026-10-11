@@ -156,13 +156,15 @@ def simpan(cv: pd.DataFrame, met: pd.DataFrame, terbaik: dict) -> None:
     pd.concat([lama, met], ignore_index=True).to_csv(pm, index=False)
     print(f"Disimpan: {pm.relative_to(ROOT)} (+{len(met)} baris *_tuned)")
 
+    # Seleksi 1-SE ikut ditulis di sini agar finalize.py (default --seleksi 1se)
+    # dapat dijalankan langsung setelah tune.py tanpa langkah manual.
+    for nama in terbaik:
+        terbaik[nama]["seleksi_1se"] = pilih_1se(cv, nama)
+
     pb = ROOT / "ml" / "artifacts" / "best_params.json"
     pb.write_text(json.dumps(terbaik, indent=2), encoding="utf-8")
     print(f"Disimpan: {pb.relative_to(ROOT)}")
 
-
-if __name__ == "__main__":
-    simpan(*jalankan())
 
 
 def pilih_1se(cv: pd.DataFrame, nama: str) -> dict:
@@ -202,3 +204,7 @@ def pilih_1se(cv: pd.DataFrame, nama: str) -> dict:
         "n_kandidat_dalam_1se": int(len(kandidat)),
         "sama_dengan_gridsearch": bool(pilih.mean_test_score == terbaik.mean_test_score),
     }
+
+
+if __name__ == "__main__":
+    simpan(*jalankan())
