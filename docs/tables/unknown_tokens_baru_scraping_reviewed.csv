@@ -1,0 +1,72 @@
+token_asli,bentuk_baku,buang,catatan
+blum,belum,tidak,
+great,bagus,tidak,
+cashback,cashback,tidak,
+helpful,membantu,tidak,
+excellent,sangat baik,tidak,
+easy,mudah,tidak,
+link,link,tidak,
+crash,crash,tidak,
+ng,,ya,
+force,paksa,tidak,
+sms,sms,tidak,
+helpfull,membantu,tidak,
+friendly,ramah,tidak,
+awesome,luar biasa,tidak,
+diupdate,diperbarui,tidak,
+bca,bca,tidak,
+fee,biaya,tidak,
+application,aplikasi,tidak,
+help,bantu,tidak,
+fix,perbaiki,tidak,dikoreksi atas persetujuan penulis (2026-10-11): semula 'pasti'; konteks terbanyak 'please fix it'
+ovo,ovo,tidak,
+use,gunakan,tidak,
+coin,koin,tidak,
+token,token,tidak,
+delivery,pengiriman,tidak,
+merchant,merchant,tidak,
+ia,dia,tidak,dikoreksi atas persetujuan penulis (2026-10-11): semula 'iya'; di korpus 'ia' berarti 'dia' (banyak dari teks terjemahan)
+was,,ya,"dikoreksi atas persetujuan penulis (2026-10-11): semula 'waswas'; 'was' tunggal adalah kata Inggris, 'was was' ditangani aturan frasa -> 'waswas'"
+merespon,merespons,tidak,
+my,saya,tidak,dikoreksi atas persetujuan penulis (2026-10-11): semula 'milikku'
+aq,aku,tidak,
+alfamart,alfamart,tidak,
+findaya,findaya,tidak,
+direspon,direspons,tidak,
+gx,tidak,tidak,
+koq,kok,tidak,
+scan,pindai,tidak,
+id,id,tidak,
+useful,berguna,tidak,
+mantapppp,mantap,tidak,
+slow,lambat,tidak,
+gg,,ya,
+goclub,goclub,tidak,
+support,dukung,tidak,
+paylaternya,paylater,tidak,
+gimna,bagaimana,tidak,
+dear,hai,tidak,
+ngapa,kenapa,tidak,
+gunain,gunakan,tidak,
+goshop,goshop,tidak,
+tokped,tokopedia,tidak,
+template,template,tidak,
+kepake,terpakai,tidak,
+atm,atm,tidak,
+keep,pertahankan,tidak,
+amazing,luar biasa,tidak,
+disc,diskon,tidak,
+goood,bagus,tidak,
+account,akun,tidak,
+bro,bro,tidak,
+goceng,goceng,tidak,"menggantikan 'lima ribu' dari token_normalisasi_terisi.csv; nama program (catatan KRITIS verifikasi putaran 1), dikoreksi atas persetujuan penulis (2026-10-11)"
+gda,tidak ada,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gakada,tidak ada,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gbs,tidak bisa,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gbsa,tidak bisa,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gabsa,tidak bisa,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gabs,tidak bisa,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gakbisa,tidak bisa,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gaakan,tidak akan,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+gakan,tidak akan,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
+enggak,tidak,tidak,varian negasi dari verifikasi pra-pemrosesan putaran 2; ditambahkan atas persetujuan penulis (2026-10-11)
