@@ -10,6 +10,7 @@ ml/artifacts/*
 __pycache__/
 *.py[cod]
 .venv/
+.venv-translate/
 venv/
 .ipynb_checkpoints/
 
@@ -25,3 +26,9 @@ docs/db_dump.sql.gz
 # Env & OS
 .env
 .DS_Store
+
+# Cadangan lokal hasil berbasis data Kaggle (artefak biner, tidak masuk git)
+archive/
+
+# Teks hasil terjemahan ulasan (data, sama seperti data/raw)
+data/interim/
