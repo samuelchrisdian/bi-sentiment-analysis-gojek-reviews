@@ -1,6 +1,6 @@
-topic_id,kategori_usulan,status_pelabelan,catatan_perubahan
-0,Transaksi & Saldo GoPay,FINAL - DISETUJUI,
-1,Kendala Penggunaan Aplikasi & Akses Akun,FINAL - DIREVISI,"Nama awal terlalu sempit untuk klaster terbesar (44,03%). Selain akun, login, verifikasi, dan pembaruan, contoh tipikal mencakup layanan tidak dapat digunakan, salah transfer, serta promo. Nama diperluas untuk menandai topik umum yang heterogen; jangan menafsirkan 44,03% sebagai proporsi masalah login."
-2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",FINAL - DIREVISI,"Istilah ketersediaan driver berpotensi menyimpulkan stok driver tidak ada. Beberapa contoh justru menyebut driver dekat tersedia tetapi sistem menugaskan driver yang jauh, sehingga pencarian dan penugasan lebih akurat; waktu tunggu dan pembatalan tetap dipertahankan."
-3,"Tarif, Ongkir & Promo",FINAL - DISETUJUI,
-4,Layanan Pelanggan & Pemblokiran Akun,FINAL - DISETUJUI,
+topic_id,topic_id_lda_awal,kategori_usulan,status_pelabelan,catatan_perubahan
+0,0,"Transaksi, Saldo & Pemblokiran GoPay",FINAL - DIREVISI,"Direvisi setelah LDA dilatih ulang (perbaikan pra-pemrosesan putaran 1-3), atas persetujuan penulis 2026-10-11: kata kunci 'blokir' berpindah ke klaster GoPay (gopay, saldo, blokir, bayar, top up, denda); nama semula 'Transaksi & Saldo GoPay'."
+1,4,Layanan Pelanggan & Penanganan Keluhan,FINAL - DIREVISI,"Direvisi setelah LDA dilatih ulang (perbaikan pra-pemrosesan putaran 1-3), atas persetujuan penulis 2026-10-11: kata kunci 'blokir' berpindah ke klaster GoPay (gopay, saldo, blokir, bayar, top up, denda); kata kunci klaster ini murni layanan pelanggan (layan, pelanggan, bantu, masalah, mohon, selesai masalah)."
+2,2,"Pencarian & Penugasan Driver, Waktu Tunggu & Pembatalan Pesanan",FINAL - DIREVISI,"Istilah ketersediaan driver berpotensi menyimpulkan stok driver tidak ada. Beberapa contoh justru menyebut driver dekat tersedia tetapi sistem menugaskan driver yang jauh, sehingga pencarian dan penugasan lebih akurat; waktu tunggu dan pembatalan tetap dipertahankan."
+3,1,Kendala Penggunaan Aplikasi & Akses Akun,FINAL - DIREVISI,"Nama awal terlalu sempit untuk klaster terbesar (44,03%). Selain akun, login, verifikasi, dan pembaruan, contoh tipikal mencakup layanan tidak dapat digunakan, salah transfer, serta promo. Nama diperluas untuk menandai topik umum yang heterogen; jangan menafsirkan 44,03% sebagai proporsi masalah login."
+4,3,"Tarif, Ongkir & Promo",FINAL - DISETUJUI,
