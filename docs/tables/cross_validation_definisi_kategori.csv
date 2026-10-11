@@ -1,11 +1,7 @@
 kategori,kata_kunci_indikatif
-"Akun, Login & Verifikasi","nomor, akun, login, daftar, hapus, ribet, ponsel, email, verifikasi wajah"
-Akurasi Lokasi & Rute,"titik, jalan, alamat, sesuai, motor, tuju, rumah, barang"
-"GoPayLater, GoPinjam & Penagihan","bayar, blokir, pinjam, gopaylater, hari, denda, telat, tagih, pernah telat, gopay later, telat bayar, gopay pinjam"
-Ketersediaan & Respons Mitra Driver,"jauh, susah, ambil, banyak, order, gocar, cari, dekat, pengemudi jauh, kalau hujan, pengemudi gocar, mau ambil"
-Layanan Pelanggan & Penanganan Keluhan,"pelanggan, layan, buruk, bintang, kasih, jelek, bantu, beri, pelanggan layan, pelanggan nya"
-Performa & Gangguan Aplikasi,"tiba, buka, pembaruan, muncul, error, bagus, pin, kode"
-Pesanan GoFood & Pembatalan,"tunggu, jam, makan, gofood, sen, menit, restoran, waktu, jam lebih, tunggu makan, tunggu jam, hampir jam"
-"Tarif, Ongkir & Promo","makin, kirim, promo, ongkos, mahal, iklan, harga, diskon, makin mahal, ongkos kirim, gojek plus, lebih mahal"
-Transaksi & Saldo GoPay,"saldo, gopay, up, masuk, uang, kembali, isi, transfer, bagus up, saldo gopay, gopay tidak, tidak masuk"
+"Akun, Login & Pembaruan Aplikasi","upgrade, ktp, login, instal, verifikasi, log, buram, sinyal, login aja, bisa instal, bisa unduh, mau upgrade"
+"Ketersediaan Driver, Waktu Tunggu & Pembatalan Pesanan","dapat, pesan, order, batal, tunggu, jauh, restoran, sen, gofood tunggu, tunggu dapat, pengemudi jam, pengemudi sekali"
+Layanan Pelanggan & Pemblokiran Akun,"layan, pelanggan, blokir, guna, kasih, bantu, aku, masalah, layan layan, selesai masalah, beri solusi, pelanggan layan"
+"Tarif, Ongkir & Promo","makin, voucher, promo, kirim, biaya, sekarang, mahal, ongkos, biaya ongkos, mahal ongkos, mahal biaya, kirim ribu"
+Transaksi & Saldo GoPay,"gopay, saldo, bayar, up, masuk, uang, hari, transaksi, masuk saldo, belum masuk, up saldo, gopay saldo"
 TIDAK ADA YANG COCOK,pakai bila ulasan tidak masuk kategori mana pun
