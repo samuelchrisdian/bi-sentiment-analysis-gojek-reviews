@@ -115,7 +115,7 @@ const modelProduksi = computed(() =>
       <div>
         <h1>Analisis Sentimen Ulasan Gojek</h1>
         <p class="sub">
-          100.000 ulasan Google Play · model produksi
+          526.322 ulasan Google Play (Okt 2021 – Sep 2026) · model produksi
           <b>{{ modelProduksi }}</b>
         </p>
       </div>

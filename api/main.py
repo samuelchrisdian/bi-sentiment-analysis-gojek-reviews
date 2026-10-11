@@ -229,7 +229,7 @@ def baca_topics(
         "total_ulasan_bertopik": cakupan["total_ulasan_bertopik"],
         "model_produksi": S.model_produksi,
         "catatan": [
-            "Kategori berasal dari LDA k=9 yang dilatih pada KORPUS NEGATIF saja "
+            "Kategori berasal dari LDA k=5 yang dilatih pada KORPUS NEGATIF saja "
             "(Fase 5). Karena itu persen_negatif per kategori mendekati 100% — "
             "itu konsekuensi desain, bukan temuan.",
             "Satu ulasan dapat tercatat pada lebih dari satu kategori, sehingga "
@@ -290,9 +290,9 @@ def baca_model_metrics(db: Session = Depends(get_db)):
             "`informative_ge5w` (>= "
             f"{MLCFG['evaluation']['informative_min_words']} kata) membuang "
             "kemudahan itu.",
-            "Pada `full`, majority_baseline sudah mencapai akurasi 0,72 — "
+            "Pada `full`, majority_baseline sudah mencapai akurasi 0,71 — "
             "akurasi model harus dibaca relatif terhadap angka itu, bukan "
-            "terhadap 0. Pada `informative_ge5w` baseline turun ke 0,46, dan "
+            "terhadap 0. Pada `informative_ge5w` baseline turun ke 0,45, dan "
             "di situlah jarak sesungguhnya antar model terlihat.",
             f"Metrik utama pemilihan model: "
             f"{MLCFG['evaluation']['primary_metric']}.",

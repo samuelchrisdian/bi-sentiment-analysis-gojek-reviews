@@ -1,15 +1,17 @@
 <script setup>
 import { computed } from "vue";
-import { useFilters, TANGGAL_MIN, TANGGAL_MAX, AWAL_PENUH } from "../stores/filters";
+import {
+  useFilters, TANGGAL_MIN, TANGGAL_MAX, AWAL_PENUH, AKHIR_PENUH, ADA_PARSIAL,
+} from "../stores/filters";
 
 const f = useFilters();
 
 const galatRentang = computed(() => (f.from > f.to ? "Tanggal mulai melewati tanggal akhir." : ""));
 
 const PRESET = [
-  { label: "Seluruh periode penuh", from: AWAL_PENUH, to: TANGGAL_MAX },
-  { label: "2025 saja", from: "2025-01-01", to: TANGGAL_MAX },
-  { label: "6 bulan terakhir", from: "2025-07-01", to: TANGGAL_MAX },
+  { label: "Seluruh periode", from: AWAL_PENUH, to: AKHIR_PENUH },
+  { label: "2026 saja", from: "2026-01-01", to: AKHIR_PENUH },
+  { label: "12 bulan terakhir", from: "2025-10-01", to: AKHIR_PENUH },
 ];
 
 const presetAktif = (p) => f.from === p.from && f.to === p.to;
@@ -49,9 +51,10 @@ const presetAktif = (p) => f.from === p.from && f.to === p.to;
       <!-- Keputusan metodologis Temuan 6 sebagai sakelar eksplisit, bukan
            sebagai baris yang dihapus diam-diam dari data. -->
       <button
-        class="toggle mini mei" :aria-pressed="String(f.sertakanMei)"
-        @click="f.toggleMei()"
-      >Sertakan Mei 2024 (parsial)</button>
+        v-if="ADA_PARSIAL"
+        class="toggle mini mei" :aria-pressed="String(f.sertakanParsial)"
+        @click="f.toggleParsial()"
+      >Sertakan bulan parsial</button>
 
       <button class="mini" :disabled="!f.tidakDefault" @click="f.reset()">Atur ulang</button>
     </div>

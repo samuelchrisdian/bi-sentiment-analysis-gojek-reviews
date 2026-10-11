@@ -99,7 +99,7 @@ class VersionsResponse(Skema):
                     "ulasan yang PUNYA versi_minor.")
     coverage_pct_seluruh_ulasan: float = Field(
         ..., ge=0, le=100,
-        description="Persentase yang sama, tetapi atas seluruh 100.000 ulasan — "
+        description="Persentase yang sama, tetapi atas seluruh ulasan yang dianalisis — "
                     "termasuk yang versi_app-nya NULL.")
     null_version_pct: float = Field(..., ge=0, le=100)
     model_produksi: str

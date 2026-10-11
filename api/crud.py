@@ -22,7 +22,7 @@ S = get_settings()
 MLCFG = get_ml_config()
 
 MODEL = S.model_produksi
-BULAN_PARSIAL = MLCFG["temporal"]["partial_month"]          # '2024-05'
+BULAN_PARSIAL = ", ".join(MLCFG["temporal"]["partial_months"])  # '2025-10, 2026-10'
 AMBANG_MATVIEW = MLCFG["versions"]["min_reviews_per_version"]  # 100
 
 

@@ -78,8 +78,8 @@ function panel(blok, i) {
         formatter: (p) => desimal(p.value, 3),
       },
       // Baseline mayoritas milik eval_set INI — bukan satu angka yang dipakai
-      // ulang untuk kedua panel. Pada `full` baseline 0,72; pada
-      // `informative_ge5w` ia jatuh ke 0,46, dan justru di situlah jarak
+      // ulang untuk kedua panel. Pada `full` baseline 0,71; pada
+      // `informative_ge5w` ia jatuh ke 0,45, dan justru di situlah jarak
       // sesungguhnya antarmodel terlihat.
       markLine: garis === null ? undefined : {
         silent: true,
@@ -145,7 +145,7 @@ const barisTabel = computed(() => {
 
       <!-- Dua eval set berdampingan, masing-masing panel sendiri. Menumpuknya
            jadi satu plot memaksa satu garis baseline mewakili dua angka yang
-           berbeda jauh (0,72 vs 0,46). -->
+           berbeda jauh (0,71 vs 0,45). -->
       <div class="panel-grid">
         <figure v-for="(blok, i) in metrics.eval_sets" :key="blok.eval_set">
           <figcaption>

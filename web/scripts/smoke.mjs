@@ -56,7 +56,7 @@ await step("Grafik ter-render", async () => {
 await step("Filter mengubah KPI + tren", async () => {
   const sebelumKpi = await page.locator(".tile__hero").first().innerText();
   const sebelumBaris = await page.locator("text=Bulanan").count();
-  await page.locator('button:has-text("2025 saja")').click();
+  await page.locator('button:has-text("2026 saja")').click();
   await page.waitForTimeout(1800);
   const sesudahKpi = await page.locator(".tile__hero").first().innerText();
   if (sebelumKpi === sesudahKpi) throw new Error("KPI tidak berubah: " + sebelumKpi);
