@@ -25,7 +25,7 @@ class Settings(BaseSettings):
         protected_namespaces=(),
     )
 
-    database_url: str = "postgresql+psycopg2://gojek:gojek@localhost:5433/gojek_sentiment"
+    database_url: str = "postgresql+psycopg2://gojek:gojek@localhost:5434/gojek_sentiment"
     artifacts_dir: Path = ROOT / "ml" / "artifacts"
     # localhost, 127.0.0.1, dan 0.0.0.0 adalah origin BERBEDA bagi peramban —
     # semuanya perlu didaftarkan agar dashboard jalan apa pun alamat yang diketik.

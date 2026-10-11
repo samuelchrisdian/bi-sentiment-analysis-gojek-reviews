@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gojek}
       POSTGRES_DB: ${POSTGRES_DB:-gojek_sentiment}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./ml/sql:/docker-entrypoint-initdb.d:ro
@@ -28,7 +28,7 @@ services:
       db: { condition: service_healthy }
     environment:
       # Di dalam jaringan compose, db dihubungi lewat port INTERNAL 5432 —
-      # 5433 di atas hanya pemetaan ke host.
+      # 5434 di atas hanya pemetaan ke host.
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-gojek}:${POSTGRES_PASSWORD:-gojek}@db:5432/${POSTGRES_DB:-gojek_sentiment}
       ARTIFACTS_DIR: /app/ml/artifacts
     volumes:
