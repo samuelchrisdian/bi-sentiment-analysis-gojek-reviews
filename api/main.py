@@ -169,7 +169,9 @@ def baca_trend(
         "titik itu wajib dianotasi di grafik, bukan dihapus diam-diam.",
     ]
     if granularity is schemas.Granularity.month:
-        catatan.append(f"Bulan parsial menurut ml/config.yaml: {crud.BULAN_PARSIAL}.")
+        catatan.append(f"Bulan parsial menurut ml/config.yaml: {crud.BULAN_PARSIAL}."
+                       if crud.BULAN_PARSIAL else
+                       "Tidak ada bulan parsial: seluruh bulan dalam rentang data tercakup penuh.")
     if n_parsial:
         catatan.append(f"{n_parsial} dari {len(data)} titik berperiode parsial.")
 

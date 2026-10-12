@@ -22,7 +22,8 @@ const opsi = computed(() => {
 
   // Celah 2px berwarna permukaan yang memisahkan kedua segmen — bukan garis
   // tepi kontras yang menambah tinta bukan-data.
-  const celah = { borderColor: k.surface1, borderWidth: 2 };
+  // Ratusan versi membuat batang tinggal beberapa piksel; celah akan menutupinya.
+  const celah = { borderColor: k.surface1, borderWidth: baris.value.length > 80 ? 0 : 2 };
 
   return {
     ...dasarGrafik(k),
