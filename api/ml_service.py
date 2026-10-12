@@ -1,4 +1,4 @@
-"""Pemuatan artefak & inferensi satuan untuk /api/predict (Fase 7, T-7.2).
+"""Pemuatan artefak & inferensi satuan untuk /api/predict (Fase 7).
 
 Endpoint ini adalah DEMO kapabilitas, bukan sumber data dashboard. Enam
 endpoint lain tidak pernah menyentuh modul ini; seluruh angka dashboard berasal
@@ -51,7 +51,7 @@ def muat(artifacts_dir: Path | None = None) -> dict[str, Any]:
         manifest = json.loads((art / "MANIFEST.json").read_text(encoding="utf-8"))
 
         # Pemanasan: impor ml.src.preprocess menarik Sastrawi, kamus slang, dan
-        # cache stem (±586 KB). Dilakukan di startup agar request pertama tidak
+        # cache stem (±1,6 MB). Dilakukan di startup agar request pertama tidak
         # menanggung biayanya.
         from ml.src.preprocess import praproses_satu
         praproses_satu("aplikasi error terus gabisa bayar")

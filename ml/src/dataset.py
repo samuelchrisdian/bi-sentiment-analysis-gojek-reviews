@@ -1,8 +1,8 @@
-"""Split kanonik yang dipakai seluruh Fase 4 (T-4.1 s/d T-4.6).
+"""Split kanonik yang dipakai seluruh Fase 4 (tuning hingga eksperimen tiga kelas).
 
 Fase 3 memvektorisasi di dalam `train.siapkan_data`. Fase 4 membutuhkan split
 pada level TEKS, karena `GridSearchCV` harus mem-fit vectorizer ulang di setiap
-fold (T-4.1). Modul ini menyediakan split itu dengan urutan operasi yang persis
+fold. Modul ini menyediakan split itu dengan urutan operasi yang persis
 sama seperti Fase 3 — split -> dedup train -> (vectorize belakangan) — sehingga
 angka train/test identik dan perbandingan default vs tuned tetap sah.
 
@@ -42,7 +42,7 @@ def siapkan_teks(dedup: bool = True, scheme: str = "binary") -> dict:
     """Split stratified pada level teks.
 
     scheme='binary'      -> rating 3 dibuang, label 0/1 (protokol resmi)
-    scheme='three_class' -> seluruh 100k dipakai, label 0/1/2 (T-4.6)
+    scheme='three_class' -> seluruh ulasan dipakai, label 0/1/2
     """
     df = muat_parquet()
 

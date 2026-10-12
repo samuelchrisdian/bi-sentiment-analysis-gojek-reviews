@@ -1,4 +1,4 @@
-"""Skema respons Pydantic (Fase 7, T-7.4).
+"""Skema respons Pydantic (Fase 7).
 
 Setiap endpoint punya `response_model`. Selain validasi, ini yang membuat
 `openapi.json` menjadi kontrak yang bisa dilampirkan di laporan — bukan

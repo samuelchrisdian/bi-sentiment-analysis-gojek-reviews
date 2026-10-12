@@ -1,4 +1,4 @@
-"""Kumpulkan seluruh angka final ke docs/synthesis/facts.yaml (Fase 10, T-10.1).
+"""Kumpulkan seluruh angka final ke docs/synthesis/facts.yaml (Fase 10).
 
 Berkas keluaran adalah satu-satunya sumber angka bagi naskah Fase 10. Setiap
 nilai dihitung ulang dari berkas sumber — CSV di ``docs/tables/`` dan laporan

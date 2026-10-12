@@ -1,19 +1,14 @@
-"""Pengecualian stemming (Fase 2 — hasil gerbang H-6 putaran 1).
+"""Pengecualian stemming (Fase 2, hasil verifikasi manual pra-pemrosesan).
 
 Sastrawi mengupas afiks secara agresif dan pada sebagian kata menghasilkan
-bentuk yang salah atau menggeser makna. Pemeriksaan manual 100 sampel oleh
-manusia menemukan 25 kasus semacam itu; dampaknya diukur di seluruh korpus:
+bentuk yang salah atau menggeser makna, mis.:
 
-    pengemudi    -> kemudi    12.419 dokumen   (pelaku menjadi alat kemudi)
-    pengemudinya -> mud        3.095 dokumen   (bentuk tidak bermakna)
-    pelanggan    -> langgan    3.440 dokumen
-    kasian       -> kasi         645 dokumen
-    penumpang    -> tumpang      636 dokumen
-    lemot        -> lot          402 dokumen   (token sentimen negatif hilang)
+    pengemudi    -> kemudi    (pelaku menjadi alat kemudi)
+    pengemudinya -> mud       (bentuk tidak bermakna)
+    lemot        -> lot       (token sentimen negatif hilang)
 
-Perhatikan asal masalahnya: pemetaan `driver` -> `pengemudi` pada gerbang H-5
-benar secara linguistik, tetapi justru menyerahkan bentuk turunan berimbuhan
-kepada stemmer. Kata `driver` yang dibiarkan apa adanya tidak akan tersentuh.
+Asal masalahnya: pemetaan kamus slang `driver` -> `pengemudi` benar secara
+linguistik, tetapi justru menyerahkan bentuk turunan berimbuhan kepada stemmer. Kata `driver` yang dibiarkan apa adanya tidak akan tersentuh.
 Interaksi antar tahap inilah yang membuat pemeriksaan manual tidak tergantikan.
 
 STEM_OVERRIDE memaksa hasil stem untuk kata-kata ini. Nilai yang sama dengan
@@ -44,9 +39,8 @@ STEM_OVERRIDE: dict[str, str] = {
     "memesan": "pesan",            # `mes` tidak bermakna
     "pemesanan": "pesan",
 
-    # --- Tambahan gerbang H-6 putaran 2 ---
-    # KRITIS: `sebelumnya` -> `belum` mengubah penanda waktu menjadi NEGASI.
-    # 213 dokumen berisiko disuntik negasi yang tidak pernah ditulis penggunanya.
+    # --- Tambahan verifikasi manual data awal putaran 2 ---
+    # KRITIS: `sebelumnya` -> `belum` menyuntikkan NEGASI yang tidak pernah ditulis pengguna.
     "sebelumnya": "sebelumnya",
     "sebelum": "sebelum",
 
@@ -66,7 +60,7 @@ STEM_OVERRIDE: dict[str, str] = {
     "kebijakan": "kebijakan",     # `bijak` menghilangkan makna kebijakan
     "kesejahteraan": "sejahtera",
 
-    # --- Tambahan gerbang H-6 putaran 3 ---
+    # --- Tambahan verifikasi manual data awal putaran 3 ---
     # Yang MEMBALIK atau melemahkan sentimen bila di-stem
     "seenaknya": "seenaknya",       # -> `enak`: keluhan menjadi terdengar positif
     "menyusahkan": "menyusahkan",   # -> `susah`: "jangan menyusahkan" != "jangan susah"

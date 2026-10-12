@@ -1,4 +1,4 @@
-"""Fitur paling berpengaruh per kelas (Fase 4, T-4.5).
+"""Fitur paling berpengaruh per kelas (Fase 4).
 
 Tujuannya bukan sekadar menampilkan daftar kata, melainkan menguji pipeline
 Fase 2: bila yang muncul adalah istilah domain (`gagal`, `saldo`, `potong`),

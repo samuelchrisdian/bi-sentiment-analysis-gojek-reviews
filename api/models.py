@@ -1,4 +1,4 @@
-"""ORM SQLAlchemy (Fase 7, T-7.1).
+"""ORM SQLAlchemy (Fase 7).
 
 Hanya tabel yang benar-benar dibaca endpoint yang dipetakan. Materialized view
 TIDAK dipetakan sebagai ORM — view tidak punya primary key dan tidak pernah

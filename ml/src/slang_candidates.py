@@ -1,8 +1,8 @@
-"""Ekstraksi kandidat kamus slang (Fase 2, T-2.1 — bagian agent sebelum H-5).
+"""Ekstraksi kandidat kamus slang untuk diisi peninjau manusia (Fase 2).
 
 Menghasilkan docs/tables/unknown_tokens_500.csv berisi token paling sering yang
 TIDAK dikenali kamus kata dasar Sastrawi. Kolom `bentuk_baku` dan `buang`
-sengaja dibiarkan kosong — pengisiannya adalah wewenang manusia (gerbang H-5).
+sengaja dibiarkan kosong — pengisiannya adalah wewenang manusia.
 
 Agent TIDAK BOLEH mengisi kolom tersebut dengan tebakan.
 """
@@ -66,7 +66,7 @@ def build_candidates() -> pd.DataFrame:
     target = {t for t, _ in top}
 
     # Satu contoh konteks nyata per token, dikumpulkan dalam SATU sapuan korpus
-    # (bukan satu sapuan per token) agar tidak menjadi 500 x 100.000 operasi.
+    # (bukan satu sapuan per token) agar tidak menjadi N_TOKENS x jumlah ulasan operasi.
     contoh: dict[str, str] = {}
     for teks in df["Ulasan"].fillna("").str.lower():
         if len(contoh) == len(target):

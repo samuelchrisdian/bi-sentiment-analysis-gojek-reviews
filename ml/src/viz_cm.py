@@ -1,9 +1,9 @@
-"""Confusion matrix model terbaik (Fase 4, T-4.3) — Gambar 6.
+"""Confusion matrix model terbaik (Fase 4) — Gambar 6.
 
 Dua versi ditampilkan berdampingan karena keduanya menjawab pertanyaan berbeda:
 hitungan absolut menunjukkan berapa banyak keluhan yang lolos triase (biaya
 bisnis), ternormalisasi per baris menunjukkan recall per kelas (kualitas model
-terlepas dari ketimpangan kelas). Menampilkan hanya yang pertama pada data 72%
+terlepas dari ketimpangan kelas). Menampilkan hanya yang pertama pada data 71%
 positif menyesatkan.
 """
 from __future__ import annotations
@@ -75,8 +75,8 @@ def gambar_06(nama_model: str = "logistic_regression_final",
     return hasil
 
 
-# Gambar 6 = model produksi (keputusan H-10). Lampiran = model dengan macro-F1
-# tertinggi, yang juga menjadi sumber analisis kesalahan T-4.4.
+# Gambar 6 = model produksi. Lampiran = model dengan macro-F1 tertinggi, yang
+# juga menjadi sumber analisis kesalahan manual.
 VARIAN = [("logistic_regression_final", "gambar-06-confusion-matrix"),
           ("linear_svc_tuned", "gambar-06b-confusion-matrix-linear-svc")]
 

@@ -1,4 +1,4 @@
-"""Skoring seluruh 100.000 baris dengan lima model (Fase 6, T-6.1).
+"""Skoring seluruh 526.322 baris dengan lima model (Fase 6).
 
 Diskor SELURUH baris, termasuk rating 3 yang dikeluarkan dari pelatihan
 (`sentimen_aktual` NULL) — dashboard perlu menampilkan prediksi untuk semua
@@ -6,21 +6,20 @@ ulasan, dan ke arah mana model mengklasifikasikan ulasan bintang 3 justru
 menarik untuk dilaporkan.
 
 Lima baris `model_name` ditulis ke `review_scores`, bukan dua seperti draf
-awal rencana Fase 6: gerbang H-10 (`docs/model_decision.md`) menjadikan
-LogisticRegression `C=1.0` model produksi, mengangkat perbandingan dari dua
+awal rencana Fase 6: keputusan model produksi (`docs/model_decision.md`)
+menjadikan LogisticRegression `C=1.0` model produksi, mengangkat perbandingan dari dua
 model menjadi "tiga keluarga algoritma, empat varian" (§5.3). Kelima baris:
 
     complement_nb_tuned        \\  keempat varian GridSearchCV Fase 4 —
     multinomial_nb_tuned        \\ tiap Pipeline (`tuned_*.joblib`) membawa
     linear_svc_tuned            /  vectorizer TF-IDF sendiri, HASIL fold-nya
     logistic_regression_tuned  /   sendiri, bukan `vectorizer.joblib`.
-    logistic_regression_final  --  model produksi (Fase 4 T-4.7): clf terpisah
+    logistic_regression_final  --  model produksi (Fase 4): clf terpisah
                                     dari vectorizer, dipasangkan manual di sini.
 
-`logistic_regression_tuned` (C=5.0, pemenang GridSearchCV) dan
-`logistic_regression_final` (C=1.0, aturan 1-SE) SENGAJA dibedakan meski satu
-keluarga algoritma — parameternya beda dan keduanya baris yang sah untuk
-dibandingkan di dashboard.
+`logistic_regression_tuned` dan `logistic_regression_final` berparameter sama
+(C=1.0, balanced) tetapi SENGAJA dibedakan: yang pertama Pipeline keluaran
+GridSearchCV, yang kedua model produksi yang dilatih ulang oleh `finalize.py`.
 
 `linear_svc_tuned` tidak dikalibrasi (`PERLU_KALIBRASI` di `finalize.py` hanya
 berlaku untuk model produksi), sehingga `pred_proba`-nya NULL — `LinearSVC`

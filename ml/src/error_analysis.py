@@ -1,4 +1,4 @@
-"""Analisis kesalahan (Fase 4, T-4.4) — GERBANG H-7.
+"""Analisis kesalahan manual (Fase 4).
 
 Modul ini menghasilkan berkas kerja untuk pemeriksaan manusia dan menghitung
 statistik kesalahan yang bersifat mekanis. Kolom `kategori_penyebab` sengaja
@@ -67,7 +67,7 @@ def bangun_berkas_kerja() -> tuple[pd.DataFrame, pd.DataFrame]:
 
     err = df[salah].copy()
     sampel = err.sample(N_SAMPEL, random_state=SEED).sort_values("jarak_ke_batas")
-    sampel["kategori_penyebab"] = ""               # DIISI MANUSIA — lihat H-7
+    sampel["kategori_penyebab"] = ""               # DIISI MANUSIA
     sampel["catatan"] = ""
     return err, sampel[KOLOM]
 
@@ -116,7 +116,7 @@ def tumpang_tindih_model() -> pd.DataFrame:
 
     Bila tumpang tindihnya tinggi, taksonomi penyebab yang disusun dari
     kesalahan satu model berlaku juga untuk model lain — sehingga keputusan
-    H-10 tidak membatalkan hasil pemeriksaan manual ini.
+    model produksi tidak membatalkan hasil pemeriksaan manual ini.
     """
     d = siapkan_teks(dedup=CFG["preprocessing"]["dedup_training_text"])
     salah = {}
@@ -141,7 +141,7 @@ def hitung_distribusi(path=None) -> pd.DataFrame:
     kosong = df.kategori_penyebab.isna() | (df.kategori_penyebab.astype(str).str.strip() == "")
     if kosong.any():
         raise RuntimeError(
-            f"GERBANG H-7 belum dilewati: {int(kosong.sum())} dari {len(df)} baris "
+            f"Analisis kesalahan manual belum lengkap: {int(kosong.sum())} dari {len(df)} baris "
             "masih kosong pada kolom `kategori_penyebab`.")
     tak_dikenal = set(df.kategori_penyebab.str.strip()) - set(TAKSONOMI)
     if tak_dikenal:

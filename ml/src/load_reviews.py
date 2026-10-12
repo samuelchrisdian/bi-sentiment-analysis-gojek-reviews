@@ -1,4 +1,4 @@
-"""Muat reviews ke PostgreSQL (prasyarat Fase 5 T-5.6/T-5.8 dan Fase 6).
+"""Muat reviews ke PostgreSQL (prasyarat Fase 5 dan Fase 6).
 
 `review_topics` memiliki foreign key ke `reviews`, sehingga tabel ini harus
 terisi sebelum penetapan topik dapat ditulis. Sumbernya parquet Fase 2 — bukan

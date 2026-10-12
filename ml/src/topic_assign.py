@@ -1,6 +1,6 @@
-"""Penetapan topik per ulasan & peringkat (Fase 5, T-5.5 s/d T-5.8).
+"""Penetapan topik per ulasan & peringkat (Fase 5).
 
-Nama kategori DIIMPOR dari hasil gerbang H-8, tidak ditentukan di sini.
+Nama kategori DIIMPOR dari penamaan oleh penulis, tidak ditentukan di sini.
 Yang dikerjakan modul ini murni turunan: memilih kata kunci per kategori dari
 bobot LDA, menetapkan topik per ulasan, dan menyusun peringkat.
 
@@ -30,7 +30,7 @@ ROOT = CFG["_root"]
 TAB = ROOT / "docs" / "tables"
 LAMBDA = 0.6          # Sievert & Shirley merekomendasikan ~0,6 untuk penamaan
 N_KATA_KUNCI = 10     # DoD menuntut >=5 per kategori
-AMBANG_LDA = 0.3      # T-5.5 pendekatan B
+AMBANG_LDA = 0.3      # pendekatan B
 AMBANG_BIGRAM = 0.35  # pangsa minimum kemunculan bigram pada satu topik
 MIN_LIFT = 2.0        # kata kunci harus >=2x lebih terkonsentrasi dari pangsa topiknya
 MAX_DF_KORPUS = 0.15  # kata di >15% korpus tidak dapat membedakan kategori apa pun
@@ -69,11 +69,11 @@ def kata_kunci_unigram(lda: LdaModel, corpus, topik: pd.DataFrame,
     kemunculannya benar-benar menandakan kategori ini". Dua saringan tambahan:
 
       1. `MAX_DF_KORPUS` — kata yang muncul di >15% korpus negatif tidak dapat
-         membedakan apa pun. Tanpa ini `bisa` (22% dokumen) menjadi kata kunci
-         "Akun, Login & Verifikasi" dan mencocoki seperlima korpus.
+         membedakan apa pun; kata umum seperti `bisa` akan mencocoki sebagian
+         besar korpus.
       2. `MIN_LIFT` — kata harus >=2x lebih terkonsentrasi pada dokumen dominan
          topiknya dibanding pangsa topik itu sendiri. Ambang mutlak akan berat
-         sebelah terhadap topik besar (topik 2 menguasai 28,85% dokumen).
+         sebelah terhadap topik besar.
     """
     phi = lda.get_topics()                              # (k, V) p(w|t)
     V = phi.shape[1]
@@ -149,9 +149,8 @@ def kata_kunci_bigram(topik: pd.DataFrame, dominan: np.ndarray,
     if d.empty:
         return d
     d["rank"] = d.groupby("topic_id").bobot.rank(ascending=False, method="first").astype(int)
-    # Tanpa batas ini sebarannya sangat timpang: topik terbesar (28,85% dokumen)
-    # menarik 63 bigram sementara dua topik lain tidak memperoleh satu pun,
-    # sehingga tabel `topics` menjadi tidak sebanding antar kategori.
+    # Tanpa batas ini topik terbesar menarik hampir semua bigram, sehingga tabel
+    # `topics` tidak sebanding antar kategori.
     d = d[d["rank"] <= MAX_BIGRAM]
     return d.sort_values(["topic_id", "rank"])
 
@@ -247,7 +246,7 @@ def kata_kunci_pemicu(neg: pd.DataFrame, kk: pd.DataFrame) -> pd.DataFrame:
     Ini bukan detail kosmetik. `review_topics` merujuk baris `topics`, yaitu
     pasangan (kategori, keyword). Bila satu ulasan ditautkan ke tiga baris
     keyword dari kategori yang sama, maka `COUNT(*) GROUP BY kategori` pada
-    T-5.6 menghitungnya tiga kali dan peringkatnya menjadi salah. Satu baris per
+    peringkat menghitungnya tiga kali dan peringkatnya menjadi salah. Satu baris per
     (ulasan, kategori) menjaga hitungan tetap benar, sekaligus membuat penetapan
     dapat diaudit: terlihat kata mana yang memicunya.
     """
@@ -272,7 +271,7 @@ def kata_kunci_pemicu(neg: pd.DataFrame, kk: pd.DataFrame) -> pd.DataFrame:
 
 
 def peringkat(pemicu: pd.DataFrame, neg: pd.DataFrame) -> pd.DataFrame:
-    """T-5.6 — dua kolom TERPISAH, tidak digabung menjadi skor komposit.
+    """Dua kolom TERPISAH, tidak digabung menjadi skor komposit.
 
     Bab 1 membatasi prioritas hanya berbasis frekuensi; kolom Likes hadir
     sebagai lensa tambahan ("keluhan mana yang paling beresonansi"). Menggabung
@@ -292,7 +291,7 @@ def peringkat(pemicu: pd.DataFrame, neg: pd.DataFrame) -> pd.DataFrame:
 
 
 def tulis_db(kk: pd.DataFrame, pemicu: pd.DataFrame) -> dict:
-    """T-5.7 — isi `topics` dan `review_topics`."""
+    """Isi `topics` dan `review_topics`."""
     import os
     from dotenv import load_dotenv
     from sqlalchemy import create_engine, text
@@ -321,7 +320,7 @@ def tulis_db(kk: pd.DataFrame, pemicu: pd.DataFrame) -> dict:
 
 
 def tren_bulanan(eng) -> pd.DataFrame:
-    """T-5.8 — tren kategori per bulan, lewat SQL sesuai rencana."""
+    """Tren kategori per bulan, lewat SQL sesuai rencana."""
     q = """
         SELECT date_trunc('month', r.tanggal)::date AS bulan,
                t.kategori,
@@ -425,7 +424,7 @@ if __name__ == "__main__":
     pemicu = kata_kunci_pemicu(neg, kk)
     n_topik = pemicu.groupby("review_id").size()
     cakupan = pemicu.review_id.nunique() / len(neg)
-    print(f"\nT-5.5 penetapan A (resmi, berbasis kata kunci)")
+    print(f"\nPenetapan A (resmi, berbasis kata kunci)")
     print(f"  cakupan    : {pemicu.review_id.nunique():,}/{len(neg):,} = {cakupan:.2%}"
           f"   (DoD: ≥60%)")
     print(f"  rata-rata  : {n_topik.mean():.2f} kategori/ulasan")
@@ -434,12 +433,12 @@ if __name__ == "__main__":
           f"dari {pb.sum():,} ulasan")
 
     pr = peringkat(pemicu, neg)
-    print(f"\nT-5.6 peringkat")
+    print(f"\nPeringkat")
     print(pr[["kategori", "jumlah_ulasan", "persen_ulasan_negatif", "total_likes",
               "peringkat_frekuensi", "peringkat_likes"]].to_string(index=False))
 
     db = tulis_db(kk, pemicu)
-    print(f"\nT-5.7 PostgreSQL: topics={db['n_topics']} baris, "
+    print(f"\nPostgreSQL: topics={db['n_topics']} baris, "
           f"review_topics={db['n_review_topics']:,} baris ({db['n_review']:,} ulasan)")
 
     tren = tren_bulanan(db["engine"])
@@ -452,7 +451,7 @@ if __name__ == "__main__":
     t3.to_csv(TAB / "tabel3_storytelling_topik.csv", index=False)
     pemicu.to_parquet(ROOT / "data" / "processed" / "topics.parquet", index=False)
 
-    print(f"\nT-5.8 tren: {len(tren)} baris, {tren.bulan.nunique()} bulan "
+    print(f"\nTren: {len(tren)} baris, {tren.bulan.nunique()} bulan "
           f"({tren.periode_parsial.sum()} baris ditandai periode parsial)")
     print("\nDisimpan: docs/tables/{topic_keywords,topics_ranked,topic_trend_monthly,"
           "tabel3_storytelling_topik}.csv")
@@ -460,10 +459,10 @@ if __name__ == "__main__":
 
 
 def sampel_validasi_silang(n: int = 50) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Berkas gerbang H-9 — validasi silang.
+    """Berkas validasi silang penilai independen.
 
     Berkas penilai memuat TEKS ULASAN ASLI SAJA. Tidak ada label, tidak ada
-    kategori hasil H-8, tidak ada skor topik, dan urutan barisnya tidak
+    kategori hasil penamaan, tidak ada skor topik, dan urutan barisnya tidak
     mengikuti apa pun yang dapat membocorkan penetapan otomatis. Penilai yang
     melihat label yang sudah ada tidak lagi menilai secara independen, dan skor
     kesepakatan yang dihasilkan menjadi tidak bermakna.
@@ -499,10 +498,10 @@ def _definisi_kategori(kk: pd.DataFrame) -> pd.DataFrame:
 
 
 def hitung_kesepakatan(path=None) -> dict:
-    """H-9 — kesepakatan penilai manusia vs penetapan otomatis (pendekatan A).
+    """Kesepakatan penilai manusia vs penetapan otomatis (pendekatan A).
 
     Yang dibandingkan adalah keluaran yang benar-benar dipakai sistem, bukan
-    skema H-8 di atas kertas: inilah kategorisasi yang masuk `review_topics`,
+    skema kategori di atas kertas: inilah kategorisasi yang masuk `review_topics`,
     dashboard, dan Tabel 3.
 
     Tiga angka dilaporkan, karena tidak satu pun sendirian memadai:
@@ -514,7 +513,7 @@ def hitung_kesepakatan(path=None) -> dict:
       menguasai dua pertiga korpus. Ini angka utama.
     - **Kesepakatan longgar** — kategori utama penilai termasuk di antara
       kategori yang ditetapkan otomatis. Relevan karena penetapan otomatis
-      memang boleh memberi lebih dari satu kategori per ulasan (rata-rata 2,26),
+      memang boleh memberi lebih dari satu kategori per ulasan,
       sehingga menuntut kecocokan persis akan menghukumnya secara tidak adil.
     - **Jaccard antar-himpunan** — {`kategori_penilai_1`, `kategori_penilai_2`}
       dibandingkan seluruh himpunan kategori otomatis. Inilah satu-satunya
@@ -531,7 +530,7 @@ def hitung_kesepakatan(path=None) -> dict:
     kosong = d.kategori_penilai_1.isna() | (d.kategori_penilai_1.astype(str).str.strip() == "")
     if kosong.any():
         raise RuntimeError(
-            f"GERBANG H-9 belum dilewati: {int(kosong.sum())} dari {len(d)} baris "
+            f"Validasi silang belum lengkap: {int(kosong.sum())} dari {len(d)} baris "
             "masih kosong pada kolom `kategori_penilai_1`.")
 
     sah = set(KATEGORI_H8.values()) | {"TIDAK ADA YANG COCOK"}

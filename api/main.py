@@ -122,7 +122,7 @@ def baca_kpi(
     m = crud.meta(db)
     catatan = [
         f"persen_negatif berasal dari model produksi '{S.model_produksi}' "
-        f"(gerbang H-10); baseline_negatif berasal dari label aktual rating 1–2.",
+        f"(keputusan model produksi); baseline_negatif berasal dari label aktual rating 1–2.",
         f"baseline_negatif dihitung atas {_ribuan(row['n_berlabel'])} ulasan berlabel; "
         f"{_ribuan(row['total_ulasan'] - row['n_berlabel'])} ulasan berating 3 tidak "
         f"punya label biner dan dikeluarkan dari pembanding itu.",
@@ -292,7 +292,7 @@ def baca_model_metrics(db: Session = Depends(get_db)):
             "kemudahan itu.",
             "Pada `full`, majority_baseline sudah mencapai akurasi 0,71 — "
             "akurasi model harus dibaca relatif terhadap angka itu, bukan "
-            "terhadap 0. Pada `informative_ge5w` baseline turun ke 0,45, dan "
+            "terhadap 0. Pada `informative_ge5w` baseline turun ke 0,44, dan "
             "di situlah jarak sesungguhnya antar model terlihat.",
             f"Metrik utama pemilihan model: "
             f"{MLCFG['evaluation']['primary_metric']}.",

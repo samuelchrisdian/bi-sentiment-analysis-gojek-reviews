@@ -1,8 +1,7 @@
-"""Pemetaan emoji ke token sentimen (Fase 2 — hasil gerbang H-6 putaran 1).
+"""Pemetaan emoji ke token sentimen (Fase 2, hasil verifikasi manual pra-pemrosesan).
 
-Pemeriksaan manual menemukan 5 dari 100 sampel menjadi kosong total karena
-isinya hanya emoji, seluruhnya berating 4-5 dan jelas membawa sentimen positif.
-Di seluruh korpus, 1.237 ulasan (1,2%) bernasib sama.
+Verifikasi manual menemukan ulasan yang isinya hanya emoji menjadi kosong total,
+padahal umumnya berating 4-5 dan jelas membawa sentimen positif.
 
 Membuang emoji berarti membuang sinyal pada ulasan yang memang hanya berisi
 emoji. Emoji dipetakan lebih dulu ke kata, baru sisanya dibersihkan.

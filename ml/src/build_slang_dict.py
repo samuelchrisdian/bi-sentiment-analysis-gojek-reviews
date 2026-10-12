@@ -1,4 +1,4 @@
-"""Konversi CSV hasil gerbang H-5 menjadi ml/src/slang_dict.py (Fase 2, T-2.1 langkah 6).
+"""Konversi CSV kamus slang hasil isian manusia menjadi ml/src/slang_dict.py (Fase 2).
 
 Konversi ini MEKANIS: tidak ada entri yang ditambahkan, diubah, atau ditebak
 oleh agent. Sumber kebenaran adalah docs/tables/token_normalisasi_terisi.csv
@@ -40,7 +40,7 @@ def main() -> None:
 
     buang = sorted(d.loc[(d.buang != "") & (d.buang.str.lower() != "nan"), "token_asli"])
 
-    # Pemetaan yang DITOLAK pemeriksa pada gerbang H-6 putaran 2.
+    # Pemetaan yang DITOLAK pemeriksa pada verifikasi manual pra-pemrosesan.
     # `it` -> `itu` mengubah singkatan teknologi/tim IT menjadi kata tunjuk;
     # `jek` -> `gojek` membuat "Go-Jek" menjadi "go gojek" (token ganda).
     DITOLAK = {"it", "jek"}
@@ -48,8 +48,8 @@ def main() -> None:
             for r in d.itertuples()
             if r.bentuk_baku and r.token_asli not in buang and r.token_asli not in DITOLAK}
 
-    # Tambahan hasil gerbang H-6: token yang diusulkan pemeriksa saat verifikasi
-    # 100 sampel. Sama seperti H-5, seluruh pemetaan berasal dari manusia.
+    # Token yang diusulkan pemeriksa saat verifikasi manual pra-pemrosesan;
+    # seluruh pemetaan tetap berasal dari manusia.
     tambahan = ROOT / "docs" / "tables" / "token_normalisasi_tambahan.csv"
     n_tambahan = 0
     if tambahan.exists():
@@ -59,7 +59,7 @@ def main() -> None:
             if tok and baku and tok not in buang and tok not in DITOLAK:
                 peta[tok] = baku.split()
                 n_tambahan += 1
-        print(f"  tambahan H-6: {n_tambahan} pemetaan")
+        print(f"  tambahan verifikasi data awal: {n_tambahan} pemetaan")
 
     # Tambahan data scraping: 60 token tak dikenal berfrekuensi tertinggi pada
     # data baru, diputuskan manusia. Kolom `buang` berisi ya/tidak. Berkas ini

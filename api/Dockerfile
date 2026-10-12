@@ -1,4 +1,4 @@
-# Fase 7, T-7.8. Base disamakan dengan runtime pembuat artefak
+# Fase 7. Base disamakan dengan runtime pembuat artefak
 # (MANIFEST.json -> environment.python = 3.12.3).
 FROM python:3.12-slim
 
@@ -11,7 +11,7 @@ WORKDIR /app
 COPY api/requirements.txt ./api/requirements.txt
 RUN pip install --no-cache-dir -r api/requirements.txt
 
-# Kode saja. Artefak model (±9 MB) dan cache stem (±600 KB) TIDAK disalin —
+# Kode saja. Artefak model (±9 MB) dan cache stem (±1,6 MB) TIDAK disalin —
 # keduanya di-mount read-only lewat docker-compose, sehingga image tetap ramping
 # dan melatih ulang model tidak menuntut image dibangun ulang.
 COPY api/         ./api/

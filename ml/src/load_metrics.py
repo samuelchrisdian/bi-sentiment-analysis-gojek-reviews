@@ -1,4 +1,4 @@
-"""Muat model_metrics ke PostgreSQL (Fase 3, T-3.8).
+"""Muat model_metrics ke PostgreSQL (Fase 3).
 
 Dua jalur penulisan dilakukan keduanya: CSV untuk laporan (tidak butuh DB
 hidup) dan tabel PostgreSQL sebagai sumber endpoint /api/model/metrics.

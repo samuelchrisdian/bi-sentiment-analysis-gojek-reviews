@@ -1,4 +1,4 @@
-"""Baseline & komparasi model (Fase 3, T-3.1 s/d T-3.8).
+"""Baseline & komparasi model (Fase 3).
 
 Urutan operasi TIDAK BOLEH dibalik:
 
@@ -36,7 +36,7 @@ def bangun_model(cfg: dict) -> dict:
     """Empat model dengan konfigurasi TF-IDF dan random_state identik.
 
     ComplementNB, bukan hanya MultinomialNB: ComplementNB dirancang untuk data
-    tidak seimbang, dan rasio di sini 27:72. Keduanya tetap dijalankan agar
+    tidak seimbang, dan rasio di sini 29:71. Keduanya tetap dijalankan agar
     perbandingannya dapat dilaporkan; biayanya hitungan detik.
 
     LinearSVC, BUKAN SVC(kernel='rbf'): kompleksitas SVC antara O(n^2) dan
@@ -100,7 +100,7 @@ def evaluasi_ganda(nama: str, y_te, y_pred, mask_inf, train_s: float,
 
     Selisih macro-F1 antara keduanya adalah temuan metodologis utama: ia
     mengukur seberapa besar kinerja model bertumpu pada kata pujian pendek yang
-    berulang (39,9% ulasan hanya <=2 kata, hampir seluruhnya positif).
+    berulang (40,6% ulasan hanya <=2 kata, hampir seluruhnya positif).
     """
     baris = []
     for eval_set, mask in (("full", np.ones(len(y_te), bool)),

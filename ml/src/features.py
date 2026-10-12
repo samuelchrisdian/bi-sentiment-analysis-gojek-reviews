@@ -1,4 +1,4 @@
-"""Vektorisasi TF-IDF (Fase 3, T-3.4).
+"""Vektorisasi TF-IDF (Fase 3).
 
 Satu builder dipakai seluruh model agar perbedaan skor benar-benar berasal dari
 algoritmanya, bukan dari perlakuan fitur yang berbeda.

@@ -79,7 +79,7 @@ function panel(blok, i) {
       },
       // Baseline mayoritas milik eval_set INI — bukan satu angka yang dipakai
       // ulang untuk kedua panel. Pada `full` baseline 0,71; pada
-      // `informative_ge5w` ia jatuh ke 0,45, dan justru di situlah jarak
+      // `informative_ge5w` ia jatuh ke 0,44, dan justru di situlah jarak
       // sesungguhnya antarmodel terlihat.
       markLine: garis === null ? undefined : {
         silent: true,

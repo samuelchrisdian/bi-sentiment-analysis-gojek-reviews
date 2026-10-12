@@ -1,4 +1,4 @@
-"""Pemuatan & validasi data mentah (Fase 1, T-1.1).
+"""Pemuatan & validasi data mentah (Fase 1).
 
 Satu-satunya pintu masuk data mentah. Notebook EDA memanggil modul ini,
 bukan sebaliknya, agar Fase 2 memakai fungsi validasi yang sama persis.

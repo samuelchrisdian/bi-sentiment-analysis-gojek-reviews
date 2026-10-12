@@ -18,7 +18,7 @@ venv/
 node_modules/
 web/dist/
 
-# Dump database: berisi seluruh korpus Kaggle, jadi diperlakukan sama dengan
+# Dump database: berisi seluruh korpus ulasan hasil scraping, jadi diperlakukan sama dengan
 # data/raw/ — ada di disk untuk demo, tidak masuk riwayat git.
 # Cara membuat ulang: docs/repro_test.md §5
 docs/db_dump.sql.gz
@@ -27,7 +27,7 @@ docs/db_dump.sql.gz
 .env
 .DS_Store
 
-# Cadangan lokal hasil berbasis data Kaggle (artefak biner, tidak masuk git)
+# Cadangan lokal hasil pipeline sebelumnya (Kaggle & putaran scraping; artefak biner)
 archive/
 
 # Teks hasil terjemahan ulasan (data, sama seperti data/raw)

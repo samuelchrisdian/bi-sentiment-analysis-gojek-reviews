@@ -1,8 +1,8 @@
-"""Muat review_scores ke PostgreSQL (Fase 6, T-6.2).
+"""Muat review_scores ke PostgreSQL (Fase 6).
 
 `review_scores` ber-FK ke `reviews`, sehingga tabel itu harus terisi lebih
-dulu (`load_reviews.py`). 500.000 baris (5 model x 100.000 ulasan) lewat
-`to_sql` memakan menit; `COPY` selesai dalam detik (T-6.2, rencana Fase 6).
+dulu (`load_reviews.py`). Jutaan baris (5 model x 526.322 ulasan) lewat
+`to_sql` memakan menit; `COPY` jauh lebih cepat.
 """
 from __future__ import annotations
 

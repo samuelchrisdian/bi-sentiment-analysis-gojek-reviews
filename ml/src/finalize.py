@@ -1,10 +1,9 @@
-"""Artefak produksi + MANIFEST.json (Fase 4, T-4.7) — jalankan SETELAH H-10.
+"""Artefak produksi + MANIFEST.json (Fase 4); jalankan setelah keputusan model produksi.
 
 Script ini tidak memilih model. Nama model diberikan sebagai argumen, karena
-keputusan model produksi adalah pernyataan manusia (gerbang H-10) yang alasannya
-ditulis di docs/model_decision.md — bukan konsekuensi otomatis dari macro-F1
-tertinggi. Pada Fase 4 selisih keempat model 1,9 poin dan syarat "LinearSVC
-unggul >=2 poin" tidak terpenuhi, sehingga angka saja memang tidak menentukan.
+keputusan model produksi adalah pernyataan manusia yang alasannya ditulis di
+docs/model_decision.md — bukan konsekuensi otomatis dari macro-F1 tertinggi.
+LinearSVC hanya unggul 0,08 poin, jauh di bawah syarat "unggul >=2 poin".
 
     python -m ml.src.finalize logistic_regression              # seleksi 1-SE (default)
     python -m ml.src.finalize logistic_regression --seleksi grid

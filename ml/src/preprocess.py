@@ -1,4 +1,4 @@
-"""Pipeline preprocessing teks (Fase 2, T-2.3 s/d T-2.6).
+"""Pipeline preprocessing teks (Fase 2).
 
 Urutan operasi sengaja tetap dan tidak boleh diubah tanpa alasan tertulis:
 
@@ -47,7 +47,7 @@ _PENGUBAH_EMOJI = "[\U0001F3FB-\U0001F3FF️‍]*"   # warna kulit, selektor var
 
 # Normalisasi tingkat FRASA — dijalankan sebelum angka & tanda baca dibuang,
 # karena sebagiannya justru bergantung pada angka atau tanda hubung.
-# Seluruh pemetaan berasal dari putusan pemeriksa pada gerbang H-6.
+# Seluruh pemetaan berasal dari putusan pemeriksa pada verifikasi manual pra-pemrosesan.
 FRASA: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bgo[\s\-]?jek\b"), "gojek"),
     (re.compile(r"\bkasi[h]?\s+tau\b"), "kasih tahu"),
@@ -137,13 +137,13 @@ MAKS_KATA_EMOJI = 3
 def bersihkan_adaptif(teks: str) -> str:
     """Emoji dipetakan hanya pada ulasan pendek.
 
-    Alasannya ditemukan pada gerbang H-6 putaran 2. Ulasan
+    Alasannya ditemukan pada verifikasi manual pra-pemrosesan. Ulasan
     "jangan mengemis ke konsumen 🤣🤣🤣" berating 1: emoji tertawa di situ
     sarkastik, dan memetakannya menjadi token positif menyuntik sinyal yang
     berlawanan dengan isi ulasannya.
 
-    Tetapi putaran 3 menunjukkan sisi sebaliknya: "Go-jek memang 👍💯" kehilangan
-    seluruh sentimennya bila emoji diabaikan, menyisakan "go jek memang".
+    Tetapi putaran berikutnya menunjukkan sisi sebaliknya: "Go-jek memang 👍💯"
+    kehilangan seluruh sentimennya bila emoji diabaikan, menyisakan "go jek memang".
 
     Kompromi yang dipakai: emoji dipetakan bila teks tersisa paling banyak
     MAKS_KATA_EMOJI kata. Pada ulasan pendek, emoji memang pembawa sentimen
@@ -199,15 +199,15 @@ def _stem_one(w: str) -> tuple[str, str]:
 def _bangun_cache_stem(tokens_unik: set[str]) -> dict[str, str]:
     """Stem per KATA UNIK, bukan per dokumen, dan diparalelkan antar core.
 
-    Tiga lapis penghematan, diukur pada korpus ini (28.297 kata unik):
+    Tiga lapis penghematan:
 
-    1. Cache per kata unik. Korpus 100k dokumen memuat jutaan token tetapi hanya
-       puluhan ribu kata unik.
-    2. Kata yang sudah ada di kamus dasar Sastrawi (4.190 kata) tidak perlu
-       di-stem — bentuk dasarnya adalah dirinya sendiri.
-    3. Sisanya (24.107 kata di luar kamus) adalah bagian yang mahal: Sastrawi
-       menghabiskan seluruh kaskade aturan afiks sebelum menyerah, ~79 ms per
-       kata, atau ~32 menit satu core. Dijalankan paralel, turun ke ~2 menit.
+    1. Cache per kata unik. Korpus memuat jutaan token tetapi jumlah kata
+       unik jauh lebih kecil.
+    2. Kata yang sudah ada di kamus dasar Sastrawi tidak perlu di-stem — bentuk
+       dasarnya adalah dirinya sendiri.
+    3. Sisanya (kata di luar kamus) adalah bagian yang mahal: Sastrawi
+       menghabiskan seluruh kaskade aturan afiks sebelum menyerah (~79 ms per
+       kata), sehingga dijalankan paralel.
 
     Hasilnya identik dengan versi satu-core; yang berubah hanya waktu tempuh.
     """
@@ -330,7 +330,7 @@ def sampel_verifikasi(df: pd.DataFrame, n: int = 100,
 
 
 # ----------------------------------------------------- inferensi satuan ---
-# Dipakai oleh `api/ml_service.py` (Fase 7, T-7.2). Sengaja ditempatkan di
+# Dipakai oleh `api/ml_service.py` (Fase 7). Sengaja ditempatkan di
 # modul yang sama dengan pipeline pelatihan, bukan ditulis ulang di sisi API:
 # pipeline yang berbeda antara pelatihan dan inferensi adalah kelas bug yang
 # tidak memunculkan error, hanya prediksi yang pelan-pelan salah.

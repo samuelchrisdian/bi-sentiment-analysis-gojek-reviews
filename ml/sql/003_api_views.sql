@@ -1,14 +1,12 @@
--- Materialized view tambahan untuk Fase 7 (T-7.3) — dijalankan setelah
--- 002_matviews.sql dan setelah review_topics terisi (Fase 5 T-5.7).
+-- Materialized view tambahan untuk Fase 7 — dijalankan setelah
+-- 002_matviews.sql dan setelah review_topics terisi (Fase 5).
 --
 -- Alasan berkas ini ada. `agg_topic` (Fase 6) dikelompokkan per `topics.id`,
--- yaitu pasangan (kategori, keyword): 146 baris untuk 9 kategori bisnis.
--- Peringkat topik di dashboard adalah peringkat KATEGORI — "Ketersediaan &
--- Respons Mitra Driver", bukan kata kunci "driver". Mengagregasi ulang ke
--- kategori saat request memerlukan join reviews x review_scores x
--- review_topics; diukur 145 ms, terlalu dekat dengan anggaran 200 ms untuk
--- query yang hasilnya tidak pernah berubah antar request. Maka dipraagregasi
--- di sini, sejalan dengan keputusan arsitektur Fase 6 §1.
+-- yaitu pasangan (kategori, keyword): 125 baris untuk 5 kategori bisnis.
+-- Peringkat topik di dashboard adalah peringkat KATEGORI — "Pencarian &
+-- Penugasan Driver, ...", bukan kata kunci "driver". Dipraagregasi karena
+-- join reviews x review_scores x review_topics per request terlalu mahal untuk
+-- hasil yang tidak berubah antar request (Fase 6 §1).
 
 -- Indeks penolong: PK review_topics adalah (review_id, topic_id), sehingga
 -- penelusuran ARAH SEBALIKNYA (topic_id -> review) tidak terindeks.
@@ -39,12 +37,9 @@ pasangan AS (
     JOIN kat    k ON k.kategori = t.kategori
 )
 SELECT p.kategori_id, p.kategori, p.review_id,
-       -- Kolom di bawah DIDUPLIKASI dari reviews/review_scores dengan sengaja.
-       -- /api/topics berfilter tanggal semula menjoin reviews x review_scores
-       -- saat request: 95 ms, separuh anggaran 200 ms untuk sesuatu yang tidak
-       -- berubah antar request. Dengan kolom ini, query itu membaca satu view
-       -- saja dan turun ke satuan milidetik. Biayanya 53.000 baris salinan —
-       -- dan kewajiban me-refresh view ini setiap kali review_scores berubah.
+       -- Diduplikasi dari reviews/review_scores agar /api/topics berfilter tanggal
+       -- cukup membaca satu view (±20 ms pada 183.542 baris; docs/db_performance.md).
+       -- Konsekuensinya: view ini wajib di-refresh setiap review_scores berubah.
        r.tanggal, r.rating, r.likes, rs.pred_label
 FROM pasangan p
 JOIN reviews r        ON r.id = p.review_id
@@ -58,8 +53,8 @@ CREATE INDEX        idx_review_kategori_likes   ON review_kategori (kategori_id,
 
 -- ---------------------------------------------------------------------------
 -- agg_kategori — jalur cepat /api/topics saat tanpa filter tanggal.
--- Memakai model produksi yang sama dengan agg_monthly/agg_version (gerbang
--- H-10): logistic_regression_final.
+-- Memakai model produksi yang sama dengan agg_monthly/agg_version:
+-- logistic_regression_final.
 -- ---------------------------------------------------------------------------
 CREATE MATERIALIZED VIEW agg_kategori AS
 SELECT
@@ -91,8 +86,8 @@ SELECT
           / NULLIF(count(*), 0), 2)              AS persen_negatif,
     round(avg(r.rating)::numeric, 2)             AS rata_rating,
     sum(r.likes)                                 AS total_likes,
-    -- Pekan parsial: pekan pertama (data mulai 6 Oktober 2025, hari Senin,
-    -- tetapi dari pukul 21.46) dan pekan terakhir (data berhenti 5 Oktober 2026).
+    -- Pekan parsial: pekan pertama (data mulai Jumat, 1 Oktober 2021) dan
+    -- pekan terakhir (data berhenti Rabu, 30 September 2026).
     date_trunc('week', r.tanggal)::date IN (
         (SELECT date_trunc('week', min(tanggal))::date FROM reviews),
         (SELECT date_trunc('week', max(tanggal))::date FROM reviews)
@@ -114,7 +109,7 @@ REFRESH MATERIALIZED VIEW agg_weekly;
 --
 -- /api/kpi melaporkan `baseline_negatif` berdampingan dengan `persen_negatif`
 -- hasil model. Tanpa baris ini, angka pembanding itu harus dihitung dari
--- 100.000 baris `reviews` pada setiap request, atau — lebih buruk —
+-- 526.322 baris `reviews` pada setiap request, atau — lebih buruk —
 -- di-hardcode di frontend.
 --
 -- Rating 3 (`sentimen_aktual` NULL) tidak punya label aktual dan tidak ikut
@@ -136,7 +131,7 @@ CREATE UNIQUE INDEX idx_agg_monthly_aktual_bulan ON agg_monthly_aktual (bulan);
 -- ---------------------------------------------------------------------------
 -- agg_meta — satu baris konstanta cakupan data.
 --
--- Angka-angka inilah yang dituntut T-7.3 agar "catatan metodologis ikut
+-- Angka-angka inilah yang dibutuhkan agar "catatan metodologis ikut
 -- mengalir ke UI secara otomatis": persentase versi NULL dan cakupan versi
 -- yang lolos ambang. Dihitung sekali di sini supaya tidak ada satu pun angka
 -- metodologis yang di-hardcode, baik di API maupun di frontend.

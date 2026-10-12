@@ -1,4 +1,4 @@
-"""Konfigurasi API (Fase 7, T-7.1).
+"""Konfigurasi API (Fase 7).
 
 Dua sumber, dengan pembagian yang tegas:
 
@@ -7,7 +7,7 @@ Dua sumber, dengan pembagian yang tegas:
 * `ml/config.yaml` — parameter metodologis (ambang jumlah ulasan per versi,
   baseline mayoritas, bulan parsial). Nilai-nilai ini TIDAK boleh ditulis
   ulang di sini; `ml/config.yaml` adalah sumber kebenaran tunggal proyek
-  (Fase 0, T-0.4) dan API hanya membacanya.
+  dan API hanya membacanya.
 """
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
         "http://0.0.0.0:5173", "http://0.0.0.0:4173",
     ]
 
-    # Nama model produksi — gerbang H-10, docs/model_decision.md.
+    # Nama model produksi — docs/model_decision.md.
     # Materialized view agg_* memakai nama yang sama; bila diubah di sini tanpa
     # me-refresh view, angka dashboard dan /predict akan berbeda model.
     model_produksi: str = "logistic_regression_final"

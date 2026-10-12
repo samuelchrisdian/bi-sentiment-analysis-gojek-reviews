@@ -1,4 +1,4 @@
-"""GridSearchCV + evaluasi model tuned (Fase 4, T-4.1 & T-4.2).
+"""GridSearchCV + evaluasi model tuned (Fase 4).
 
 Vectorizer berada DI DALAM Pipeline. Ini bukan detail gaya: mem-fit TF-IDF di
 luar cross-validation membuat setiap fold validasi ikut menentukan vocabulary
@@ -7,7 +7,7 @@ menaikkan kinerja sebenarnya. Di sini vectorizer di-fit ulang pada 4/5 data di
 setiap fold, sama seperti yang terjadi saat model dipakai pada data baru.
 
 scoring='f1_macro', bukan 'accuracy' — konsisten dengan prioritas metrik
-Bagian 2.3 (baseline mayoritas sudah memperoleh accuracy 0,723 tanpa belajar).
+Bagian 2.3 (baseline mayoritas sudah memperoleh accuracy 0,711 tanpa belajar).
 """
 from __future__ import annotations
 
@@ -33,9 +33,9 @@ CFG = load_config()
 ROOT = CFG["_root"]
 SEED = CFG["seed"]
 
-# Grid sengaja kecil (4-8 kombinasi per model). Grid besar pada 45k x 30k
-# menghabiskan waktu tanpa menambah informasi: kurva C untuk model linear pada
-# TF-IDF landai, dan alpha NB hanya menggeser smoothing.
+# Grid sengaja kecil (4-8 kombinasi per model). Grid besar pada ratusan ribu
+# dokumen x 30k fitur menghabiskan waktu tanpa menambah informasi: kurva C untuk
+# model linear pada TF-IDF landai, dan alpha NB hanya menggeser smoothing.
 GRIDS = {
     "complement_nb": {"clf__alpha": [0.1, 0.5, 1.0, 2.0]},
     "multinomial_nb": {"clf__alpha": [0.1, 0.5, 1.0, 2.0]},
@@ -175,9 +175,8 @@ def pilih_1se(cv: pd.DataFrame, nama: str) -> dict:
     skornya masih berada dalam satu simpangan baku dari yang terbaik — pada
     model linear, "paling sederhana" berarti regularisasi terkuat (C terkecil).
 
-    Ini relevan di sini karena LogisticRegression C=5,0 hanya unggul 0,00015
-    dari C=1,0, sementara simpangan bakunya 0,0030 — dua puluh kali lebih besar
-    dari selisihnya, dan C=5,0 punya selisih train-test dua kali lipat.
+    Pada data ini aturan itu mengubah pilihan kedua model NB (alpha 0,5 -> 2,0);
+    untuk model linear pilihannya sama dengan GridSearchCV.
     """
     g = cv[cv.model_name == nama].copy()
     terbaik = g.loc[g.mean_test_score.idxmax()]

@@ -1,4 +1,4 @@
--- Skema database (Fase 0, T-0.7) — sesuai Bagian 1.5 dokumen arsitektur.
+-- Skema database (Fase 0) — sesuai Bagian 1.5 dokumen arsitektur.
 -- Dipasang sebagai init script container: dijalankan otomatis saat volume kosong.
 -- Materialized view agg_* TIDAK dibuat di sini; itu milik Fase 6.
 
@@ -10,7 +10,7 @@ CREATE TABLE reviews (
     rating          SMALLINT    NOT NULL CHECK (rating BETWEEN 1 AND 5),
     tanggal         TIMESTAMPTZ NOT NULL,
     likes           INTEGER     NOT NULL DEFAULT 0,
-    versi_app       TEXT,                    -- NULL pada 21,9% baris (Temuan 4)
+    versi_app       TEXT,                    -- NULL pada 21,5% baris
     versi_minor     TEXT,                    -- turunan: '4.93.1' -> '4.93'
     word_count      SMALLINT,                -- dari ulasan_normalized (Fase 2)
     sentimen_aktual SMALLINT                 -- 0=neg, 1=pos, NULL jika rating=3
@@ -18,7 +18,7 @@ CREATE TABLE reviews (
 
 CREATE TABLE review_scores (
     review_id     BIGINT   REFERENCES reviews(id) ON DELETE CASCADE,
-    model_name    TEXT     NOT NULL,         -- 'complement_nb' | 'linear_svc'
+    model_name    TEXT     NOT NULL,         -- mis. 'logistic_regression_final'
     pred_label    SMALLINT NOT NULL,
     pred_proba    REAL,                      -- NULL jika model tanpa kalibrasi
     PRIMARY KEY (review_id, model_name)
@@ -26,7 +26,7 @@ CREATE TABLE review_scores (
 
 CREATE TABLE topics (
     id          SERIAL PRIMARY KEY,
-    kategori    TEXT NOT NULL,               -- diisi manusia di gerbang H-8
+    kategori    TEXT NOT NULL,               -- nama dari penulis, bukan dari LDA
     keyword     TEXT NOT NULL,
     bobot       REAL
 );

@@ -1,4 +1,4 @@
-"""Visualisasi komparasi model (Fase 3, T-3.9)."""
+"""Visualisasi komparasi model (Fase 3)."""
 from __future__ import annotations
 
 import matplotlib

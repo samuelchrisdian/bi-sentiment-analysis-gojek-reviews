@@ -1,7 +1,7 @@
-"""Eksperimen varian tiga kelas (Fase 4, T-4.6).
+"""Eksperimen varian tiga kelas (Fase 4).
 
-Dijalankan justru karena diperkirakan gagal. Keputusan H-3 membuang rating 3;
-keputusan itu hanya dapat dipertahankan di laporan bila ada bukti kuantitatif
+Dijalankan justru karena diperkirakan gagal. Keputusan membuang rating 3 hanya
+dapat dipertahankan di laporan bila ada bukti kuantitatif
 bahwa skema tiga kelas memang tidak layak pada dataset ini — bukan sekadar
 pernyataan bahwa kelasnya kecil.
 
@@ -36,11 +36,11 @@ KELAS = ["Negatif (1-2)", "Netral (3)", "Positif (4-5)"]
 
 
 def _model():
-    """Parameter hasil tuning biner (T-4.1), dipakai apa adanya.
+    """Parameter hasil tuning biner, dipakai apa adanya.
 
     Menyetel ulang grid untuk skema tiga kelas tidak akan mengubah kesimpulan:
-    yang membatasi bukan hyperparameter, melainkan 2.595 contoh netral yang
-    tidak terpisahkan secara leksikal dari kelas negatif.
+    yang membatasi bukan hyperparameter, melainkan 15.447 contoh netral latih
+    yang tidak terpisahkan secara leksikal dari kelas negatif.
     """
     bp = json.loads((ROOT / "ml" / "artifacts" / "best_params.json").read_text())
     p = bp["linear_svc"]["best_params"]

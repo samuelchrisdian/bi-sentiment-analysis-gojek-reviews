@@ -1,4 +1,4 @@
-"""Verifikasi silang angka naskah Fase 10 terhadap facts.yaml (T-10.7).
+"""Verifikasi silang angka naskah Fase 10 terhadap facts.yaml.
 
 Setiap angka yang muncul di ``research-paper.md``, ``article-popular.md``,
 ``abstract-id.md``, dan ``abstract-en.md`` harus dapat ditemukan kembali di
@@ -40,7 +40,7 @@ NASKAH = [
     "abstract-en.md",
 ]
 
-# Pola angka: konvensi Indonesia (26.732 / 0,9336) maupun Inggris (26,732 / 0.9336).
+# Pola angka: konvensi Indonesia (100.842 / 0,9261) maupun Inggris (100,842 / 0.9261).
 RIBUAN_ID = r"\d{1,3}(?:\.\d{3})+(?:,\d+)?(?![\d.])"
 RIBUAN_EN = r"\d{1,3}(?:,\d{3})+(?:\.\d+)?(?![\d,])"
 POLA_ANGKA = re.compile(
@@ -86,7 +86,7 @@ def nilai_numerik(obj) -> list[float]:
 def ke_float(teks: str) -> float | None:
     """Ubah angka bergaya Indonesia maupun mesin menjadi float."""
     t = teks.strip()
-    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+(?:,\d+)?", t):  # 26.732,5 (ID)
+    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+(?:,\d+)?", t):  # 100.842,5 (ID)
         t = t.replace(".", "").replace(",", ".")
     elif re.fullmatch(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?", t):  # 26,732.5 (EN)
         t = t.replace(",", "")
@@ -99,7 +99,7 @@ def ke_float(teks: str) -> float | None:
 
 
 def n_desimal(teks: str) -> int:
-    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+,\d+", teks):  # 26.732,5 (ID)
+    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+,\d+", teks):  # 100.842,5 (ID)
         return len(teks.split(",")[1])
     if re.fullmatch(r"\d{1,3}(?:,\d{3})+\.\d+", teks):  # 26,732.5 (EN)
         return len(teks.split(".")[1])
@@ -155,7 +155,7 @@ def main() -> int:
     diizinkan = sorted(set(nilai_numerik(facts)))
 
     baris_laporan = [
-        "LAPORAN VERIFIKASI ANGKA NASKAH — Fase 10, T-10.7",
+        "LAPORAN VERIFIKASI ANGKA NASKAH — Fase 10",
         f"Sumber angka : docs/synthesis/facts.yaml ({len(diizinkan)} nilai unik)",
         f"Naskah diuji : {', '.join(NASKAH)}",
         "",

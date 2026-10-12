@@ -1,7 +1,7 @@
-"""Metrik evaluasi (Fase 3, T-3.7).
+"""Metrik evaluasi (Fase 3).
 
-Accuracy BUKAN metrik utama. Dengan komposisi 72,3% positif, model yang selalu
-menebak "positif" memperoleh akurasi 72,3% tanpa mempelajari apa pun. Prioritas
+Accuracy BUKAN metrik utama. Dengan komposisi 71,1% positif, model yang selalu
+menebak "positif" memperoleh akurasi 71,1% tanpa mempelajari apa pun. Prioritas
 pelaporan: recall kelas negatif -> macro-F1 -> F1 negatif, dengan accuracy
 sebagai pelengkap yang selalu disandingkan dengan baseline.
 """

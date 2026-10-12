@@ -1,4 +1,4 @@
-"""Engine & dependency sesi SQLAlchemy (Fase 7, T-7.1)."""
+"""Engine & dependency sesi SQLAlchemy (Fase 7)."""
 from __future__ import annotations
 
 from collections.abc import Iterator

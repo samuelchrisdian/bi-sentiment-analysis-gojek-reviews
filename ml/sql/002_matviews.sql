@@ -1,9 +1,9 @@
--- Materialized view agregat untuk API/dashboard (Fase 6, T-6.3 s/d T-6.5).
+-- Materialized view agregat untuk API/dashboard (Fase 6).
 --
 -- Ketiga view di bawah memakai model_name = 'logistic_regression_final' —
--- BUKAN 'linear_svc' seperti draf awal rencana Fase 6. Gerbang H-10
--- (docs/model_decision.md, 17 September 2026) menetapkan LogisticRegression
--- C=1.0 sebagai model produksi setelah rencana ini ditulis; dashboard agregat
+-- BUKAN 'linear_svc' seperti draf awal rencana Fase 6. Keputusan model produksi
+-- (docs/model_decision.md) menetapkan LogisticRegression C=1.0 setelah rencana
+-- ini ditulis; dashboard agregat
 -- harus mencerminkan model yang sesungguhnya melayani /api/predict, bukan
 -- kandidat pembanding. Perbandingan lintas-model (5 baris review_scores per
 -- ulasan) tetap tersedia lewat query terpisah di endpoint perbandingan model.
@@ -22,7 +22,7 @@ SELECT
     round(avg(r.rating)::numeric, 2)             AS rata_rating,
     sum(r.likes)                                 AS total_likes,
     -- Bulan parsial = bulan pertama/terakhir data bila tidak tercakup penuh
-    -- (data scraping: 6 Oktober 2025 s.d. 5 Oktober 2026).
+    -- (data scraping 1 Oktober 2021 s.d. 30 September 2026: tidak ada).
     bool_or(
         (date_trunc('month', r.tanggal) = (SELECT date_trunc('month', min(tanggal)) FROM reviews)
          AND (SELECT min(tanggal)::date FROM reviews) > date_trunc('month', r.tanggal)::date)

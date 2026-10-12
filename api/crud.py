@@ -1,4 +1,4 @@
-"""Seluruh SQL proyek ini ada di berkas ini (Fase 7, T-7.1).
+"""Seluruh SQL proyek ini ada di berkas ini (Fase 7).
 
 Aturannya satu arah: `main.py` tidak memuat SQL, dan modul ini tidak memuat
 logika ML maupun detail HTTP. Fungsi di sini menerima sesi + parameter dan
@@ -22,7 +22,7 @@ S = get_settings()
 MLCFG = get_ml_config()
 
 MODEL = S.model_produksi
-BULAN_PARSIAL = ", ".join(MLCFG["temporal"]["partial_months"])  # '2025-10, 2026-10'
+BULAN_PARSIAL = ", ".join(MLCFG["temporal"]["partial_months"])  # kosong: semua bulan data penuh
 AMBANG_MATVIEW = MLCFG["versions"]["min_reviews_per_version"]  # 100
 
 
@@ -69,8 +69,8 @@ WHERE m.bulan BETWEEN date_trunc('month', CAST(:dari AS date))
 
 def kpi(db: Session, dari: date, sampai: date, min_reviews: int) -> dict | None:
     """Rata-rata rating dibobot jumlah ulasan per bulan, bukan rata-rata dari
-    rata-rata — bulan dengan 1.879 ulasan tidak boleh berbobot sama dengan
-    bulan berisi 6.641."""
+    rata-rata — bulan dengan 2.904 ulasan tidak boleh berbobot sama dengan
+    bulan berisi 24.424."""
     row = _one(db, SQL_KPI, dari=dari, sampai=sampai)
     if not row or not row["total_ulasan"]:
         return None
@@ -198,7 +198,7 @@ def kategori_by_id(db: Session, topic_id: int) -> str | None:
 
 # Pengurutan memakai kolom `review_kategori`, bukan `reviews`: dengan begitu
 # 20 baris teratas diambil dari indeks view, dan `reviews` hanya disentuh 20
-# kali lewat primary key — bukan 9.663 kali untuk disortir.
+# kali lewat primary key — bukan puluhan ribu kali untuk disortir.
 _URUT = {
     "likes": "rk.likes DESC, rk.review_id",
     "tanggal": "rk.tanggal DESC, rk.review_id",
@@ -239,7 +239,7 @@ def topic_reviews(db: Session, topic_id: int, sort_by: str,
 def model_metrics(db: Session) -> list[dict]:
     """Seluruh baris, termasuk `majority_baseline`. Baseline dikembalikan —
     bukan disaring — karena tanpa pembanding itu angka akurasi 94% tidak punya
-    arti; pada eval_set `informative_ge5w` baseline justru turun ke 46%, dan
+    arti; pada eval_set `informative_ge5w` baseline justru turun ke 44%, dan
     kontras itulah temuan metodologis yang harus terlihat di dashboard."""
     return _rows(db, """
         SELECT eval_set, model_name, accuracy, precision_neg, recall_neg,

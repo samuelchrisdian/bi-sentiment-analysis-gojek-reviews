@@ -1,13 +1,13 @@
-"""Ekstraksi topik keluhan — RM2 (Fase 5, T-5.1 s/d T-5.3).
+"""Ekstraksi topik keluhan — RM2 (Fase 5).
 
 Fokus HANYA korpus negatif. Ini keputusan yang menguntungkan secara teknis:
-korpus positif 32% duplikat dan didominasi pujian dua kata, sedangkan korpus
-negatif hanya 4,2% duplikat dan lebih panjang (Temuan 2) — LDA punya materi
-yang layak untuk bekerja.
+korpus positif 50,6% duplikat dan didominasi pujian dua kata, sedangkan korpus
+negatif hanya 3,1% duplikat dan lebih panjang — LDA punya materi yang layak
+untuk bekerja.
 
 Pembagian wewenang di fase ini tegas: modul ini melakukan KLASTERING.
-Penamaan kategori bisnis adalah interpretasi domain dan milik manusia
-(gerbang H-8). Tidak ada nama kategori yang ditulis modul ini.
+Penamaan kategori bisnis adalah interpretasi domain dan milik penulis.
+Tidak ada nama kategori yang ditulis modul ini.
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ LDA_ITERATIONS = 100
 
 
 def korpus_negatif() -> tuple[pd.DataFrame, dict]:
-    """T-5.1 — korpus topik: ulasan negatif dengan >=5 kata."""
+    """Korpus topik: ulasan negatif dengan >=5 kata."""
     df = pd.read_parquet(resolve(CFG, "paths.clean_parquet"))
     neg = df[df["sentimen_aktual"] == 0].copy()
     assert len(neg) == 145924, f"korpus negatif {len(neg)} != 145924"
@@ -56,10 +56,10 @@ def korpus_negatif() -> tuple[pd.DataFrame, dict]:
 
 
 def ngram(topik: pd.DataFrame, top_n: int = 30) -> pd.DataFrame:
-    """T-5.2 — frekuensi unigram & bigram.
+    """Frekuensi unigram & bigram.
 
-    Dikerjakan SEBELUM LDA: hasilnya temuan mandiri sekaligus rujukan manusia
-    saat menamai klaster di H-8.
+    Dikerjakan SEBELUM LDA: hasilnya temuan mandiri sekaligus rujukan penulis
+    saat menamai klaster.
     """
     cv = CountVectorizer(ngram_range=(1, 2), min_df=10, token_pattern=r"\S+",
                          lowercase=False)
@@ -88,7 +88,7 @@ def siapkan_gensim(topik: pd.DataFrame):
 
 
 def cari_k(texts, dictionary, corpus) -> tuple[pd.DataFrame, dict]:
-    """T-5.3 — coherence c_v untuk k = 5..12."""
+    """Coherence c_v untuk rentang k di config."""
     lo, hi = CFG["topics"]["lda_n_topics_range"]
     baris, model = [], {}
     for k in range(lo, hi + 1):
@@ -109,7 +109,7 @@ def pilih_k(sk: pd.DataFrame) -> tuple[int, str]:
     """Puncak c_v; bila ada puncak lain dalam 0,005, pilih k yang lebih kecil.
 
     Selisih coherence sekecil itu tidak bermakna, sedangkan jumlah topik yang
-    lebih kecil jauh lebih mudah dinarasikan dan dilabeli manusia di H-8.
+    lebih kecil jauh lebih mudah dinarasikan dan dilabeli penulis.
     """
     puncak = sk.loc[sk.coherence_cv.idxmax()]
     dekat = sk[sk.coherence_cv >= puncak.coherence_cv - 0.005]
@@ -147,7 +147,7 @@ def gambar_08(sk: pd.DataFrame, k_pilih: int) -> None:
 
 
 def gambar_08b(ng: pd.DataFrame, info: dict) -> None:
-    """Pelengkap T-5.2 — pengganti word cloud.
+    """Pelengkap frekuensi n-gram — pengganti word cloud.
 
     Rencana menyebut word cloud sebagai pelengkap dan bukan bukti utama.
     Batang berurut dipilih karena panjang batang dapat dibaca sebagai angka,
@@ -178,14 +178,14 @@ def gambar_08b(ng: pd.DataFrame, info: dict) -> None:
 def berkas_pelabelan(lda: LdaModel, corpus, topik: pd.DataFrame,
                      n_kata: int = 20, n_prob: int = 5, n_tipikal: int = 5,
                      dist: np.ndarray | None = None):
-    """T-5.4 bagian agent — klaster mentah untuk gerbang H-8.
+    """Klaster mentah untuk penamaan kategori oleh penulis.
 
     Dua jenis contoh disertakan, dan itu disengaja. Dokumen dengan probabilitas
     topik TERTINGGI cenderung degenerate: ulasan pendek berisi pengulangan satu
     kata (mis. emoji 👎 yang dipetakan Fase 2 menjadi "jelek jelek jelek...")
     memperoleh probabilitas hampir 1 karena seluruh isinya satu topik. Ulasan
-    semacam itu hanya 0,18% korpus tetapi mendominasi peringkat teratas, dan
-    menilai klaster hanya darinya akan menyesatkan.
+    semacam itu sedikit tetapi mendominasi peringkat teratas, dan menilai
+    klaster hanya darinya akan menyesatkan.
 
     Karena itu `contoh_tipikal_*` diambil acak dari dokumen yang topik ini
     dominan DAN panjangnya wajar (10-60 kata) — inilah yang mewakili klaster.
@@ -226,8 +226,8 @@ def berkas_pelabelan(lda: LdaModel, corpus, topik: pd.DataFrame,
             r[f"contoh_tipikal_{j}"] = str(asli[idx]).replace("\n", " ").strip()
             r[f"prob_tipikal_{j}"] = round(float(dist[idx, tid]), 4)
 
-        r["kategori_usulan"] = ""      # DIISI MANUSIA — gerbang H-8
-        r["alasan"] = ""               # DIISI MANUSIA — gerbang H-8
+        r["kategori_usulan"] = ""      # DIISI PENULIS
+        r["alasan"] = ""               # DIISI PENULIS
         baris.append(r)
     return pd.DataFrame(baris), dist
 
@@ -235,11 +235,11 @@ def berkas_pelabelan(lda: LdaModel, corpus, topik: pd.DataFrame,
 if __name__ == "__main__":
     print("=" * 66)
     topik, info = korpus_negatif()
-    print("T-5.1 korpus topik")
+    print("Korpus topik")
     for k, v in info.items():
         print(f"  {k:22s} {v:,}" if isinstance(v, int) else f"  {k:22s} {v}")
 
-    print("\nT-5.2 frekuensi n-gram")
+    print("\nFrekuensi n-gram")
     ng = ngram(topik)
     ng.to_csv(TAB / "ngram_negatif.csv", index=False)
     for n, nama in ((1, "unigram"), (2, "bigram")):
@@ -248,7 +248,7 @@ if __name__ == "__main__":
             f"{r.term}({r.freq:,})" for r in atas.itertuples()))
     gambar_08b(ng, info)
 
-    print("\nT-5.3 LDA — coherence k=5..12")
+    print("\nLDA — coherence k=5..12")
     texts, dictionary, corpus = siapkan_gensim(topik)
     print(f"  kamus setelah filter_extremes: {len(dictionary):,} token")
     sk, model = cari_k(texts, dictionary, corpus)
@@ -257,7 +257,7 @@ if __name__ == "__main__":
     print(f"\n  k terpilih = {k}\n  alasan     : {alasan}")
     gambar_08(sk, k)
 
-    print("\nT-5.4 (bagian agent) berkas klaster untuk H-8")
+    print("\nBerkas klaster untuk penamaan kategori")
     lab, dist = berkas_pelabelan(model[k], corpus, topik)
     lab.to_csv(TAB / "lda_clusters_for_labeling.csv", index=False)
     np.save(ROOT / "data" / "processed" / "lda_doc_topic.npy", dist)
