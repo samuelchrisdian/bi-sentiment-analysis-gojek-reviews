@@ -1,11 +1,8 @@
 # UJI REPRODUSIBILITAS
 
-**Fase 9, T-9.8** · Dijalankan 19 September 2026
+**Dijalankan 12 Oktober 2026** pada commit `b27558a` dengan data scraping lima tahun (526.322 ulasan).
 
-Uji dilakukan dari **klon bersih** repositori ke direktori berbeda, hanya
-berbekal `README.md` — tanpa merujuk pengetahuan yang tidak tertulis di sana.
-Dokumen ini mencatat apa yang dijalankan, apa yang macet, dan apa yang
-diperbaiki. Hambatan dicatat apa adanya, termasuk yang memalukan.
+Uji dilakukan dari **klon bersih** repositori ke direktori berbeda, hanya berbekal `README.md`. Dokumen ini mencatat apa yang dijalankan, apa yang macet, dan apa yang diperbaiki.
 
 ---
 
@@ -13,128 +10,114 @@ diperbaiki. Hambatan dicatat apa adanya, termasuk yang memalukan.
 
 | Aspek | Status |
 |-------|--------|
-| Klon bersih + `docker compose build` | ✅ Diuji penuh |
+| Klon bersih + `docker compose up -d --build` | ✅ Diuji penuh |
 | Healthcheck ketiga service | ✅ Diuji penuh |
-| Restore `docs/db_dump.sql.gz` ke PostgreSQL kosong | ✅ Diuji penuh (berkas tidak di-commit — lihat §5) |
-| Endpoint API + dashboard | ✅ Diuji penuh |
-| `./ml/run_pipeline.sh` dari CSV mentah | ⚠️ **Tidak diuji ulang** — lihat §4 |
-| Uji oleh orang kedua | ⚠️ **Belum** — lihat §4 |
+| Restore `docs/db_dump.sql.gz` ke PostgreSQL baru, mengikuti perintah README | ✅ Diuji penuh (berkas tidak di-commit; disalin ke klon, lihat §5) |
+| Endpoint API | ✅ Diuji penuh (`docs/api_test_log.md`) |
+| Dashboard di peramban (`web/scripts/smoke.mjs`, Playwright) | ✅ 9/9 langkah lulus pada stack dengan artefak model; 8/9 pada klon bersih (§3, H-1) |
+| `./ml/run_pipeline.sh` sebagai satu skrip dari data mentah | ⚠️ **Tidak diuji sebagai satu skrip** (§4) |
+| Uji oleh orang kedua | ⚠️ **Belum** (§4) |
 
 ---
 
 ## 2. Langkah yang Dijalankan
 
 ```bash
-git clone <repo> gojek && cd gojek     # 187 berkas terlacak
-cp .env.example .env                    # ✅ nilai default cocok untuk lokal
-docker compose config                   # ✅ valid
-docker compose build                    # ✅ image api & web terbangun
+git clone <repo> gojek && cd gojek      # 234 berkas terlacak
+cp .env.example .env                     # ✅ nilai default cocok untuk lokal
+docker compose config -q                 # ✅ valid
+cp <sumber>/db_dump.sql.gz docs/         # dump tidak di-commit
+docker compose up -d --build             # ✅ db, api, web
 ```
 
-Lalu, jalur demo cepat sesuai README:
+Restore dump mengikuti perintah README apa adanya:
 
 ```bash
-gunzip -c docs/db_dump.sql.gz | docker exec -i gojek_db psql -U gojek -d gojek_sentiment
+docker cp docs/db_dump.sql.gz gojek_db:/tmp/data.sql.gz
+docker exec gojek_db sh -c "psql -q -U gojek -d gojek_sentiment \
+  -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' \
+  && gunzip -c /tmp/data.sql.gz | psql -q -U gojek -d gojek_sentiment"
 ```
 
-Hasil restore ke PostgreSQL 16 yang benar-benar kosong:
+Restore selesai dalam **14 detik**. Isinya:
 
 | Objek | Jumlah |
 |-------|--------|
-| `reviews` | 100.000 baris |
-| `review_scores` | 500.000 baris (5 model × 100.000) |
-| `review_topics` | 52.998 baris |
+| `reviews` | 526.322 baris |
+| `review_scores` | 2.631.610 baris (5 model × 526.322) |
+| `review_topics` | 183.542 baris |
 | `model_metrics` | 20 baris |
 | Materialized view | 8 view, seluruhnya **populated** |
 
-Verifikasi akhir terhadap sistem yang berjalan:
+Verifikasi terhadap sistem yang berjalan:
 
 ```
-db:  Up (healthy)      api: Up (healthy)      web: Up (healthy)
-GET /api/health  -> 200
-GET /api/kpi     -> 200
-GET /api/topics  -> 200
+gojek_db  Up (healthy)    gojek_api  Up (healthy)    gojek_web  Up (healthy)
+GET /api/health -> 200
+GET /api/kpi    -> 200   total_ulasan 526322, periode 2021-10-01 s/d 2026-09-30
+GET /api/topics -> 200
 GET http://localhost:5173/ -> 200
 ```
+
+Waktu total dari klon sampai sistem sehat: 51 detik. Image dasar sudah ada di *cache* mesin uji, jadi angka ini tidak mewakili instalasi pertama.
+
+Setelah restore, container `api` dinyalakan ulang sebelum pemeriksaan. README tidak memintanya. Perlu tidaknya langkah ini tidak diuji terpisah.
 
 ---
 
 ## 3. Hambatan yang Ditemukan dan Diperbaiki
 
-### H-1 — Container `web` selalu berstatus `unhealthy` meski situs normal
+### H-1 — Demo prediksi tidak jalan pada klon bersih
 
-**Gejala.** `docker compose ps` menunjukkan `gojek_web` sebagai `unhealthy`
-dengan `FailingStreak: 43`, padahal http://localhost:5173 melayani dashboard
-dengan benar. Log healthcheck:
-`wget: can't connect to remote host: Connection refused`.
+**Gejala:** pada klon bersih, `smoke.mjs` gagal di langkah "Demo prediksi", dan konsol peramban mencatat 503 dari `/api/predict`.
 
-**Diagnosis.** Di dalam container, `wget http://127.0.0.1/` berhasil tetapi
-`wget http://localhost/` gagal. `nginx` hanya *listen* di `0.0.0.0:80` (IPv4),
-sementara resolusi `localhost` pada image alpine menempuh `::1` lebih dulu.
-Healthcheck karena itu **tidak pernah bisa lulus** — kegagalannya tidak ada
-hubungannya dengan kesehatan aplikasi.
+**Penyebab:** `ml/artifacts/` tidak di-commit, sehingga API menyala tanpa model. Ini sesuai rancangan: `/api/health` berstatus `degraded`, dan endpoint agregat tetap melayani. README belum menyebutnya, sehingga pengguna yang hanya me-*restore* dump akan mengira dashboard rusak.
 
-**Dampak bila dibiarkan.** `depends_on` berbasis kondisi sehat tidak dapat
-dipakai untuk `web`, dan pada saat presentasi `docker compose ps` menampilkan
-status merah yang menyesatkan.
+**Perbaikan:** README kini menyatakan bahwa dump tidak memuat artefak model. Tanpa artefak, demo prediksi mengembalikan 503. Artefak bisa disalin dari pemilik proyek atau dibuat dengan pipeline. Pada stack yang memiliki artefak, langkah itu lulus dengan prediksi Negatif untuk "driver batalin pesanan sepihak lagi lagi".
 
-**Perbaikan.** `web/Dockerfile` — healthcheck memakai `http://127.0.0.1/`.
+### H-2 — Skrip uji dashboard memakai asumsi data lama
 
-**Verifikasi.** Image dibangun ulang dari klon bersih, container dijalankan
-terpisah pada port 5199: status berubah `starting` → **`healthy`** dalam 40
-detik, `ExitCode: 0`, dan halaman mengembalikan HTTP 200. Stack utama pun
-dibangun ulang dan kini ketiga service berstatus `healthy`.
+**Gejala:** dua langkah `smoke.mjs` gagal karena skripnya, bukan karena dashboard:
 
-### H-2 — README belum ada sama sekali
+- Tombol preset "Seluruh periode penuh" sudah berganti nama menjadi "Seluruh periode".
+- Uji *empty state* memakai Juni 2026 sebagai "rentang tanpa data", padahal data kini mencakup bulan itu.
 
-**Gejala.** Klon bersih pertama tidak memuat `README.md`; tidak ada satu pun
-petunjuk menjalankan sistem di dalam repositori.
+Kegagalan pertama juga membuat uji layout 768px gagal, karena halaman masih dalam keadaan filter yang belum dipulihkan.
 
-**Perbaikan.** `README.md` ditulis lengkap (T-9.2) dan di-*commit* sebelum uji
-diulang.
+**Perbaikan:** nama tombol disesuaikan, dan rentang kosong dipindah ke Januari 2027, di luar korpus. Sesudahnya kesembilan langkah lulus, termasuk layout 768px tanpa scroll horizontal, dan konsol bersih.
 
-### H-3 — Tiga asumsi tak tertulis yang hanya muncul saat mengikuti README harfiah
+### H-3 — View kategori basi setelah nama kategori direvisi (ditemukan saat uji API)
 
-Ketiganya ditemukan dengan memeriksa klon bersih, dan seluruhnya kini
-dinyatakan eksplisit di README:
+**Gejala:** `agg_kategori` dan `review_kategori` masih menampilkan dua nama kategori lama, padahal tabel `topics` sudah memakai nama final. *Dump* yang dibuat sebelum uji ini ikut membawa nama lama.
 
-1. **`data/raw/ulasan_com.gojek.app.csv` tidak ikut di-*commit*.** Klon bersih
-   hanya berisi `.gitkeep`. Tanpa pernyataan eksplisit, pembaca akan menjalankan
-   `./ml/run_pipeline.sh` dan gagal di langkah pertama. README kini menyatakan
-   ini di bagian Prasyarat lengkap dengan asal unduhannya.
-2. **`ml/artifacts/` kosong pada klon bersih.** Container `api` me-*mount*
-   direktori ini secara *read-only*, sehingga `/api/predict` tidak dapat
-   dipakai sebelum pipeline dijalankan di host. README kini menyatakannya.
-3. **Urutan wajib: `db` harus sehat sebelum data dimuat.** Menjalankan restore
-   atau pipeline terlalu cepat setelah `docker compose up -d` akan gagal
-   menyambung. README kini menyuruh menunggu status `healthy` lebih dulu.
+**Penyebab:** nama kategori direvisi setelah `ml/sql/003_api_views.sql` dijalankan, lalu view itu tidak di-*refresh*.
+
+**Perbaikan:** `002_matviews.sql` dan `003_api_views.sql` dijalankan ulang, lalu `docs/db_dump.sql.gz` dibuat ulang. Dump yang diuji di §2 adalah hasil perbaikan ini. `ml/run_pipeline.sh` menjalankan kedua berkas SQL sesudah `topic_assign`, jadi masalah ini hanya muncul bila langkah dijalankan manual.
 
 ---
 
-## 4. Yang Belum Diuji — dinyatakan, bukan disembunyikan
+## 4. Yang Belum Diuji
 
-**`./ml/run_pipeline.sh` tidak dijalankan ulang dari CSV mentah dalam uji ini.**
-Yang diverifikasi adalah keluarannya — dump database hasil pipeline yang
-di-*restore* ke PostgreSQL kosong dan menghasilkan seluruh tabel serta
-materialized view dalam keadaan terisi. Estimasi durasi 30–45 menit yang
-tercantum di README berasal dari waktu jalan sebelumnya pada Fase 2–6, bukan
-dari pengukuran ulang pada uji ini. Klaim "pipeline dapat dijalankan dari nol"
-karena itu bertumpu pada Fase 2–6, bukan pada dokumen ini.
+**`./ml/run_pipeline.sh` belum dijalankan sebagai satu skrip dari data mentah.**
 
-**Uji oleh orang kedua belum dilakukan.** Seluruh langkah di atas dijalankan
-pada mesin yang sama dengan direktori berbeda dan klon bersih. Itu menangkap
-asumsi tentang *berkas* dan *state repositori* — sebagaimana terbukti pada H-3 —
-tetapi **tidak** menangkap asumsi tentang *lingkungan*: Docker yang sudah
-terpasang, image dasar yang sudah ter-*cache*, port yang kebetulan bebas, dan
-versi Python/Node yang kebetulan cocok. Uji oleh orang kedua pada mesin lain
-tetap diperlukan untuk menutup celah itu.
+- **Yang sudah:** setiap modul di dalamnya sudah dijalankan pada data final dengan urutan yang sama, sebagai langkah terpisah, selama pengerjaan data scraping. Hasilnya adalah artefak, tabel, dan dump yang diuji di atas.
+- **Yang belum:** skrip versi sekarang (scraping opsional, terjemahan, analisis lanjutan, `rm3`, `collect_facts`) belum dieksekusi utuh dari awal sampai akhir.
+- **Kebutuhan bila dijalankan:**
+  - Lingkungan `.venv-translate` (README, bagian pipeline).
+  - Isian manual di `docs/tables/*_reviewed.csv`.
+  - Internet bila `--scrape` dipakai.
+
+**Uji oleh orang kedua belum dilakukan.** Uji dijalankan pada mesin yang sama dengan direktori berbeda dan klon bersih. Cara ini menangkap asumsi tentang *berkas* dan *state repositori*, seperti H-1. Cara ini **tidak** menangkap asumsi tentang *lingkungan*:
+
+- Docker yang sudah terpasang;
+- image dasar yang sudah ter-*cache*;
+- port 5173, 8000, dan 5434 yang kebetulan bebas.
 
 ---
 
 ## 5. Cara Membuat Ulang `docs/db_dump.sql.gz`
 
-Dump bukan artefak yang ditulis tangan; ia dapat dibuat ulang kapan saja dari
-database yang sudah terisi:
+Dump dapat dibuat ulang kapan saja dari basis data yang sudah terisi dan view-nya sudah di-*refresh*:
 
 ```bash
 docker exec gojek_db pg_dump -U gojek -d gojek_sentiment \
@@ -143,5 +126,4 @@ docker cp gojek_db:/tmp/db_dump.sql.gz docs/db_dump.sql.gz
 docker exec gojek_db rm -f /tmp/db_dump.sql.gz
 ```
 
-Ukuran hasil: ≈7,7 MB. `--no-owner --no-privileges` penting agar restore
-berhasil pada instalasi dengan nama peran yang berbeda.
+Ukuran hasil ±44 MB. Opsi `--no-owner --no-privileges` membuat restore tetap berhasil pada instalasi dengan nama peran berbeda. Dump dibuat dengan `pg_dump` 16.15. Restore pada image `postgres:16-alpine` yang lebih lama dapat gagal dengan pesan `invalid command \restrict`; perbaikannya `docker compose pull db`.

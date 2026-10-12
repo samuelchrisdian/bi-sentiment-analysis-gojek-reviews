@@ -25,7 +25,9 @@ driver, waktu tunggu, dan pembatalan pesanan (38,20% ulasan negatif) serta
 layanan pelanggan (28,20%), dengan kesepakatan moderat terhadap penilai
 independen (κ = 0,5430). Secara deskriptif, proporsi ulasan negatif hasil
 prediksi model berkisar 20,67%–56,62% per bulan dan 17,66%–60,63% di antara 198 versi
-aplikasi, dengan nilai bulanan tertinggi justru pada bulan terakhir data.
+aplikasi, dengan nilai bulanan tertinggi justru pada bulan terakhir data. Aturan
+penandaan rilis menandai 23 dari 197 perbandingan versi berurutan, 16 di antaranya
+juga ditandai dengan label rating.
 Penelitian ini menyimpulkan bahwa evaluasi ganda perlu menjadi praktik standar
 pada korpus ulasan aplikasi dan bahwa sistem lebih tepat diposisikan sebagai alat
 triase serta pemantauan keluhan per waktu dan per rilis, bukan sebagai pengganti

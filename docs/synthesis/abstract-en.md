@@ -25,7 +25,8 @@ negative reviews) and customer service (28.20%), with moderate agreement with an
 independent rater (κ = 0.5430). Descriptively, the share of reviews predicted
 negative ranges from 20.67% to 56.62% per month and from 17.66% to 60.63% across
 198 app versions, with the highest monthly value occurring in the final month of
-the data. The study concludes that dual evaluation should be standard practice
+the data. The release-flagging rule flags 23 of 197 consecutive version
+comparisons, 16 of which are also flagged with rating-based labels. The study concludes that dual evaluation should be standard practice
 for app-review corpora, and that the system is best positioned as a tool for
 complaint triage and for monitoring complaints over time and across releases,
 rather than as a replacement for human reading.

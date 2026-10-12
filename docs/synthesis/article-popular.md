@@ -223,11 +223,17 @@ masing-masing punya minimal 100 ulasan, proporsi negatifnya berkisar dari
 **17,66%** (versi 4.13) sampai **60,63%** (versi 5.75).
 <!-- src: facts.yaml pola_sentimen_rm3 -->
 
-Ini masih pola deskriptif, bukan vonis atas rilis tertentu: 21,5% ulasan tidak
-mencantumkan versi, dan uji statistik untuk menandai rilis bermasalah adalah
-langkah berikutnya. Tapi gambarannya sudah jelas — sistem seperti ini bisa
-memberi tahu tim produk versi mana yang perlu dilihat lebih dulu.
-<!-- src: facts.yaml dataset.pct_missing_versi_app; pola_sentimen_rm3.status_uji_rm3 -->
+Perbedaan itu juga diuji. Sebuah versi ditandai bila keluhannya naik minimal 5
+poin persentase dari versi sebelumnya *dan* kenaikan itu lolos uji statistik
+yang sudah dikoreksi untuk banyaknya perbandingan. Dari 197 perbandingan, 23
+versi ditandai; 16 di antaranya tetap ditandai ketika dihitung dari bintang
+pemberian pengguna, bukan dari tebakan model.
+
+Ini tetap asosiasi, bukan vonis atas rilis tertentu: 21,5% ulasan tidak
+mencantumkan versi, dan tanggal ulasan pertama hanya mendekati tanggal rilis.
+Tapi gambarannya sudah jelas — sistem seperti ini bisa memberi tahu tim produk
+versi mana yang perlu dilihat lebih dulu.
+<!-- src: facts.yaml dataset.pct_missing_versi_app; pola_sentimen_rm3.uji -->
 
 ---
 

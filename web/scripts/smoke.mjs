@@ -62,7 +62,7 @@ await step("Filter mengubah KPI + tren", async () => {
   if (sebelumKpi === sesudahKpi) throw new Error("KPI tidak berubah: " + sebelumKpi);
   console.log(`      ${sebelumKpi} -> ${sesudahKpi}`);
   // kembalikan ke default
-  await page.locator('button:has-text("Seluruh periode penuh")').click();
+  await page.locator('button:has-text("Seluruh periode")').click();
   await page.waitForTimeout(1500);
 });
 
@@ -133,8 +133,8 @@ await step("Empty state", async () => {
   // rentang di luar korpus -> API mengembalikan 404 -> keadaan KOSONG
   await page.evaluate(() => document.querySelectorAll('input[type="date"]')
     .forEach((i) => i.removeAttribute("max")));
-  await page.locator('input[type="date"]').nth(1).fill("2026-06-30");
-  await page.locator('input[type="date"]').first().fill("2026-06-01");
+  await page.locator('input[type="date"]').nth(1).fill("2027-01-31");
+  await page.locator('input[type="date"]').first().fill("2027-01-01");
   await page.waitForTimeout(2600);
 
   const pesan = await page.locator(".kosong .pesan").first().innerText();

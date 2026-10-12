@@ -65,8 +65,11 @@ aplikasi.
   31,98% seluruh ulasan bernada negatif. Proporsi bulanan bergerak dari 20,67%
   (Juni 2022) sampai 56,62% (September 2026); di antara 198 versi minor dengan
   ≥100 ulasan, proporsinya berkisar 17,66% (versi 4.13) sampai 60,63% (versi
-  5.75). Uji statistik dan penandaan rilis untuk pola ini **belum
-  diimplementasikan**.
+  5.75). Uji χ² menolak keseragaman proporsi negatif antarversi. Aturan penandaan
+  rilis (naik ≥5 poin dari versi sebelumnya dan uji z satu sisi dengan koreksi
+  Benjamini–Hochberg q < 0,05) menandai 23 dari 197 perbandingan berurutan; 16 di
+  antaranya juga ditandai bila memakai label rating (`ml/src/rm3.py`,
+  `docs/tables/rm3_uji_versi.csv`). Ini asosiasi, bukan sebab-akibat.
 - **Eksperimen 3 kelas dijalankan dan dilaporkan sebagai temuan**: macro-F1
   0,6617 vs 0,9270 pada skema biner (turun **26,5 poin**); recall kelas netral
   hanya 0,1872 (`docs/three_class_experiment.md`).
@@ -171,6 +174,12 @@ kedelapan materialized view dalam keadaan terisi; cukup untuk menjalankan
 seluruh dashboard tanpa menyentuh pipeline ML. Tanda berhasil: kartu **Total
 ulasan** di dashboard menunjukkan **526.322** dengan rentang 1 Okt 2021 – 30 Sep
 2026.
+
+Dump tidak memuat artefak model. Tanpa isi `ml/artifacts/` (dibuat pipeline,
+tidak di-commit), seluruh dashboard tetap jalan, tetapi demo prediksi
+(`/api/predict`) mengembalikan 503 dan `/api/health` berstatus `degraded`.
+Salin artefak dari pemilik proyek atau jalankan pipeline sampai langkah
+`finalize` agar demo itu aktif.
 
 Dump dibuat dengan `pg_dump` 16.15. Bila restore gagal dengan pesan
 `invalid command \restrict`, image `postgres:16-alpine` di komputer Anda terlalu
@@ -468,8 +477,9 @@ audit 50 sampel); pra-pemrosesan masih menyisakan kelemahan minor (angka
 dibuang global, sebagian stopword seperti "masih" dan "hanya", stemming kata
 berfrekuensi rendah); k LDA terpilih jatuh di batas bawah rentang; pelabelan
 kategori topik subjektif (Cohen's κ = 0,543, moderat); data diambil sekali pada
-11 Oktober 2026 tanpa evaluasi *concept drift*; uji statistik untuk pola
-sentimen per waktu dan versi belum diimplementasikan; dan sistem adalah
+11 Oktober 2026 tanpa evaluasi *concept drift*; penandaan rilis RM3 memakai
+tanggal ulasan pertama sebagai proksi tanggal rilis (versi yang sudah ada
+sebelum Oktober 2021 tersensor kiri); dan sistem adalah
 prototipe lokal yang tidak di-*deploy* ke produksi.
 
 ## Lisensi & Sumber Data
