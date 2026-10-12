@@ -639,7 +639,56 @@ pola_sentimen_rm3:
   versi_pct_negatif_tertinggi:
     versi: '5.75'
     pct: 60.63
-  status_uji_rm3: BELUM DIIMPLEMENTASIKAN — uji chi-kuadrat & penandaan rilis
+  pembanding_label_rating:
+    korelasi_bulanan_pred_vs_rating: 0.9978
+    rerata_selisih_mutlak_pp: 1.53
+  uji:
+    ambang:
+      min_kenaikan_pp: 5.0
+      alpha_q: 0.05
+      jendela_pekan: 4
+    chi2_pred:
+      chi2: 8941.2
+      dof: 197
+    n_versi: 198
+    n_perbandingan: 197
+    n_ditandai_pred: 23
+    n_ditandai_rating: 17
+    n_ditandai_kedua_label: 16
+    versi_ditandai_kedua_label:
+    - '3.41'
+    - '4.33'
+    - '4.42'
+    - '4.53'
+    - '4.71'
+    - '4.79'
+    - '5.14'
+    - '5.24'
+    - '5.26'
+    - '5.33'
+    - '5.36'
+    - '5.41'
+    - '5.48'
+    - '5.51'
+    - '5.61'
+    - '5.68'
+    versi_ditandai_hanya_pred:
+    - '4.14'
+    - '4.30'
+    - '4.46'
+    - '4.56'
+    - '4.74'
+    - '5.69'
+    - '5.72'
+    n_ditandai_tersensor_kiri: 3
+    kenaikan_terbesar:
+      versi: '3.41'
+      selisih_pp: 18.09
+    n_selaras_pekanan_naik_signifikan: 18
+    komposisi_kategori_naik_terbesar:
+      kategori: Kendala Penggunaan Aplikasi & Akses Akun
+      selisih_pp: 2.0
+    source_table: docs/tables/rm3_uji_versi.csv; rm3_keselarasan_pekanan.csv; rm3_komposisi_keluhan.csv
   source_table: data/processed/review_scores.parquet
 angka_struktural:
   penjelasan: Angka yang muncul di naskah sebagai penomoran, tahun, atau parameter konfigurasi — bukan

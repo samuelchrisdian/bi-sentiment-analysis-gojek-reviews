@@ -1,39 +1,48 @@
 #!/usr/bin/env bash
-# Orkestrasi end-to-end (Fase 6, T-6.7): satu perintah untuk membangun ulang
-# seluruh data, dari CSV mentah sampai database + materialized view siap
-# query. Dirujuk README Fase 9.
+# Pipeline end-to-end: data mentah sampai database, materialized view, dan facts.yaml.
 #
-# Urutan mengikuti dependensi nyata, bukan sekadar nomor fase:
-#   - load_reviews HARUS mendahului topic_assign & load_scores, karena
-#     `review_topics` dan `review_scores` ber-FK ke `reviews`.
-#   - finalize dijalankan dengan model hasil gerbang H-10 (LogisticRegression,
-#     lihat docs/model_decision.md) — bukan pilihan otomatis skor tertinggi.
+# Langkah manual (berkas *_reviewed.csv di docs/tables/) harus sudah ada; skrip ini
+# tidak menggantikan audit terjemahan, verifikasi pra-pemrosesan, penamaan
+# kategori, analisis kesalahan, maupun validasi silang.
+#
+#   ./ml/run_pipeline.sh            # pakai data mentah yang ada
+#   ./ml/run_pipeline.sh --scrape   # ambil ulang dari Google Play dulu (lama, butuh internet)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 set -a; source .env; set +a
-# psql tidak menerima prefiks SQLAlchemy "+psycopg2" pada DATABASE_URL.
+# psql tidak menerima prefiks SQLAlchemy "+psycopg2".
 PSQL_DSN="${DATABASE_URL/+psycopg2/}"
+PY=.venv/bin/python
 
-python -m ml.src.ingest
-python -m ml.src.preprocess
-python -m ml.src.load_reviews
+if [[ "${1:-}" == "--scrape" || ! -f data/raw/gojek_reviews_5Y.csv ]]; then
+  $PY data/script-scraping/scrape_5_tahun.py
+fi
+# venv terpisah: torch butuh NumPy 2, .venv utama mengunci NumPy <2 untuk gensim.
+.venv-translate/bin/python -m ml.src.translate
 
-python -m ml.src.train
-python -m ml.src.tune
-python -m ml.src.finalize logistic_regression      # gerbang H-10
+$PY -m ml.src.build_slang_dict
+$PY -m ml.src.preprocess
+$PY -m ml.src.train
+$PY -m ml.src.tune
+$PY -m ml.src.finalize logistic_regression   # docs/model_decision.md
+for m in three_class interpret error_analysis viz_cm viz_models topics; do
+  $PY -m ml.src.$m
+done
 
-python -m ml.src.topics
-python -m ml.src.topic_assign
+# reviews harus dimuat sebelum topic_assign dan load_scores (FK ke reviews).
+$PY -m ml.src.load_reviews
+$PY -m ml.src.topic_assign
+$PY -m ml.src.score
+$PY -m ml.src.load_scores
+$PY -m ml.src.load_metrics
 
-python -m ml.src.score
-python -m ml.src.load_scores
-python -m ml.src.load_metrics
+psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -q -f ml/sql/002_matviews.sql
+# 003 membaca review_topics, jadi setelah topic_assign.
+psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -q -f ml/sql/003_api_views.sql
 
-psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -f ml/sql/002_matviews.sql
-# View Fase 7 (kategori, pekanan, metadata cakupan). Dijalankan SETELAH 002:
-# keduanya membaca review_scores yang sama, dan berkas ini mengandaikan
-# review_topics sudah terisi oleh topic_assign di atas.
-psql "$PSQL_DSN" -v ON_ERROR_STOP=1 -f ml/sql/003_api_views.sql
+$PY -m ml.src.eda
+$PY -m ml.src.rm3
+$PY -m ml.src.collect_facts
 
 echo "Pipeline selesai."

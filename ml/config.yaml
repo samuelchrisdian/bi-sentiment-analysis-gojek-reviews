@@ -99,6 +99,12 @@ versions:
   min_reviews_per_version: 100
   aggregate_to_minor: true
 
+# Ambang penandaan rilis RM3 (Bab III 3.6.7), ditetapkan sebelum hasil dibaca.
+rm3:
+  min_kenaikan_pp: 5.0
+  alpha_q: 0.05
+  jendela_pekan: 4
+
 temporal:
   # Rentang scraping dipilih tepat 60 bulan penuh (Oktober 2021 – September
   # 2026), sehingga tidak ada bulan parsial.

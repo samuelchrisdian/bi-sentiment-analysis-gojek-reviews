@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import yaml
 from sklearn.metrics import cohen_kappa_score
@@ -569,11 +570,7 @@ def fakta_tren() -> dict:
 
 
 def fakta_pola_sentimen() -> dict:
-    """Deskriptif RM3: proporsi negatif (prediksi model produksi) per bulan & versi.
-
-    Hanya statistik deskriptif. Uji chi-kuadrat dan aturan penandaan rilis
-    (Bab 3, 3.6.7) belum diimplementasikan.
-    """
+    """RM3: proporsi negatif per bulan & versi, plus hasil uji dari `ml.src.rm3`."""
     rev = pd.read_parquet(ROOT / "data" / "processed" / "reviews_clean.parquet",
                           columns=["id", "tanggal", "versi_minor", "sentimen_aktual"])
     sk = pd.read_parquet(ROOT / "data" / "processed" / "review_scores.parquet")
@@ -605,9 +602,55 @@ def fakta_pola_sentimen() -> dict:
             "versi": str(ver["pct_neg"].idxmin()), "pct": r(ver["pct_neg"].min() * 100, 2)},
         "versi_pct_negatif_tertinggi": {
             "versi": str(ver["pct_neg"].idxmax()), "pct": r(ver["pct_neg"].max() * 100, 2)},
-        "status_uji_rm3": "BELUM DIIMPLEMENTASIKAN — uji chi-kuadrat & penandaan rilis",
+        "pembanding_label_rating": _rm3_bulanan_rating(d),
+        "uji": _rm3_uji(),
         "source_table": "data/processed/review_scores.parquet",
     }
+
+
+def _rm3_bulanan_rating(d: pd.DataFrame) -> dict:
+    lab = d[d["sentimen_aktual"].notna()]
+    rat = lab.groupby("bulan")["sentimen_aktual"].apply(lambda x: (x == 0).mean() * 100)
+    pred = lab.groupby("bulan")["neg"].mean() * 100
+    return {"korelasi_bulanan_pred_vs_rating": r(pred.corr(rat)),
+            "rerata_selisih_mutlak_pp": r((pred - rat).abs().mean(), 2)}
+
+
+def _rm3_uji() -> dict:
+    if not ada_tabel("rm3_uji_versi"):
+        return menunggu("uji RM3", "python -m ml.src.rm3")
+    t = pd.read_csv(TABLES / "rm3_uji_versi.csv", dtype={"versi": str})
+    tandai = t[t["ditandai_pred"]]
+    keduanya = tandai[tandai["ditandai_rating"].fillna(False).astype(bool)]
+    sel = pd.read_csv(TABLES / "rm3_keselarasan_pekanan.csv", dtype={"versi": str})
+    sel_naik = sel[(sel["selisih_pp"] > 0) & (sel["p"] < 0.05)]
+    kom = pd.read_csv(TABLES / "rm3_komposisi_keluhan.csv").set_index("kategori")
+    cfg = yaml.safe_load((ROOT / "ml" / "config.yaml").read_text())["rm3"]
+    return {
+        "ambang": cfg,
+        "chi2_pred": {"chi2": r(chi2_versi(t, "pred"), 1), "dof": int(len(t) - 1)},
+        "n_versi": int(len(t)),
+        "n_perbandingan": int(len(t) - 1),
+        "n_ditandai_pred": int(len(tandai)),
+        "n_ditandai_rating": int(t["ditandai_rating"].fillna(False).astype(bool).sum()),
+        "n_ditandai_kedua_label": int(len(keduanya)),
+        "versi_ditandai_kedua_label": keduanya["versi"].tolist(),
+        "versi_ditandai_hanya_pred": sorted(set(tandai["versi"]) - set(keduanya["versi"])),
+        "n_ditandai_tersensor_kiri": int(tandai["tersensor_kiri"].sum()),
+        "kenaikan_terbesar": {
+            "versi": tandai.loc[tandai["selisih_pp_pred"].idxmax(), "versi"],
+            "selisih_pp": r(tandai["selisih_pp_pred"].max(), 2)},
+        "n_selaras_pekanan_naik_signifikan": int(len(sel_naik)),
+        "komposisi_kategori_naik_terbesar": {
+            "kategori": kom["selisih_pp"].idxmax(), "selisih_pp": r(kom["selisih_pp"].max(), 2)},
+        "source_table": "docs/tables/rm3_uji_versi.csv; rm3_keselarasan_pekanan.csv; rm3_komposisi_keluhan.csv",
+    }
+
+
+def chi2_versi(t: pd.DataFrame, label: str) -> float:
+    from scipy.stats import chi2_contingency
+    neg = t[f"n_neg_{label}"].to_numpy()
+    return float(chi2_contingency(np.c_[neg, t[f"n_{label}"].to_numpy() - neg])[0])
 
 
 def fakta_preprocessing() -> dict:
