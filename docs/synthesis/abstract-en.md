@@ -3,31 +3,35 @@
 <!-- ===== Abstract EN — SIAP TEMPEL ===== -->
 
 App-store reviews are a large but unstructured source of user feedback, which
-makes recurring complaints hard to detect systematically. This study analyses
-100,000 Gojek app reviews published on Google Play between 21 May 2024 and
-31 December 2025, comparing three families of classical algorithms across four
-trained variants — ComplementNB, MultinomialNB, LinearSVC, and Logistic
-Regression — over 1–2 gram TF-IDF features, using a binary label scheme derived
-from star ratings and a dual evaluation protocol that reports every model on the
-full test set and on the subset of reviews containing at least five words. The
-production model (Logistic Regression) reaches a macro-F1 of 0.9336 and negative
-class recall of 0.9315 on the full test set against a majority baseline of
-0.4196, while the macro-F1 spread across all four variants is only 1.88 points,
-meaning the simplest model performs on par with the most complex one. The main
-methodological finding is the gap between the two evaluation sets — 2.59 points
-of macro-F1 and 3.70 points of accuracy: because 39.9% of reviews contain two
-words or fewer and are almost all positive, metrics computed on the full test set
-overstate model capability, and manual inspection shows that 48.0% of the model's
-errors stem from star ratings that contradict the review text. LDA topic
-extraction over 26,732 negative reviews yields nine complaint categories, the two
-largest of which — driver availability (36.15%) and GoFood orders and
-cancellations (34.25%) — together cover 70.4% of the complaint corpus. The study
-therefore recommends dual evaluation as standard practice for app-review corpora,
-and positions the system as a complaint triage tool rather than a replacement for
-human reading.
+makes recurring complaints and release-to-release shifts in sentiment hard to
+monitor systematically. This study collected its own corpus of Gojek app reviews
+from Google Play Indonesia over five years (October 2021 – September 2026) and
+analyses 526,322 reviews; the 14,671 reviews (2.8%) written predominantly in
+English were translated into Indonesian with the MarianMT machine translation
+model. Binary sentiment classification is built on 1–2 gram TF-IDF features
+with labels derived from star ratings; the production model was selected from four
+variants of three classical algorithm families through a decision framework
+fixed in advance, and evaluated with a dual protocol on the full test set and on
+reviews containing at least five words. The selected model, Logistic Regression,
+reaches a macro-F1 of 0.9261 and negative class recall of 0.9192 on the full
+test set against a majority baseline of 0.4154, yet its macro-F1 drops by 3.10
+points to 0.8951 on informative reviews: 40.6% of reviews contain two words or
+fewer and are almost all positive, while manual inspection of 50
+misclassifications shows that 50.0% of them stem from star ratings that
+contradict the review text. LDA topic modelling over negative reviews, followed
+by keyword-based category assignment, yields five complaint categories, led by
+driver search and assignment, waiting time and order cancellation (38.20% of
+negative reviews) and customer service (28.20%), with moderate agreement with an
+independent rater (κ = 0.5430). Descriptively, the share of reviews predicted
+negative ranges from 20.67% to 56.62% per month and from 17.66% to 60.63% across
+198 app versions, with the highest monthly value occurring in the final month of
+the data. The study concludes that dual evaluation should be standard practice
+for app-review corpora, and that the system is best positioned as a tool for
+complaint triage and for monitoring complaints over time and across releases,
+rather than as a replacement for human reading.
 
-**Keywords:** sentiment analysis; Indonesian language; app reviews; class
-imbalance; TF-IDF; LDA topic modelling.
+**Keywords:** sentiment analysis; Indonesian language; app reviews; machine
+translation; class imbalance; TF-IDF; LDA topic modelling.
 
 ---
 
