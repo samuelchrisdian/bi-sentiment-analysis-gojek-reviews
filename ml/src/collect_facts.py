@@ -246,13 +246,15 @@ def fakta_model() -> dict:
             },
         }
 
-    f1_tuned = {n: hasil["varian"][n]["tuned"]["full"]["macro_f1"] for n in VARIAN}
+    # Selisih dihitung dari nilai belum dibulatkan; selisih dari nilai empat
+    # desimal dapat meleset satu digit (0,9270 - 0,9261 = 0,09, padahal 0,08).
+    f1_tuned = {n: float(idx.loc[(f"{n}_tuned", "full")]["macro_f1"]) for n in VARIAN}
     terbaik = max(f1_tuned, key=f1_tuned.get)
     terendah = min(f1_tuned, key=f1_tuned.get)
     hasil["rentang_macro_f1_tuned"] = {
-        "tertinggi": f1_tuned[terbaik],
+        "tertinggi": r(f1_tuned[terbaik]),
         "tertinggi_model": terbaik,
-        "terendah": f1_tuned[terendah],
+        "terendah": r(f1_tuned[terendah]),
         "terendah_model": terendah,
         "rentang_poin": poin(f1_tuned[terbaik], f1_tuned[terendah]),
         "selisih_dua_teratas_poin": poin(*sorted(f1_tuned.values(), reverse=True)[:2]),

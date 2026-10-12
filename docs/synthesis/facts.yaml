@@ -273,8 +273,8 @@ model:
     terendah: 0.9037
     terendah_model: complement_nb
     rentang_poin: 2.33
-    selisih_dua_teratas_poin: 0.09
-    selisih_dua_teratas_baris: 91
+    selisih_dua_teratas_poin: 0.08
+    selisih_dua_teratas_baris: 85
   produksi:
     nama: logistic_regression
     parameter: C=1.0, class_weight=balanced
